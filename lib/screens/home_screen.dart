@@ -18,18 +18,45 @@ class HomeSceen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    var mealList = Provider.of<Meals>(context).items;
-
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-            child: Text("Home Screen. We have ${mealList.length}. "),
-          ),
-          RaisedButton(onPressed: () => toNewMealScreen(context), child: Text("Create new meal"),)
-        ],
+      body: FutureBuilder(
+        future: Provider.of<Meals>(context, listen: false)
+            .fetchAndSetMeals(),
+        builder: (ctx, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Consumer<Meals>(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text('Got no places yet, start adding some!'),
+                      RaisedButton(onPressed: () => toNewMealScreen(context), child: Text("Create new meal"),)
+                    ],
+                  ),
+                ),
+                builder: (ctx, meals, ch) => meals.items.length <= 0
+                    ? ch
+                    : ListView.builder(
+                        itemCount: meals.items.length,
+                        itemBuilder: (ctx, i) => ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: FileImage(
+                                  meals.items[i].image,
+                                ),
+                              ),
+                              title: Text(meals.items[i].title),
+                              onTap: () {
+                                // Go to detail page ...
+                              },
+                            ),
+                      ),
+              ),
       ),
     );
   }
 }
+
+          
