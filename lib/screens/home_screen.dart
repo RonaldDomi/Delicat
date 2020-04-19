@@ -25,7 +25,7 @@ class HomeSceen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Center(
-            child: Text("Home Screen. We have ${mealList.length}"),
+            child: Text("Home Screen. We have ${mealList.length}. "),
           ),
           RaisedButton(onPressed: () => toNewMealScreen(context), child: Text("Create new meal"),)
         ],

@@ -1,21 +1,73 @@
-import 'package:delicat/widgets/image_input.dart';
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-class NewMealScreen extends StatelessWidget {
-  static const routeName = '/newmeal';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../widgets/image_input.dart';
+import '../providers/meals.dart';
+
+class NewMealScreen extends StatefulWidget {
+  static const routeName = '/new-meal';
 
   const NewMealScreen({Key key}) : super(key: key);
 
   @override
+  _NewMealScreenState createState() => _NewMealScreenState();
+}
+
+class _NewMealScreenState extends State<NewMealScreen> {
+  final _titleController = TextEditingController();
+  File _pickedImage;
+
+  void _selectImage(File pickedImage) {
+    _pickedImage = pickedImage;
+  }
+
+  void _saveMeal() {
+    if (_titleController.text.isEmpty || _pickedImage == null) {
+      return;
+    }
+    Provider.of<Meals>(context, listen: false)
+        .addMeal(_titleController.text, _pickedImage);
+    Navigator.of(context).pop();
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ImageInput(),
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  children: <Widget>[
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Title'),
+                      controller: _titleController,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ImageInput(_selectImage),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          RaisedButton.icon(
+            icon: Icon(Icons.add),
+            label: Text('Add meal'),
+            onPressed: _saveMeal,
+            elevation: 0,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            color: Theme.of(context).accentColor,
+          ),
+        ],
       ),
     );
   }

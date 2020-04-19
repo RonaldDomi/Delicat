@@ -1,5 +1,8 @@
+import 'dart:io';
+
 class Meal { 
   String title; 
+  File image;
 
-  Meal({this.title});
+  Meal({this.title, this.image});
 }
