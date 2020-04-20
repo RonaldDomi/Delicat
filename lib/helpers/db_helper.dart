@@ -1,7 +1,6 @@
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqlite_api.dart';
-import 'dart:io';
 
 class DBHelper {
   static Future<Database> database() async {
