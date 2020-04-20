@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import '../widgets/image_input.dart';
 import '../providers/meals.dart';
 
+import '../models/category.dart';
+
 class NewMealScreen extends StatefulWidget {
   static const routeName = '/new-meal';
 
@@ -28,7 +30,7 @@ class _NewMealScreenState extends State<NewMealScreen> {
       return;
     }
     Provider.of<Meals>(context, listen: false)
-        .addMeal(_titleController.text, _pickedImage);
+        .addMeal(_titleController.text, _pickedImage, "instructions", Category());
     Navigator.of(context).pop();
   }
 

@@ -1,9 +1,13 @@
 import 'dart:io';
 
+import 'category.dart';
+
 class Meal { 
   String id;
-  String title; 
-  File image;
+  String name; 
+  File photo;
+  String instructions;
+  Category category;
 
-  Meal({this.id, this.title, this.image});
+  Meal({this.id, this.name, this.photo, this.instructions, this.category});
 }

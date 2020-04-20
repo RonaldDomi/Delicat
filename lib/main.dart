@@ -3,6 +3,10 @@ import 'package:provider/provider.dart';
 
 import './providers/meals.dart';
 
+import './screens/meal_details_screen.dart';
+import './screens/meal_list_screen.dart';
+import './screens/new_cat_screen.dart';
+import './screens/cat_selection_screen.dart';
 import './screens/home_screen.dart';
 import './screens/new_meal_screen.dart';
 
@@ -22,10 +26,14 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomeSceen(),
+        home: HomeScreen(),
         initialRoute: '/',
         routes: {
           NewMealScreen.routeName: (ctx) => NewMealScreen(),
+          CatSelectionScreen.routeName: (ctx) => CatSelectionScreen(),
+          NewCatScreen.routeName: (ctx) => NewCatScreen(),
+          MealListScreen.routeName: (ctx) => MealListScreen(),
+          MealDetailsScreen.routeName: (ctx) => MealDetailsScreen(),
         },
       ),
     );

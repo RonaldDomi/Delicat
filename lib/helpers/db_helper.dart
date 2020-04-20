@@ -1,15 +1,18 @@
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqlite_api.dart';
+import 'dart:io';
 
 class DBHelper {
   static Future<Database> database() async {
     final dbPath = await sql.getDatabasesPath();
-    return sql.openDatabase(path.join(dbPath, 'meals.db'),
+    return sql.openDatabase(path.join(dbPath, 'delicat.db'),
         onCreate: (db, version) {
+      db.execute(
+          'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
       return db.execute(
-          'CREATE TABLE user_meals(id TEXT PRIMARY KEY, title TEXT, image TEXT)');
-    }, version: 1);
+          'CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
+    }, version: 2);
   }
 
   static Future<void> insert(String table, Map<String, Object> data) async {
@@ -19,6 +22,25 @@ class DBHelper {
       data,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  static Future<void> delete(String table, String id) async {
+    // Get a reference to the database.
+    final db = await DBHelper.database();
+
+    db.delete(table,
+        // Use a `where` clause to delete a specific
+        where: "id = ?",
+        // Pass the Meals's id as a whereArg to prevent SQL injection.
+        whereArgs: [id]);
+  }
+
+  static Future<void> edit(
+      String table, String id, Map<String, Object> newMeal) async {
+    // Get a reference to the database.
+    final db = await DBHelper.database();
+
+    db.update(table, newMeal, where: "id=?", whereArgs: [newMeal[id]]);
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
