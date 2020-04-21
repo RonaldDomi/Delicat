@@ -9,10 +9,13 @@ class DBHelper {
         onCreate: (db, version) {
       db.execute(
           'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
+      db.execute(
+          'CREATE TABLE app_info(id TEXT PRIMARY KEY, firstTime INTEGER)');
+      db.execute('INSERT INTO app_info(firstTime) values(1);');
       // db.execute('INSERT INTO TABLE user_categories VALUES(\'c1\', \'Breakfast\', \'assets/photos/breakfast.jpg\', \'#010101\')');
       return db.execute(
           'CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
-    }, version: 2);
+    }, version: 3);
   }
 
   static Future<void> insert(String table, Map<String, Object> data) async {

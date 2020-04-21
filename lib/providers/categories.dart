@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../models/category.dart';
 
-class Categories with ChangeNotifier{
+class Categories with ChangeNotifier {
   List<Category> _categories = [];
 
   List<Category> get items {
@@ -31,7 +31,7 @@ class Categories with ChangeNotifier{
     });
   }
 
-    void removeCategory(id) {
+  void removeCategory(id) {
     _categories.removeWhere((item) => item.id == id);
 
     notifyListeners();
@@ -40,7 +40,6 @@ class Categories with ChangeNotifier{
   }
 
   void editCategory(id, Category editedCategory) {
-
     notifyListeners();
 
     DBHelper.edit('user_categories', id, {
@@ -52,7 +51,6 @@ class Categories with ChangeNotifier{
   }
 
   Future<void> fetchAndSetCategories() async {
-
     final dataList = await DBHelper.getData('user_categories');
 
     _categories = dataList.map(
@@ -68,6 +66,18 @@ class Categories with ChangeNotifier{
     notifyListeners();
   }
 
+  Future<void> changeFirstTimeStatus() async {
+    DBHelper.edit(
+      "app_info",
+    );
+  }
 
+  Future<void> getFirstHitStatus() async {
+    final dataList = await DBHelper.getData('app_info');
 
+    // get the first record
+    Map<String, dynamic> mapRead = dataList.first;
+
+    print('Is it first time? : ${mapRead['firstTime']}');
+  }
 }

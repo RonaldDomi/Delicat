@@ -1,3 +1,4 @@
+import 'package:delicat/providers/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,60 +19,66 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<Categories>(context).getFirstHitStatus();
     return Scaffold(
       body: FutureBuilder(
         future: Provider.of<Meals>(context, listen: false).fetchAndSetMeals(),
-        builder: (ctx, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Consumer<Meals>(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Text('Got no cats yet, start adding some!'),
-                          RaisedButton(
-                            onPressed: () => navigateTo(NewMealScreen.routeName, context),
-                            child: Text("/new-meal"),
-                          ),
-                          RaisedButton(
-                            onPressed: () => navigateTo(CatSelectionScreen.routeName, context),
-                            child: Text("/cat-selection"),
-                          ),
-                          RaisedButton(
-                            onPressed: () => navigateTo(MealDetailsScreen.routeName, context),
-                            child: Text("/meal-details"),
-                          ),
-                          RaisedButton(
-                            onPressed: () => navigateTo(MealListScreen.routeName, context),
-                            child: Text("/meal-list"),
-                          ),
-                          RaisedButton(
-                            onPressed: () => navigateTo(NewCatScreen.routeName, context),
-                            child: Text("/new-cat"),
-                          ),
-                        ],
+        builder: (ctx, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Consumer<Meals>(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text('Got no cats yet, start adding some!'),
+                      RaisedButton(
+                        onPressed: () =>
+                            navigateTo(NewMealScreen.routeName, context),
+                        child: Text("/new-meal"),
                       ),
-                    ),
-                    builder: (ctx, meals, ch) => meals.items.length <= 0
-                        ? ch
-                        : ListView.builder(
-                            itemCount: meals.items.length,
-                            itemBuilder: (ctx, i) => ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: FileImage(
-                                  meals.items[i].photo,
-                                ),
-                              ),
-                              title: Text(meals.items[i].name),
-                              onTap: () {
-                                // Go to detail page ...
-                              },
+                      RaisedButton(
+                        onPressed: () =>
+                            navigateTo(CatSelectionScreen.routeName, context),
+                        child: Text("/cat-selection"),
+                      ),
+                      RaisedButton(
+                        onPressed: () =>
+                            navigateTo(MealDetailsScreen.routeName, context),
+                        child: Text("/meal-details"),
+                      ),
+                      RaisedButton(
+                        onPressed: () =>
+                            navigateTo(MealListScreen.routeName, context),
+                        child: Text("/meal-list"),
+                      ),
+                      RaisedButton(
+                        onPressed: () =>
+                            navigateTo(NewCatScreen.routeName, context),
+                        child: Text("/new-cat"),
+                      ),
+                    ],
+                  ),
+                ),
+                builder: (ctx, meals, ch) => meals.items.length <= 0
+                    ? ch
+                    : ListView.builder(
+                        itemCount: meals.items.length,
+                        itemBuilder: (ctx, i) => ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: FileImage(
+                              meals.items[i].photo,
                             ),
                           ),
-                  ),
+                          title: Text(meals.items[i].name),
+                          onTap: () {
+                            // Go to detail page ...
+                          },
+                        ),
+                      ),
+              ),
       ),
     );
   }
