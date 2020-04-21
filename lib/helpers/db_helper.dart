@@ -9,6 +9,7 @@ class DBHelper {
         onCreate: (db, version) {
       db.execute(
           'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
+      // db.execute('INSERT INTO TABLE user_categories VALUES(\'c1\', \'Breakfast\', \'assets/photos/breakfast.jpg\', \'#010101\')');
       return db.execute(
           'CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
     }, version: 2);
