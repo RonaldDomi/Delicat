@@ -20,6 +20,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Provider.of<Categories>(context).getFirstHitStatus();
+    Provider.of<Categories>(context).changeFirstTimeStatus();
+    Provider.of<Categories>(context).getFirstHitStatus();
     return Scaffold(
       body: FutureBuilder(
         future: Provider.of<Meals>(context, listen: false).fetchAndSetMeals(),
