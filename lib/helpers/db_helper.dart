@@ -27,16 +27,6 @@ class DBHelper {
     );
   }
 
-  static Future<int> update(
-      String table, String id, Map<String, Object> data) async {
-    print("yooo");
-    final db = await DBHelper.database();
-    print("yooo");
-    print("yooo");
-    return await db.update(table, data, where: "id=?", whereArgs: [1]);
-    // return await db.update(table, data, where: 'id=?', whereArgs: [data[id]]);
-  }
-
   static Future<void> delete(String table, String id) async {
     // Get a reference to the database.
     final db = await DBHelper.database();
@@ -53,7 +43,7 @@ class DBHelper {
     // Get a reference to the database.
     final db = await DBHelper.database();
 
-    db.update(table, newMeal, where: "id=?", whereArgs: [newMeal[id]]);
+    db.update(table, newMeal, where: "id=?", whereArgs: [id]);
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {

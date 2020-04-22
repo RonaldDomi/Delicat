@@ -42,23 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
           description,
         ),
         onChanged: (boolValue) => {
-          print(" "),
-          print(""),
-          print(" "),
-          print("before onClick"),
-          print(""),
-          print(" "),
-          print(""),
-          // setState(() => {
-          Provider.of<Categories>(context).editFirstHitStatus(),
-          // }),
-          print(" "),
-          print(""),
-          print(" "),
-          print("after OnClick"),
-          print(""),
-          print(" "),
-          print(""),
+          setState(() => {
+                Provider.of<Categories>(context).editFirstHitStatus(),
+              }),
         },
       );
     }

@@ -67,32 +67,12 @@ class Categories with ChangeNotifier {
   }
 
   void editFirstHitStatus() async {
-    print(" ");
-    print("");
-    print(" ");
-    print("changing");
-    print("");
-    print(" ");
-    print("");
     final dataList = await DBHelper.getData('app_info');
     Map<String, dynamic> mapRead = dataList.first;
 
-    print("firstTime before update ${mapRead['firstTime']}");
-    // mapRead['firstTime'] = 0;
-    print("");
-    DBHelper.update("app_info", "1", {
-      "firstTime": 1,
+    DBHelper.edit("app_info", "1", {
+      "firstTime": mapRead['firstTime'] == 1 ? 0 : 1,
     });
-    print("manually changed to 1");
-    print(getFirstHitStatus());
-    print(" ");
-    print(" ");
-    print("changed");
-    print("");
-    print(" ");
-    print("");
-    // final dataList = await DBHelper.getData('app_info');
-    // Map<String, dynamic> mapRead = dataList.first;
   }
 
   Future<int> getFirstHitStatus() async {
