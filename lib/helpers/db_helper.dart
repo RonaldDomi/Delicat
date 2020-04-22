@@ -13,9 +13,16 @@ class DBHelper {
           'CREATE TABLE app_info(id TEXT PRIMARY KEY, firstTime INTEGER)');
       db.execute('INSERT INTO app_info(id, firstTime) values(1,1);');
       // db.execute('INSERT INTO TABLE user_categories VALUES(\'c1\', \'Breakfast\', \'assets/photos/breakfast.jpg\', \'#010101\')');
-      return db.execute(
+      db.execute(
           'CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
-    }, version: 3);
+      return db.execute(
+          'INSERT INTO user_meals(name , photo , instructions) values (\'test\', \'testphoto\', \'testinst\')');
+    }, onUpgrade: (db, oldVersion, newVersion) async {
+      db.execute(
+          'ALTER TABLE user_meals ADD migration2 TEXT DEFAULT \'test2\'');
+      List<Map<String, dynamic>> result = await db.query("user_meals");
+      print('test -> ${result[0]['migration2']}');
+    }, version: 2);
   }
 
   static Future<void> insert(String table, Map<String, Object> data) async {
@@ -43,7 +50,7 @@ class DBHelper {
     // Get a reference to the database.
     final db = await DBHelper.database();
 
-    db.update(table, newMeal, where: "id=?", whereArgs: [newMeal[id]]);
+    db.update(table, newMeal, where: "id=?", whereArgs: [id]);
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {

@@ -67,6 +67,7 @@ class Categories with ChangeNotifier {
   }
 
   Future<void> changeFirstTimeStatus() async {
+
     DBHelper.edit(
       "app_info", '1', {
         'firstTime' : 0
