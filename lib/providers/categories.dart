@@ -66,20 +66,41 @@ class Categories with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeFirstTimeStatus() async {
-    DBHelper.edit(
-      "app_info", '1', {
-        'firstTime' : 0
-      }
-    );
+  void editFirstHitStatus() async {
+    print(" ");
+    print("");
+    print(" ");
+    print("changing");
+    print("");
+    print(" ");
+    print("");
+    final dataList = await DBHelper.getData('app_info');
+    Map<String, dynamic> mapRead = dataList.first;
+
+    print("firstTime before update ${mapRead['firstTime']}");
+    // mapRead['firstTime'] = 0;
+    print("");
+    DBHelper.update("app_info", "1", {
+      "firstTime": 1,
+    });
+    print("manually changed to 1");
+    print(getFirstHitStatus());
+    print(" ");
+    print(" ");
+    print("changed");
+    print("");
+    print(" ");
+    print("");
+    // final dataList = await DBHelper.getData('app_info');
+    // Map<String, dynamic> mapRead = dataList.first;
   }
 
-  Future<void> getFirstHitStatus() async {
+  Future<int> getFirstHitStatus() async {
     final dataList = await DBHelper.getData('app_info');
 
     // get the first record
     Map<String, dynamic> mapRead = dataList.first;
-
-    print('Is it first time? : ${mapRead['firstTime']}');
+    print('firstTime value: ${mapRead['firstTime']}');
+    return mapRead['firstTime'];
   }
 }

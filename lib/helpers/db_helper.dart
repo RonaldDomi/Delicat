@@ -11,7 +11,7 @@ class DBHelper {
           'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
       db.execute(
           'CREATE TABLE app_info(id TEXT PRIMARY KEY, firstTime INTEGER)');
-      db.execute('INSERT INTO app_info(id, firstTime) values(1,1);');
+      db.execute('INSERT INTO app_info(id, firstTime) values(1,0);');
       // db.execute('INSERT INTO TABLE user_categories VALUES(\'c1\', \'Breakfast\', \'assets/photos/breakfast.jpg\', \'#010101\')');
       return db.execute(
           'CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
@@ -25,6 +25,16 @@ class DBHelper {
       data,
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  static Future<int> update(
+      String table, String id, Map<String, Object> data) async {
+    print("yooo");
+    final db = await DBHelper.database();
+    print("yooo");
+    print("yooo");
+    return await db.update(table, data, where: "id=?", whereArgs: [1]);
+    // return await db.update(table, data, where: 'id=?', whereArgs: [data[id]]);
   }
 
   static Future<void> delete(String table, String id) async {
