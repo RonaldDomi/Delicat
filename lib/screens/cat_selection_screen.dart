@@ -7,10 +7,7 @@ class CatSelectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("I'm cat selection screen."),
-      ),
-    );
+    
+    return Scaffold(appBar: AppBar(title: Text("Selection Cat Screen"),),);
   }
 }

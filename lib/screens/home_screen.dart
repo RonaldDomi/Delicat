@@ -26,13 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // var firstTime = Provider.of<Categories>(context).getFirstHitStatus();
-    // Provider.of<Categories>(context).changeFirstTimeStatus();
+    var firstTime = Future.value(1);
 
     Widget _buildSwitchListTile(
       String title,
       String description,
       int currentValue,
-      Function updateValue,
     ) {
       bool value = (currentValue == 0) ? false : true;
       return SwitchListTile(
@@ -41,9 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
         subtitle: Text(
           description,
         ),
-        onChanged: (boolValue) => {
+        onChanged: (_) => {
           setState(() => {
                 Provider.of<Categories>(context).editFirstHitStatus(),
+                firstTime =
+                    Provider.of<Categories>(context).getFirstHitStatus(),
               }),
         },
       );
@@ -91,22 +92,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       FutureBuilder(
                         future: Provider.of<Categories>(context, listen: false)
                             .getFirstHitStatus(),
-                        builder: (ctx, snapshot) =>
-                            snapshot.connectionState == ConnectionState.waiting
-                                ? Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                : Column(
-                                    children: <Widget>[
-                                      Divider(height: 20),
-                                      _buildSwitchListTile(
-                                        "Dev Tools mapRead['firstTime'] : ${snapshot.data}",
-                                        "toogle show first time Cat Selection Screen",
-                                        snapshot.data,
-                                        () {},
-                                      ),
-                                    ],
+                        builder: (ctx, snapshot) => snapshot.connectionState ==
+                                ConnectionState.waiting
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : Column(
+                                children: <Widget>[
+                                  Divider(height: 20),
+                                  _buildSwitchListTile(
+                                    "Dev Tools mapRead['firstTime'] : ${snapshot.data}",
+                                    "toogle show first time Cat Selection Screen",
+                                    snapshot.data,
                                   ),
+                                  Divider(height: 40),
+                                  if (snapshot.data == 1)
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).pushNamed(
+                                            CatSelectionScreen.routeName);
+                                      },
+                                      borderRadius: BorderRadius.circular(20),
+                                      splashColor: Colors.red,
+                                      child: Container(
+                                        height: 50,
+                                        width: double.infinity,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "Go to Cat Selection Screen",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
                       ),
                     ],
                   ),

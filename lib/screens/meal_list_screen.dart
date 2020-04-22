@@ -7,9 +7,9 @@ class MealListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("meal list screen"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Meal List"),
       ),
     );
   }

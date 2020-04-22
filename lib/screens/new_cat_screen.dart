@@ -7,9 +7,9 @@ class NewCatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("New cat screen"),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("New Cat Screen"),
       ),
     );
   }
