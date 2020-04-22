@@ -11,7 +11,7 @@ class DBHelper {
           'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
       db.execute(
           'CREATE TABLE app_info(id TEXT PRIMARY KEY, firstTime INTEGER)');
-      db.execute('INSERT INTO app_info(id, firstTime) values(1,1);');
+      db.execute('INSERT INTO app_info(id, firstTime) values(1,0);');
       // db.execute('INSERT INTO TABLE user_categories VALUES(\'c1\', \'Breakfast\', \'assets/photos/breakfast.jpg\', \'#010101\')');
       db.execute(
           'CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
