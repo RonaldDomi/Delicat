@@ -1,11 +1,15 @@
 import 'dart:io';
 
-class Category { 
-  String id;
-  String name; 
-  File photo;
-  String colorCode;
+class Category {
+  final String id;
+  final String name;
+  final File photo;
+  final String colorCode;
 
-  Category({this.id, this.name, this.photo, this.colorCode});
-  
+  const Category({
+    this.id,
+    this.name,
+    this.photo,
+    this.colorCode,
+  });
 }
