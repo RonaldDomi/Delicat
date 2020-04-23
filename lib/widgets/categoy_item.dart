@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-// import '../screens/category_meals_screen.dart';
+// import '../models/category.dart';
+import '../providers/categories.dart';
 
 class CategoryItem extends StatelessWidget {
   final String id;
@@ -9,20 +11,13 @@ class CategoryItem extends StatelessWidget {
 
   CategoryItem(this.id, this.title, this.colorCode);
 
-  void selectCategory(BuildContext ctx) {
-    // Navigator.of(ctx).pushNamed(
-    //   CategoryMealsScreen.routeName,
-    //   arguments: {
-    //     'id': id,
-    //     'title': title,
-    //   },
-    // );
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => selectCategory(context),
+      onTap: () => {
+        Provider.of<Categories>(context)
+            .addCategory(title, "assets/rice.jpg", colorCode),
+      },
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(15),
       child: Container(

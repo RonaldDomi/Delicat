@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var firstTime = Provider.of<Categories>(context).getFirstHitStatus();
+    // var selectedCats = Provider.of<Categories>(context, listen: false).items;
     var firstTime = Future.value(1);
 
     Widget _buildSwitchListTile(
@@ -69,11 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             navigateTo(NewMealScreen.routeName, context),
                         child: Text("/new-meal"),
                       ),
-                      RaisedButton(
-                        onPressed: () =>
-                            navigateTo(CatSelectionScreen.routeName, context),
-                        child: Text("/cat-selection"),
-                      ),
+                      // RaisedButton(
+                      //   onPressed: () =>
+                      //       navigateTo(CatSelectionScreen.routeName, context),
+                      //   child: Text("/cat-selection"),
+                      // ),
                       RaisedButton(
                         onPressed: () =>
                             navigateTo(MealDetailsScreen.routeName, context),
@@ -129,6 +129,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                       ),
+                      // FutureBuilder(
+                      //   future: Provider.of<Categories>(context, listen: false)
+                      //       .fetchAndSetCategories(),
+                      //   builder: (ctx, snapshot) =>
+                      //       snapshot.connectionState == ConnectionState.waiting
+                      //           ? Center(
+                      //               child: CircularProgressIndicator(),
+                      //             )
+                      //           : Column(
+                      //               children: <Widget>[
+                      //                 Divider(height: 20),
+                      //                 Text("yoo"),
+                      //                 Text("$snapshot"),
+                      //                 // Text("${snapshot.data}"),
+                      //               ],
+                      //             ),
+                      // ),
                     ],
                   ),
                 ),

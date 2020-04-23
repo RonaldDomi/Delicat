@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:delicat/helpers/db_helper.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +17,20 @@ class Categories with ChangeNotifier {
     Category newCategory = Category(
       id: DateTime.now().toString(),
       name: name,
-      photo: photo,
+      // photo: File.fromRawPath(Uint8List.fromList([2])),
+      photo: File.fromUri(Uri.directory(photo)),
+      // this is just a placeholder
       colorCode: colorCode,
     );
 
     _categories.add(newCategory);
+    print("");
+    print("");
+    print('new category added: $name');
+    print(
+        "newCategory: ${newCategory.name}, ${newCategory.photo}, ${newCategory.colorCode}");
+    print("categories: $_categories");
+    print("");
     notifyListeners();
 
     DBHelper.insert('user_categories', {
