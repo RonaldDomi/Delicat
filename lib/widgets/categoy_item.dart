@@ -1,41 +1,61 @@
+import 'package:delicat/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// import '../models/category.dart';
-import '../providers/categories.dart';
+import '../models/category.dart';
 
-class CategoryItem extends StatelessWidget {
+class CategoryItem extends StatefulWidget {
   final String id;
   final String title;
   final String colorCode;
+  final Function addCategoryToSelection;
+  bool isSelected;
 
-  CategoryItem(this.id, this.title, this.colorCode);
+  CategoryItem(
+      this.id, this.title, this.colorCode, this.addCategoryToSelection) {
+    isSelected = false;
+  }
+
+  @override
+  _CategoryItemState createState() => _CategoryItemState();
+}
+
+class _CategoryItemState extends State<CategoryItem> {
+  selectCategory() {
+    print("i got touched");
+    setState(() {
+      widget.addCategoryToSelection(Category(
+          id: widget.id, name: widget.title, colorCode: widget.colorCode));
+      widget.isSelected = !widget.isSelected;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => {
-        print("i got touched"),
-        Provider.of<Categories>(context).addCategory(title, colorCode),
-      },
+      onTap: selectCategory
+      // Provider.of<Categories>(context).addCategory(title, colorCode),
+      ,
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(15),
       child: Container(
         padding: const EdgeInsets.all(15),
         child: Text(
-          title,
+          widget.title,
           style: Theme.of(context).textTheme.title,
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(int.parse(colorCode)).withOpacity(0.7),
-              Color(int.parse(colorCode)),
+              Color(int.parse(widget.colorCode)).withOpacity(0.7),
+              Color(int.parse(widget.colorCode)),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: widget.isSelected
+              ? BorderRadius.circular(0)
+              : BorderRadius.circular(15),
         ),
       ),
     );

@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
         routes: {
           CatSelectionScreen.routeName: (ctx) => CatSelectionScreen(),
           NewMealScreen.routeName: (ctx) => NewMealScreen(),
-          CatSelectionScreen.routeName: (ctx) => CatSelectionScreen(),
           NewCatScreen.routeName: (ctx) => NewCatScreen(),
           MealListScreen.routeName: (ctx) => MealListScreen(),
           MealDetailsScreen.routeName: (ctx) => MealDetailsScreen(),

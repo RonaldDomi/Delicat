@@ -1,7 +1,7 @@
 import 'package:delicat/providers/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../providers/meals.dart';
 import '../providers/categories.dart';
 
@@ -19,6 +19,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  checkFirstHitStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool firstTime = prefs.getBool('first_time');
+    if (firstTime != null && !firstTime) {
+      Navigator.of(context).pushReplacementNamed(CatSelectionScreen.routeName);
+    } else if (firstTime == null) {
+      prefs.setBool('first_time', false);
+    }
+  }
+
+  flipFirstHitStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('first_time', null);
+  }
+
   void navigateTo(routeName, BuildContext ctx) {
     Navigator.of(ctx).pushNamed(routeName);
   }
@@ -28,6 +44,8 @@ class _HomeScreenState extends State<HomeScreen> {
     // var selectedCats =
     //     Provider.of<Categories>(context, listen: false).fetchAndSetCategories();
     var firstTime = Future.value(1);
+    // Provider.of<Categories>(context).getFirstHitStatus();
+    checkFirstHitStatus();
 
     Widget _buildSwitchListTile(
       String title,
@@ -51,117 +69,119 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return Scaffold(
-      body: FutureBuilder(
-        // future: Provider.of<Meals>(context, listen: false).fetchAndSetMeals(),
-        future: Provider.of<Categories>(context, listen: false)
-            .fetchAndSetCategories(),
-        builder: (ctx, snapshotCategories) => snapshotCategories
-                    .connectionState ==
-                ConnectionState.waiting
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Consumer<Meals>(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text('Got no cats yet, start adding some!'),
-                      RaisedButton(
-                        onPressed: () =>
-                            navigateTo(NewMealScreen.routeName, context),
-                        child: Text("/new-meal"),
-                      ),
-                      // RaisedButton(
-                      //   onPressed: () =>
-                      //       navigateTo(CatSelectionScreen.routeName, context),
-                      //   child: Text("/cat-selection"),
-                      // ),
-                      RaisedButton(
-                        onPressed: () =>
-                            navigateTo(MealDetailsScreen.routeName, context),
-                        child: Text("/meal-details"),
-                      ),
-                      RaisedButton(
-                        onPressed: () =>
-                            navigateTo(MealListScreen.routeName, context),
-                        child: Text("/meal-list"),
-                      ),
-                      RaisedButton(
-                        onPressed: () =>
-                            navigateTo(NewCatScreen.routeName, context),
-                        child: Text("/new-cat"),
-                      ),
-                      FutureBuilder(
-                        future: Provider.of<Categories>(context, listen: false)
-                            .getFirstHitStatus(),
-                        builder: (ctx, snapshotFirstHit) => snapshotFirstHit
-                                    .connectionState ==
-                                ConnectionState.waiting
-                            ? Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : Column(
-                                children: <Widget>[
-                                  Divider(height: 20),
-                                  _buildSwitchListTile(
-                                    "Dev Tools mapRead['firstTime'] : ${snapshotFirstHit.data}",
-                                    "toogle show first time Cat Selection Screen",
-                                    snapshotFirstHit.data,
-                                  ),
-                                  Divider(height: 40),
-                                  if (snapshotFirstHit.data == 1)
-                                    InkWell(
-                                      onTap: () {
-                                        Navigator.of(context).pushNamed(
-                                            CatSelectionScreen.routeName);
-                                      },
-                                      borderRadius: BorderRadius.circular(20),
-                                      splashColor: Colors.red,
-                                      child: Container(
-                                        height: 50,
-                                        width: double.infinity,
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          "Go to Cat Selection Screen",
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                      ),
-                      Divider(height: 20),
-                      Text("yoo"),
-                      // Text("$snapshotCategories"),
-                      // ListView.builder(
-                      //   itemCount: 2,
-                      //   itemBuilder: (ctx, catDat) => Text("Hey yoo"),
-                      // )
-                    ],
-                  ),
-                ),
-                builder: (ctx, meals, ch) => meals.items.length <= 0
-                    ? ch
-                    : ListView.builder(
-                        itemCount: meals.items.length,
-                        itemBuilder: (ctx, i) => ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage: FileImage(
-                              meals.items[i].photo,
-                            ),
-                          ),
-                          title: Text(meals.items[i].name),
-                          onTap: () {
-                            // Go to detail page ...
-                          },
-                        ),
-                      ),
-              ),
-      ),
-    );
+    return Scaffold(body: Container(child: Center(child: Text("Home screen")))
+
+        // FutureBuilder(
+        //   // future: Provider.of<Meals>(context, listen: false).fetchAndSetMeals(),
+        //   future: Provider.of<Categories>(context, listen: false)
+        //       .fetchAndSetCategories(),
+        //   builder: (ctx, snapshotCategories) => snapshotCategories
+        //               .connectionState ==
+        //           ConnectionState.waiting
+        //       ? Center(
+        //           child: CircularProgressIndicator(),
+        //         )
+        //       : Consumer<Meals>(
+        //           child: Center(
+        //             child: Column(
+        //               mainAxisAlignment: MainAxisAlignment.center,
+        //               children: <Widget>[
+        //                 const Text('Got no cats yet, start adding some!'),
+        //                 RaisedButton(
+        //                   onPressed: () =>
+        //                       navigateTo(NewMealScreen.routeName, context),
+        //                   child: Text("/new-meal"),
+        //                 ),
+        //                 // RaisedButton(
+        //                 //   onPressed: () =>
+        //                 //       navigateTo(CatSelectionScreen.routeName, context),
+        //                 //   child: Text("/cat-selection"),
+        //                 // ),
+        //                 RaisedButton(
+        //                   onPressed: () =>
+        //                       navigateTo(MealDetailsScreen.routeName, context),
+        //                   child: Text("/meal-details"),
+        //                 ),
+        //                 RaisedButton(
+        //                   onPressed: () =>
+        //                       navigateTo(MealListScreen.routeName, context),
+        //                   child: Text("/meal-list"),
+        //                 ),
+        //                 RaisedButton(
+        //                   onPressed: () =>
+        //                       navigateTo(NewCatScreen.routeName, context),
+        //                   child: Text("/new-cat"),
+        //                 ),
+        //                 FutureBuilder(
+        //                   future: Provider.of<Categories>(context, listen: false)
+        //                       .getFirstHitStatus(),
+        //                   builder: (ctx, snapshotFirstHit) => snapshotFirstHit
+        //                               .connectionState ==
+        //                           ConnectionState.waiting
+        //                       ? Center(
+        //                           child: CircularProgressIndicator(),
+        //                         )
+        //                       : Column(
+        //                           children: <Widget>[
+        //                             Divider(height: 20),
+        //                             _buildSwitchListTile(
+        //                               "Dev Tools mapRead['firstTime'] : ${snapshotFirstHit.data}",
+        //                               "toogle show first time Cat Selection Screen",
+        //                               snapshotFirstHit.data,
+        //                             ),
+        //                             Divider(height: 40),
+        //                             if (snapshotFirstHit.data == 1)
+        //                               InkWell(
+        //                                 onTap: () {
+        //                                   Navigator.of(context).pushNamed(
+        //                                       CatSelectionScreen.routeName);
+        //                                 },
+        //                                 borderRadius: BorderRadius.circular(20),
+        //                                 splashColor: Colors.red,
+        //                                 child: Container(
+        //                                   height: 50,
+        //                                   width: double.infinity,
+        //                                   alignment: Alignment.center,
+        //                                   child: Text(
+        //                                     "Go to Cat Selection Screen",
+        //                                     style: TextStyle(
+        //                                       fontSize: 20,
+        //                                     ),
+        //                                   ),
+        //                                 ),
+        //                               ),
+        //                           ],
+        //                         ),
+        //                 ),
+        //                 Divider(height: 20),
+        //                 Text("yoo"),
+        //                 // Text("$snapshotCategories"),
+        //                 // ListView.builder(
+        //                 //   itemCount: 2,
+        //                 //   itemBuilder: (ctx, catDat) => Text("Hey yoo"),
+        //                 // )
+        //               ],
+        //             ),
+        //           ),
+        //           builder: (ctx, meals, ch) => meals.items.length <= 0
+        //               ? ch
+        //               : ListView.builder(
+        //                   itemCount: meals.items.length,
+        //                   itemBuilder: (ctx, i) => ListTile(
+        //                     leading: CircleAvatar(
+        //                       backgroundImage: FileImage(
+        //                         meals.items[i].photo,
+        //                       ),
+        //                     ),
+        //                     title: Text(meals.items[i].name),
+        //                     onTap: () {
+        //                       // Go to detail page ...
+        //                     },
+        //                   ),
+        //                 ),
+        //         ),
+        // ),
+
+        );
   }
 }

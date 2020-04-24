@@ -13,7 +13,7 @@ class CatSelectionScreen extends StatefulWidget {
 }
 
 class _CatSelectionScreenState extends State<CatSelectionScreen> {
-  final DUMMY_CATEGORIES = const [
+  final PREDEFINED_CATEGORIES = const [
     Category(
       id: 'c1',
       name: 'Italian',
@@ -86,29 +86,48 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     ),
   ];
 
+  List<Category> selectedCategories = [];
+
+  void addCategoryToSelection(Category category){
+    var existingItem = selectedCategories.firstWhere((itemToCheck) => itemToCheck.id == category.id, orElse: () => null);
+    if(existingItem == null){
+      selectedCategories.add(category);
+    } else {
+      selectedCategories.removeWhere((item) => item.id == category.id);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Selection Cat Screen"),
       ),
-      body: GridView(
-        padding: const EdgeInsets.all(25),
-        children: DUMMY_CATEGORIES
-            .map(
-              (catData) => CategoryItem(
-                catData.id,
-                catData.name,
-                catData.colorCode,
+      body: Column(
+        children: <Widget>[
+          Container(
+            height: 700,
+            child: GridView(
+              padding: const EdgeInsets.all(25),
+              children: PREDEFINED_CATEGORIES
+                  .map(
+                    (catData) => CategoryItem(
+                      catData.id,
+                      catData.name,
+                      catData.colorCode,
+                      addCategoryToSelection,
+                    ),
+                  )
+                  .toList(),
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200,
+                childAspectRatio: 3 / 2,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
               ),
-            )
-            .toList(),
-        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 200,
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
