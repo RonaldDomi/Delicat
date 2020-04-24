@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import '../models/category.dart';
 
 class CategoryItem extends StatefulWidget {
-  final String id;
   final String title;
   final String colorCode;
   final Function addCategoryToSelection;
   bool isSelected;
 
-  CategoryItem(
-      this.id, this.title, this.colorCode, this.addCategoryToSelection) {
+  CategoryItem( this.title, this.colorCode, this.addCategoryToSelection) {
     isSelected = false;
   }
 
@@ -24,7 +22,7 @@ class _CategoryItemState extends State<CategoryItem> {
     print("i got touched");
     setState(() {
       widget.addCategoryToSelection(Category(
-          id: widget.id, name: widget.title, colorCode: widget.colorCode));
+          name: widget.title, colorCode: widget.colorCode));
       widget.isSelected = !widget.isSelected;
     });
   }

@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/image_input.dart';
-import '../providers/meals.dart';
+import '../providers/recipes.dart';
 
 import '../models/category.dart';
 
-class NewMealScreen extends StatefulWidget {
-  static const routeName = '/new-meal';
+class NewRecipeScreen extends StatefulWidget {
+  static const routeName = '/new-recipe';
 
-  const NewMealScreen({Key key}) : super(key: key);
+  const NewRecipeScreen({Key key}) : super(key: key);
 
   @override
-  _NewMealScreenState createState() => _NewMealScreenState();
+  _NewRecipeScreenState createState() => _NewRecipeScreenState();
 }
 
-class _NewMealScreenState extends State<NewMealScreen> {
+class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _titleController = TextEditingController();
   File _pickedImage;
 
@@ -25,12 +25,12 @@ class _NewMealScreenState extends State<NewMealScreen> {
     _pickedImage = pickedImage;
   }
 
-  void _saveMeal() {
+  void _saveRecipe() {
     if (_titleController.text.isEmpty || _pickedImage == null) {
       return;
     }
-    Provider.of<Meals>(context, listen: false)
-        .addMeal(_titleController.text, _pickedImage, "instructions", Category());
+    Provider.of<Recipes>(context, listen: false)
+        .addRecipe(_titleController.text, _pickedImage, "instructions", Category());
     Navigator.of(context).pop();
   }
 
@@ -63,8 +63,8 @@ class _NewMealScreenState extends State<NewMealScreen> {
           ),
           RaisedButton.icon(
             icon: Icon(Icons.add),
-            label: Text('Add meal'),
-            onPressed: _saveMeal,
+            label: Text('Add recipe'),
+            onPressed: _saveRecipe,
             elevation: 0,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             color: Theme.of(context).accentColor,

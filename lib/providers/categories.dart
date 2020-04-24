@@ -14,7 +14,6 @@ class Categories with ChangeNotifier {
 
   void addCategory(id, name, colorCode) {
     Category newCategory = Category(
-      id: DateTime.now().toString(),
       name: name,
       // photo: File.fromUri(Uri.directory(photo)),
       colorCode: colorCode,
@@ -28,7 +27,6 @@ class Categories with ChangeNotifier {
       notifyListeners();
 
       DBHelper.insert('user_categories', {
-        'id': newCategory.id,
         'name': newCategory.name,
         // 'photo': newCategory.photo.path,
         'colorCode': newCategory.colorCode,
@@ -56,7 +54,9 @@ class Categories with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
+    print("Tring to get categories from db");
     final dataList = await DBHelper.getData('user_categories');
+    print("datalist ${dataList.toString()}");
 
     _categories = dataList.map(
       (item) {

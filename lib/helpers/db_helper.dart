@@ -7,10 +7,15 @@ class DBHelper {
     final dbPath = await sql.getDatabasesPath();
     return sql.openDatabase(path.join(dbPath, 'delicat.db'),
         onCreate: (db, version) {
-      db.execute('CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
+      db.execute('CREATE TABLE user_categories(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, photo TEXT, colorCode TEXT)');
+      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'Italian\', \'-\', \'0xff00f3ff\')');
+      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'Quick & Easy\', \'-\', \'0x888aefc3\')');
+      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'Hamburgers\', \'-\', \'0x88990000\')');
+      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'German\', \'-\', \'0x88ff0000\')');
 
-      db.execute('CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
-      db.execute('INSERT INTO user_meals(name , photo , instructions) values (\'test\', \'testphoto\', \'testinst\')');
+
+      db.execute('CREATE TABLE user_recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, photo TEXT, instructions TEXT, categoryId Text)');
+      db.execute('INSERT INTO user_recipes(name , photo , instructions, categoryId) values (\'test\', \'testphoto\', \'testinst\', \'1\')');
       return;
     }, onUpgrade: (db, oldVersion, newVersion) async {
       //migrationVersion1(db);
@@ -18,8 +23,8 @@ class DBHelper {
   }
 
   void migrationVersion1(db) async {
-    db.execute('ALTER TABLE user_meals ADD migration2 TEXT DEFAULT \'test2\'');
-    List<Map<String, dynamic>> result = await db.query("user_meals");
+    db.execute('ALTER TABLE user_recipes ADD migration2 TEXT DEFAULT \'test2\'');
+    List<Map<String, dynamic>> result = await db.query("user_recipes");
   }
 
   static Future<void> insert(String table, Map<String, Object> data) async {

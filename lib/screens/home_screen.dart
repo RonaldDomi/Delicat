@@ -7,10 +7,10 @@ import '../providers/categories.dart';
 
 import '../helpers/db_helper.dart';
 
-import './new_meal_screen.dart';
+import './new_recipe_screen.dart';
 import './cat_selection_screen.dart';
 import './meal_details_screen.dart';
-import './meal_list_screen.dart';
+import './recipe_list_screen.dart';
 import './new_cat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: <Widget>[
                         RaisedButton(
                           onPressed: () =>
-                              navigateTo(NewMealScreen.routeName, context),
+                              navigateTo(NewRecipeScreen.routeName, context),
                           child: Text("/new-meal"),
                         ),
                         // RaisedButton(
@@ -94,11 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         RaisedButton(
                           onPressed: () =>
-                              navigateTo(MealListScreen.routeName, context),
-                          child: Text("/meal-list"),
-                        ),
-                        RaisedButton(
-                          onPressed: () =>
                               navigateTo(NewCatScreen.routeName, context),
                           child: Text("/new-cat"),
                         ),
@@ -107,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Container(
                     color: Colors.red,
+
                     constraints: BoxConstraints.expand(height: 300),
                     child: Consumer<Categories>(
                       child: Center(
@@ -117,11 +113,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? ch
                               : ListView.builder(
                                   itemCount: categories.items.length,
-                                  itemBuilder: (ctx, i) => ListTile(
-                                    title: Text(categories.items[i].name),
-                                    onTap: () {
-                                      // Go to detail page ...
-                                    },
+                                  itemBuilder: (ctx, i) => Container(
+                                    color:Color(int.parse(categories.items[i].colorCode)),
+                                    child: ListTile(
+
+                                      title: Text(categories.items[i].name),
+                                      contentPadding: EdgeInsets.all(15),
+                                      
+                                      onTap: () {
+                                        navigateTo(RecipeListScreen.routeName, context);
+                                      },
+                                    ),
                                   ),
                                 ),
                     ),

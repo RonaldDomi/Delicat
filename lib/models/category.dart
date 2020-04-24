@@ -1,7 +1,7 @@
 import 'dart:io';
 
 class Category {
-  final String id;
+  final int id;
   final String name;
   final String photo;
   final String colorCode;
