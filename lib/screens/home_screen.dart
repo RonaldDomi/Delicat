@@ -38,12 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     prefs.setBool('first_time', null);
   }
 
-  @override
-  void initState() {
-    DBHelper.database();
-
-    super.initState();
-  }
 
   void navigateTo(routeName, BuildContext ctx) {
     Navigator.of(ctx).pushNamed(routeName);
@@ -107,6 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.red,
                         constraints: BoxConstraints.expand(height: 300),
                         child: Consumer<Categories>(
+                          child: Center(child: const Text("you have no cats on your profile."),),
                           builder: (ctx, categories, ch) =>
                               categories.items.length <= 0
                                   ? ch
@@ -122,10 +117,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       RaisedButton(
-                        child: Text("Drop user_categories Database"),
+                        child: Text("Drop user_categories table"),
                         onPressed: () => {
-                          DBHelper.dropAndCreateTable("user_categories"),
+                          DBHelper.truncateTable("user_categories"), //actually is truncateTable
                         },
+                      ),
+                      RaisedButton(
+                        child: Text("Flip first time status (you have to reload)"),
+                        onPressed: flipFirstHitStatus,
                       ),
                     ],
                   ),

@@ -7,13 +7,10 @@ class DBHelper {
     final dbPath = await sql.getDatabasesPath();
     return sql.openDatabase(path.join(dbPath, 'delicat.db'),
         onCreate: (db, version) {
-      db.execute(
-          'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
+      db.execute('CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
 
-      db.execute(
-          'CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
-      db.execute(
-          'INSERT INTO user_meals(name , photo , instructions) values (\'test\', \'testphoto\', \'testinst\')');
+      db.execute('CREATE TABLE user_meals(id TEXT PRIMARY KEY, name TEXT, photo TEXT, instructions TEXT)');
+      db.execute('INSERT INTO user_meals(name , photo , instructions) values (\'test\', \'testphoto\', \'testinst\')');
       return;
     }, onUpgrade: (db, oldVersion, newVersion) async {
       //migrationVersion1(db);
@@ -59,10 +56,9 @@ class DBHelper {
     return db.query(table);
   }
 
-  static Future<void> dropAndCreateTable(String table) async {
-    // final db = await DBHelper.database();
-    // db.rawQuery("DROP TABLE $table");
-    // TODO create the database again.
-    // DBHelper.database();
+  static Future<void> truncateTable(String table) async {
+    final db = await DBHelper.database();
+    db.execute("DELETE FROM $table"); //leaves the table, deletes the data
+    //equivalent of truncate for sqlite
   }
-}
+}   
