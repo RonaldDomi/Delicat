@@ -13,32 +13,36 @@ class Categories with ChangeNotifier {
     return [..._categories];
   }
 
-  void addCategory(name, photo, colorCode) {
+  void addCategory(name, colorCode) {
     Category newCategory = Category(
       id: DateTime.now().toString(),
       name: name,
-      // photo: File.fromRawPath(Uint8List.fromList([2])),
-      photo: File.fromUri(Uri.directory(photo)),
-      // this is just a placeholder
       colorCode: colorCode,
     );
+    print("");
+    print("created the new category");
+    print("");
+    print("$newCategory");
+    print("name: ${newCategory.name}, color: ${newCategory.colorCode}");
+    print("             --      ");
+    print("category type: ${newCategory.runtimeType}");
 
     _categories.add(newCategory);
+    print("          --             ");
     print("");
-    print("");
-    print('new category added: $name');
-    print(
-        "newCategory: ${newCategory.name}, ${newCategory.photo}, ${newCategory.colorCode}");
     print("categories: $_categories");
+    print("");
     print("");
     notifyListeners();
 
     DBHelper.insert('user_categories', {
       'id': newCategory.id,
       'name': newCategory.name,
-      'photo': newCategory.photo.path,
       'colorCode': newCategory.colorCode,
     });
+    print("Added to the database. ");
+    print("");
+    print("");
   }
 
   void removeCategory(id) {
@@ -55,25 +59,25 @@ class Categories with ChangeNotifier {
     DBHelper.edit('user_categories', id, {
       'id': editedCategory.id,
       'name': editedCategory.name,
-      'photo': editedCategory.photo.path,
       'colorCode': editedCategory.colorCode,
     });
   }
 
   Future<void> fetchAndSetCategories() async {
     final dataList = await DBHelper.getData('user_categories');
+    // print("database $dataList");
 
     _categories = dataList.map(
       (item) {
         Category(
           id: item['id'],
           name: item['name'],
-          photo: File(item['photo']),
           colorCode: item['colorCode'],
         );
       },
     ).toList();
-    notifyListeners();
+    print("fetch $_categories");
+    // notifyListeners();
   }
 
   void editFirstHitStatus() async {

@@ -15,8 +15,8 @@ class CategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => {
-        Provider.of<Categories>(context)
-            .addCategory(title, "assets/rice.jpg", colorCode),
+        print("i got touched"),
+        Provider.of<Categories>(context).addCategory(title, colorCode),
       },
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(15),

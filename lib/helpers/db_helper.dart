@@ -8,7 +8,7 @@ class DBHelper {
     return sql.openDatabase(path.join(dbPath, 'delicat.db'),
         onCreate: (db, version) {
       db.execute(
-          'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT)');
+          'CREATE TABLE user_categories(id TEXT PRIMARY KEY, name TEXT, colorCode TEXT)');
       db.execute(
           'CREATE TABLE app_info(id TEXT PRIMARY KEY, firstTime INTEGER)');
       db.execute('INSERT INTO app_info(id, firstTime) values(1,0);');
@@ -22,7 +22,7 @@ class DBHelper {
           'ALTER TABLE user_meals ADD migration2 TEXT DEFAULT \'test2\'');
       List<Map<String, dynamic>> result = await db.query("user_meals");
       print('test -> ${result[0]['migration2']}');
-    }, version: 2);
+    }, version: 1);
   }
 
   static Future<void> insert(String table, Map<String, Object> data) async {

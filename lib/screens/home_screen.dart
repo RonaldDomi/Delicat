@@ -25,7 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var selectedCats = Provider.of<Categories>(context, listen: false).items;
+    // var selectedCats =
+    //     Provider.of<Categories>(context, listen: false).fetchAndSetCategories();
     var firstTime = Future.value(1);
 
     Widget _buildSwitchListTile(
@@ -52,8 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: FutureBuilder(
-        future: Provider.of<Meals>(context, listen: false).fetchAndSetMeals(),
-        builder: (ctx, snapshot) => snapshot.connectionState ==
+        // future: Provider.of<Meals>(context, listen: false).fetchAndSetMeals(),
+        future: Provider.of<Categories>(context, listen: false)
+            .fetchAndSetCategories(),
+        builder: (ctx, snapshotCategories) => snapshotCategories
+                    .connectionState ==
                 ConnectionState.waiting
             ? Center(
                 child: CircularProgressIndicator(),
@@ -92,7 +96,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       FutureBuilder(
                         future: Provider.of<Categories>(context, listen: false)
                             .getFirstHitStatus(),
-                        builder: (ctx, snapshot) => snapshot.connectionState ==
+                        builder: (ctx, snapshotFirstHit) => snapshotFirstHit
+                                    .connectionState ==
                                 ConnectionState.waiting
                             ? Center(
                                 child: CircularProgressIndicator(),
@@ -101,12 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: <Widget>[
                                   Divider(height: 20),
                                   _buildSwitchListTile(
-                                    "Dev Tools mapRead['firstTime'] : ${snapshot.data}",
+                                    "Dev Tools mapRead['firstTime'] : ${snapshotFirstHit.data}",
                                     "toogle show first time Cat Selection Screen",
-                                    snapshot.data,
+                                    snapshotFirstHit.data,
                                   ),
                                   Divider(height: 40),
-                                  if (snapshot.data == 1)
+                                  if (snapshotFirstHit.data == 1)
                                     InkWell(
                                       onTap: () {
                                         Navigator.of(context).pushNamed(
@@ -129,23 +134,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ],
                               ),
                       ),
-                      // FutureBuilder(
-                      //   future: Provider.of<Categories>(context, listen: false)
-                      //       .fetchAndSetCategories(),
-                      //   builder: (ctx, snapshot) =>
-                      //       snapshot.connectionState == ConnectionState.waiting
-                      //           ? Center(
-                      //               child: CircularProgressIndicator(),
-                      //             )
-                      //           : Column(
-                      //               children: <Widget>[
-                      //                 Divider(height: 20),
-                      //                 Text("yoo"),
-                      //                 Text("$snapshot"),
-                      //                 // Text("${snapshot.data}"),
-                      //               ],
-                      //             ),
-                      // ),
+                      Divider(height: 20),
+                      Text("yoo"),
+                      // Text("$snapshotCategories"),
+                      // ListView.builder(
+                      //   itemCount: 2,
+                      //   itemBuilder: (ctx, catDat) => Text("Hey yoo"),
+                      // )
                     ],
                   ),
                 ),

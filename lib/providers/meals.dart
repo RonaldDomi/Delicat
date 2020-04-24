@@ -13,7 +13,6 @@ class Meals with ChangeNotifier {
     return [..._meals];
   }
 
-
   void addMeal(name, photo, instructions, category) {
     Meal newMeal = Meal(
       id: DateTime.now().toString(),
@@ -69,7 +68,6 @@ class Meals with ChangeNotifier {
         Category(
           id: item['id'],
           name: item['name'],
-          photo: File(item['photo']),
           colorCode: item['colorCode'],
         );
       },

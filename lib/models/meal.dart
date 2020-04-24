@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'category.dart';
 
-class Meal { 
+class Meal {
   String id;
-  String name; 
+  String name;
   File photo;
   String instructions;
   Category category;
