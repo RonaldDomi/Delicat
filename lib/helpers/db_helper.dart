@@ -58,4 +58,11 @@ class DBHelper {
     final db = await DBHelper.database();
     return db.query(table);
   }
+
+  static Future<void> dropAndCreateTable(String table) async {
+    // final db = await DBHelper.database();
+    // db.rawQuery("DROP TABLE $table");
+    // TODO create the database again.
+    // DBHelper.database();
+  }
 }
