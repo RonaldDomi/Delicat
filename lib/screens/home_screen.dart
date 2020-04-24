@@ -44,6 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(ctx).pushNamed(routeName);
   }
 
+  void navigateToRecipes(routeName, BuildContext ctx, categoryId) {
+    Navigator.of(ctx).pushNamed(routeName, arguments: {
+      'categoryId':categoryId
+    });
+  }
+
   void clearTableData() {
     setState(() {
       DBHelper.truncateTable("user_categories"); //actually is truncateTable
@@ -73,34 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    width: double.infinity,
-                    color: Colors.deepPurple,
-                    child: Column(
-                      children: <Widget>[
-                        RaisedButton(
-                          onPressed: () =>
-                              navigateTo(NewRecipeScreen.routeName, context),
-                          child: Text("/new-meal"),
-                        ),
-                        // RaisedButton(
-                        //   onPressed: () =>
-                        //       navigateTo(CatSelectionScreen.routeName, context),
-                        //   child: Text("/cat-selection"),
-                        // ),
-                        RaisedButton(
-                          onPressed: () =>
-                              navigateTo(MealDetailsScreen.routeName, context),
-                          child: Text("/meal-details"),
-                        ),
-                        RaisedButton(
-                          onPressed: () =>
-                              navigateTo(NewCatScreen.routeName, context),
-                          child: Text("/new-cat"),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
                     color: Colors.red,
 
                     constraints: BoxConstraints.expand(height: 300),
@@ -121,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       contentPadding: EdgeInsets.all(15),
                                       
                                       onTap: () {
-                                        navigateTo(RecipeListScreen.routeName, context);
+                                        navigateToRecipes(RecipeListScreen.routeName, context, categories.items[i].id);
                                       },
                                     ),
                                   ),

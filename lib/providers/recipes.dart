@@ -10,7 +10,7 @@ class Recipes with ChangeNotifier {
   List<Recipe> _recipes = [];
 
   List<Recipe> get items {
-    return [ ..._recipes ];
+    return [..._recipes];
   }
 
   void addRecipe(name, photo, instructions, category) {
@@ -56,54 +56,54 @@ class Recipes with ChangeNotifier {
     });
   }
 
-  Future<void> fetchAndSetRecipes() async {
+  Future<void> fetchAndSetRecipesByCategory(categoryId) async {
     final dataList = await DBHelper.getData('user_recipes');
 
     //I need this to get all categories
     final categoryList = await DBHelper.getData('user_categories');
-    print("Raw data category list from db is: ${categoryList.toString()}");
     //Map them to list
     List<Category> _cats = categoryList.map(
       (item) {
-        print("Trying to map db data to object creation ${item.toString()}");
-        print("We will create this category with id: ${item['id']}");
         Category createdCategory = Category(
           id: item['id'],
           name: item['name'],
           colorCode: item['colorCode'],
         );
-        print("My created category is ${createdCategory.toString()} with id ${createdCategory.id}");
         return createdCategory;
       },
     ).toList();
 
-    print("The cats in recipes provider are : ${_cats.toString()}");
-
+    _recipes = [];
     _recipes = dataList.map(
       (item) {
         //So then I can link the category manually to the created meals. This is a workaround to having properly relational tables in the database.
         //It needs to be fixed at some point
-        print("item in dataList ${item.toString()}");
-        print("_cats inside dataList recipes ${_cats.toString()}");
-        Category recipeCategory;
-        for(Category cat in _cats){
-          print("the current cat is $cat");
-          if(cat.id == int.parse(item['categoryId'])){
-            print("found a matching category");
-            recipeCategory = cat;
+        print("This recipe has categoryId of ${item['categoryId']}");
+        for (Category cat in _cats) {
+          if (int.parse(item['categoryId']) == categoryId) {
+            print("Returning a recipe for category $categoryId");
+
+            Recipe recipe = Recipe(
+              id: item['id'],
+              name: item['name'],
+              photo: File(item['photo']),
+              instructions: item['instructions'],
+              category: cat,
+            );
+            print("recipe is $recipe");
+            return recipe;
           }
+          print("first run, _recipes length is ${_recipes.length}");
         }
-        print("the category for this recipeis ${recipeCategory.toString()}");
+
         // Category cat = _cats.firstWhere((cat) => cat.id == item['categoryId']);
-        return Recipe(
-          id: item['id'],
-          name: item['name'],
-          photo: File(item['photo']),
-          instructions: item['instructions'],
-          category: recipeCategory,
-        );
       },
     ).toList();
+
+    if(_recipes[0]==null){
+      print("probabkly no recipes found, but map returns null anyawy");
+      _recipes = [];
+    }
     notifyListeners();
   }
 }

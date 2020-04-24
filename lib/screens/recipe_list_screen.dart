@@ -10,16 +10,23 @@ class RecipeListScreen extends StatelessWidget {
   void navigateTo(routeName, BuildContext ctx) {
     Navigator.of(ctx).pushNamed(routeName);
   }
-
+  //we need to get categoryId by route argument and pass it to fetchAndSetRecipesByCategory(categoryId)
   @override
   Widget build(BuildContext context) {
+
+  final arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, Object>;
+    final categoryId = arguments['categoryId'] as int;
+    print("categoryId is $categoryId");
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Your {name} meals"),
       ),
       body: FutureBuilder(
         future:
-            Provider.of<Recipes>(context, listen: false).fetchAndSetRecipes(),
+            Provider.of<Recipes>(context, listen: false).fetchAndSetRecipesByCategory(categoryId),
         builder: (ctx, snapshotRecipes) => snapshotRecipes.connectionState ==
                 ConnectionState.waiting
             ? Center(
