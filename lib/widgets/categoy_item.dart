@@ -1,6 +1,5 @@
 import 'package:delicat/models/category.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../models/category.dart';
 
@@ -34,7 +33,7 @@ class _CategoryItemState extends State<CategoryItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: selectCategory
-      // Provider.of<Categories>(context).addCategory(title, colorCode),
+      // 
       ,
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(15),

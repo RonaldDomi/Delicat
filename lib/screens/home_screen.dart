@@ -24,9 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
     if (firstTime != null && !firstTime) {
-      Navigator.of(context).pushReplacementNamed(CatSelectionScreen.routeName);
+      //nothign to do
     } else if (firstTime == null) {
       prefs.setBool('first_time', false);
+      Navigator.of(context).pushReplacementNamed(CatSelectionScreen.routeName);
     }
   }
 
@@ -69,7 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return Scaffold(body: Container(child: Center(child: Text("Home screen")))
+    return Scaffold(
+      body: Scaffold(body: Center(child: Text("Home screen"),),)
+
 
         // FutureBuilder(
         //   // future: Provider.of<Meals>(context, listen: false).fetchAndSetMeals(),

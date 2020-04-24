@@ -12,7 +12,7 @@ class Categories with ChangeNotifier {
     return [..._categories];
   }
 
-  void addCategory(name, colorCode) {
+  void addCategory(id, name, colorCode) {
     Category newCategory = Category(
       id: DateTime.now().toString(),
       name: name,
@@ -22,15 +22,19 @@ class Categories with ChangeNotifier {
       colorCode: colorCode,
     );
 
-    _categories.add(newCategory);
-    notifyListeners();
+    var existingItem = _categories
+        .firstWhere((itemToCheck) => itemToCheck.id == id, orElse: () => null);
+    if (existingItem == null) {
+      _categories.add(newCategory);
+      notifyListeners();
 
-    DBHelper.insert('user_categories', {
-      'id': newCategory.id,
-      'name': newCategory.name,
-      // 'photo': newCategory.photo.path,
-      'colorCode': newCategory.colorCode,
-    });
+      DBHelper.insert('user_categories', {
+        'id': newCategory.id,
+        'name': newCategory.name,
+        // 'photo': newCategory.photo.path,
+        'colorCode': newCategory.colorCode,
+      });
+    }
   }
 
   void removeCategory(id) {

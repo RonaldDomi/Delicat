@@ -1,4 +1,7 @@
+import 'package:delicat/providers/categories.dart';
+import 'package:delicat/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/category.dart';
 import '../widgets/categoy_item.dart';
@@ -88,13 +91,23 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
 
   List<Category> selectedCategories = [];
 
-  void addCategoryToSelection(Category category){
-    var existingItem = selectedCategories.firstWhere((itemToCheck) => itemToCheck.id == category.id, orElse: () => null);
-    if(existingItem == null){
+  void addCategoryToSelection(Category category) {
+    var existingItem = selectedCategories.firstWhere(
+        (itemToCheck) => itemToCheck.id == category.id,
+        orElse: () => null);
+    if (existingItem == null) {
       selectedCategories.add(category);
     } else {
       selectedCategories.removeWhere((item) => item.id == category.id);
     }
+  }
+
+  void submitCategories(context) {
+    for (Category cat in selectedCategories) {
+      Provider.of<Categories>(context).addCategory(cat.id, cat.name, cat.colorCode);
+    }
+    print("categories submitted");
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   @override
@@ -127,6 +140,12 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
               ),
             ),
           ),
+          RaisedButton(
+            onPressed: () => {
+              submitCategories(context),
+            },
+            child: Text("Submit"),
+          )
         ],
       ),
     );
