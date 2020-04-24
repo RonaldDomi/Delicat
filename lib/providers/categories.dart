@@ -13,6 +13,7 @@ class Categories with ChangeNotifier {
   }
 
   void addCategory(id, name, colorCode) {
+    print("inside addCategory()");
     Category newCategory = Category(
       id: DateTime.now().toString(),
       name: name,
@@ -21,11 +22,16 @@ class Categories with ChangeNotifier {
       // this is just a placeholder
       colorCode: colorCode,
     );
-
+    print("category: name : ${newCategory.name}, id: ${newCategory.id}");
+    print("_categories: $_categories");
+    print("category runtime type ${newCategory.runtimeType}");
     var existingItem = _categories
         .firstWhere((itemToCheck) => itemToCheck.id == id, orElse: () => null);
+
     if (existingItem == null) {
+      print("existing item is null");
       _categories.add(newCategory);
+      print("successfully added");
       notifyListeners();
 
       DBHelper.insert('user_categories', {
@@ -35,6 +41,8 @@ class Categories with ChangeNotifier {
         'colorCode': newCategory.colorCode,
       });
     }
+
+    print("finished adding category");
   }
 
   void removeCategory(id) {
@@ -58,18 +66,22 @@ class Categories with ChangeNotifier {
 
   Future<void> fetchAndSetCategories() async {
     final dataList = await DBHelper.getData('user_categories');
-
+    print("populating categories with: ${dataList.toString()}");
     _categories = dataList.map(
       (item) {
-        Category(
+        print("the item being mapped is ${item.toString()}");
+        Category createdCategory = Category(
           id: item['id'],
           name: item['name'],
           // photo: File(item['photo']),
           colorCode: item['colorCode'],
         );
+        print("Inside mapping, created category is: $createdCategory");
+        return createdCategory;
       },
     ).toList();
     notifyListeners();
+    print("Fetched categories from db: $_categories");
   }
 
   void editFirstHitStatus() async {

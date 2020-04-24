@@ -104,7 +104,9 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
 
   void submitCategories(context) {
     for (Category cat in selectedCategories) {
-      Provider.of<Categories>(context).addCategory(cat.id, cat.name, cat.colorCode);
+      print("add to provider");
+      Provider.of<Categories>(context)
+          .addCategory(cat.id, cat.name, cat.colorCode);
     }
     print("categories submitted");
     Navigator.of(context).pushReplacementNamed('/');
