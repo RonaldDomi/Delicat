@@ -35,12 +35,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   flipFirstHitStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('first_time', null);
+    setState(() {
+      prefs.setBool('first_time', null);
+    });
   }
-
 
   void navigateTo(routeName, BuildContext ctx) {
     Navigator.of(ctx).pushNamed(routeName);
+  }
+
+  void clearTableData() {
+    setState(() {
+      DBHelper.truncateTable("user_categories"); //actually is truncateTable
+    });
   }
 
   @override
@@ -56,78 +63,79 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: FutureBuilder(
         future: selectedCats,
-        builder: (ctx, snapshotCategories) =>
-            snapshotCategories.connectionState == ConnectionState.waiting
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        width: double.infinity,
-                        color: Colors.deepPurple,
-                        child: Column(
-                          children: <Widget>[
-                            RaisedButton(
-                              onPressed: () =>
-                                  navigateTo(NewMealScreen.routeName, context),
-                              child: Text("/new-meal"),
-                            ),
-                            // RaisedButton(
-                            //   onPressed: () =>
-                            //       navigateTo(CatSelectionScreen.routeName, context),
-                            //   child: Text("/cat-selection"),
-                            // ),
-                            RaisedButton(
-                              onPressed: () => navigateTo(
-                                  MealDetailsScreen.routeName, context),
-                              child: Text("/meal-details"),
-                            ),
-                            RaisedButton(
-                              onPressed: () =>
-                                  navigateTo(MealListScreen.routeName, context),
-                              child: Text("/meal-list"),
-                            ),
-                            RaisedButton(
-                              onPressed: () =>
-                                  navigateTo(NewCatScreen.routeName, context),
-                              child: Text("/new-cat"),
-                            ),
-                          ],
+        builder: (ctx, snapshotCategories) => snapshotCategories
+                    .connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    color: Colors.deepPurple,
+                    child: Column(
+                      children: <Widget>[
+                        RaisedButton(
+                          onPressed: () =>
+                              navigateTo(NewMealScreen.routeName, context),
+                          child: Text("/new-meal"),
                         ),
-                      ),
-                      Container(
-                        color: Colors.red,
-                        constraints: BoxConstraints.expand(height: 300),
-                        child: Consumer<Categories>(
-                          child: Center(child: const Text("you have no cats on your profile."),),
-                          builder: (ctx, categories, ch) =>
-                              categories.items.length <= 0
-                                  ? ch
-                                  : ListView.builder(
-                                      itemCount: categories.items.length,
-                                      itemBuilder: (ctx, i) => ListTile(
-                                        title: Text(categories.items[i].name),
-                                        onTap: () {
-                                          // Go to detail page ...
-                                        },
-                                      ),
-                                    ),
+                        // RaisedButton(
+                        //   onPressed: () =>
+                        //       navigateTo(CatSelectionScreen.routeName, context),
+                        //   child: Text("/cat-selection"),
+                        // ),
+                        RaisedButton(
+                          onPressed: () =>
+                              navigateTo(MealDetailsScreen.routeName, context),
+                          child: Text("/meal-details"),
                         ),
-                      ),
-                      RaisedButton(
-                        child: Text("Drop user_categories table"),
-                        onPressed: () => {
-                          DBHelper.truncateTable("user_categories"), //actually is truncateTable
-                        },
-                      ),
-                      RaisedButton(
-                        child: Text("Flip first time status (you have to reload)"),
-                        onPressed: flipFirstHitStatus,
-                      ),
-                    ],
+                        RaisedButton(
+                          onPressed: () =>
+                              navigateTo(MealListScreen.routeName, context),
+                          child: Text("/meal-list"),
+                        ),
+                        RaisedButton(
+                          onPressed: () =>
+                              navigateTo(NewCatScreen.routeName, context),
+                          child: Text("/new-cat"),
+                        ),
+                      ],
+                    ),
                   ),
+                  Container(
+                    color: Colors.red,
+                    constraints: BoxConstraints.expand(height: 300),
+                    child: Consumer<Categories>(
+                      child: Center(
+                        child: const Text("you have no cats on your profile."),
+                      ),
+                      builder: (ctx, categories, ch) =>
+                          categories.items.length <= 0
+                              ? ch
+                              : ListView.builder(
+                                  itemCount: categories.items.length,
+                                  itemBuilder: (ctx, i) => ListTile(
+                                    title: Text(categories.items[i].name),
+                                    onTap: () {
+                                      // Go to detail page ...
+                                    },
+                                  ),
+                                ),
+                    ),
+                  ),
+                  RaisedButton(
+                    child: Text("Drop user_categories table"),
+                    onPressed: clearTableData,
+                  ),
+                  RaisedButton(
+                    child: Text("Flip first time status (you have to reload)"),
+                    onPressed: flipFirstHitStatus,
+                  ),
+                ],
+              ),
       ),
     );
   }
