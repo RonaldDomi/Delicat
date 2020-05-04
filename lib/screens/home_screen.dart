@@ -7,11 +7,11 @@ import '../providers/categories.dart';
 
 import '../helpers/db_helper.dart';
 
-import './new_recipe_screen.dart';
+// import './new_recipe_screen.dart';
+// import './meal_details_screen.dart';
+// import './new_cat_screen.dart';
 import './cat_selection_screen.dart';
-import './meal_details_screen.dart';
 import './recipe_list_screen.dart';
-import './new_cat_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key key}) : super(key: key);
@@ -21,12 +21,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // void navigateTo(routeName, BuildContext ctx) {
+  //   Navigator.of(ctx).pushNamed(routeName);
+  // }
   checkFirstHitStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
     if (firstTime != null && !firstTime) {
-      // prefs.setBool('first_time', null);
-      // Navigator.of(context).pushReplacementNamed(CatSelectionScreen.routeName);
+      // It isn't the first time, so on rebuild just stay here
+
     } else if (firstTime == null) {
       prefs.setBool('first_time', false);
       Navigator.of(context).pushReplacementNamed(CatSelectionScreen.routeName);
@@ -40,14 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void navigateTo(routeName, BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(routeName);
-  }
-
   void navigateToRecipes(routeName, BuildContext ctx, categoryId) {
-    Navigator.of(ctx).pushNamed(routeName, arguments: {
-      'categoryId':categoryId
-    });
+    Navigator.of(ctx)
+        .pushNamed(routeName, arguments: {'categoryId': categoryId});
   }
 
   void clearTableData() {
@@ -56,12 +54,34 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Widget _buildSelectedCatsListItem(category) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color(int.parse(category.colorCode)).withOpacity(0.7),
+            Color(int.parse(category.colorCode)),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: ListTile(
+        title: Text(category.name),
+        contentPadding: EdgeInsets.all(15),
+        onTap: () {
+          navigateToRecipes(RecipeListScreen.routeName, context, category.id);
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     checkFirstHitStatus();
+
     var selectedCats =
         Provider.of<Categories>(context, listen: false).fetchAndSetCategories();
-    print("selected cats inside home screen: $selectedCats");
 
     return Scaffold(
       appBar: AppBar(
@@ -80,7 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget>[
                   Container(
                     color: Colors.red,
-
                     constraints: BoxConstraints.expand(height: 300),
                     child: Consumer<Categories>(
                       child: Center(
@@ -91,18 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? ch
                               : ListView.builder(
                                   itemCount: categories.items.length,
-                                  itemBuilder: (ctx, i) => Container(
-                                    color:Color(int.parse(categories.items[i].colorCode)),
-                                    child: ListTile(
-
-                                      title: Text(categories.items[i].name),
-                                      contentPadding: EdgeInsets.all(15),
-                                      
-                                      onTap: () {
-                                        navigateToRecipes(RecipeListScreen.routeName, context, categories.items[i].id);
-                                      },
-                                    ),
-                                  ),
+                                  itemBuilder: (ctx, i) =>
+                                      _buildSelectedCatsListItem(
+                                          categories.items[i]),
                                 ),
                     ),
                   ),

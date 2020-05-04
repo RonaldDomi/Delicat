@@ -9,7 +9,7 @@ class CategoryItem extends StatefulWidget {
   final Function addCategoryToSelection;
   bool isSelected;
 
-  CategoryItem( this.title, this.colorCode, this.addCategoryToSelection) {
+  CategoryItem(this.title, this.colorCode, this.addCategoryToSelection) {
     isSelected = false;
   }
 
@@ -19,10 +19,10 @@ class CategoryItem extends StatefulWidget {
 
 class _CategoryItemState extends State<CategoryItem> {
   selectCategory() {
-    print("i got touched");
     setState(() {
-      widget.addCategoryToSelection(Category(
-          name: widget.title, colorCode: widget.colorCode));
+      widget.addCategoryToSelection(
+        Category(name: widget.title, colorCode: widget.colorCode),
+      );
       widget.isSelected = !widget.isSelected;
     });
   }
@@ -30,9 +30,7 @@ class _CategoryItemState extends State<CategoryItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: selectCategory
-      // 
-      ,
+      onTap: selectCategory,
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(15),
       child: Container(
