@@ -7,15 +7,21 @@ class DBHelper {
     final dbPath = await sql.getDatabasesPath();
     return sql.openDatabase(path.join(dbPath, 'delicat.db'),
         onCreate: (db, version) {
-      db.execute('CREATE TABLE user_categories(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, photo TEXT, colorCode TEXT)');
-      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'Italian\', \'-\', \'0xff00f3ff\')');
-      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'Quick & Easy\', \'-\', \'0x888aefc3\')');
-      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'Hamburgers\', \'-\', \'0x88990000\')');
-      db.execute('INSERT INTO user_categories(name , photo , colorCode) values (\'German\', \'-\', \'0x88ff0000\')');
+      db.execute(
+          'CREATE TABLE user_categories(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, photo TEXT, colorCode TEXT)');
+      db.execute(
+          'INSERT INTO user_categories(name , photo , colorCode) values (\'Italian\', \'-\', \'0xff00f3ff\')');
+      db.execute(
+          'INSERT INTO user_categories(name , photo , colorCode) values (\'Quick & Easy\', \'-\', \'0xff8aefc3\')');
+      db.execute(
+          'INSERT INTO user_categories(name , photo , colorCode) values (\'Hamburgers\', \'-\', \'0xff990000\')');
+      db.execute(
+          'INSERT INTO user_categories(name , photo , colorCode) values (\'German\', \'-\', \'0xffff0000\')');
 
-
-      db.execute('CREATE TABLE user_recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, photo TEXT, instructions TEXT, categoryId Text)');
-      db.execute('INSERT INTO user_recipes(name , photo , instructions, categoryId) values (\'test\', \'testphoto\', \'testinst\', \'1\')');
+      db.execute(
+          'CREATE TABLE user_recipes(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, photo TEXT, instructions TEXT, categoryId Text)');
+      db.execute(
+          'INSERT INTO user_recipes(name , photo , instructions, categoryId) values (\'test\', \'testphoto\', \'testinst\', \'1\')');
       return;
     }, onUpgrade: (db, oldVersion, newVersion) async {
       //migrationVersion1(db);
@@ -23,12 +29,12 @@ class DBHelper {
   }
 
   void migrationVersion1(db) async {
-    db.execute('ALTER TABLE user_recipes ADD migration2 TEXT DEFAULT \'test2\'');
+    db.execute(
+        'ALTER TABLE user_recipes ADD migration2 TEXT DEFAULT \'test2\'');
     List<Map<String, dynamic>> result = await db.query("user_recipes");
   }
 
   static Future<void> insert(String table, Map<String, Object> data) async {
-    print("The data being inserted in table $table is ${data.toString()}");
     final db = await DBHelper.database();
     db.insert(
       table,
@@ -64,6 +70,10 @@ class DBHelper {
   static Future<void> truncateTable(String table) async {
     final db = await DBHelper.database();
     db.execute("DELETE FROM $table"); //leaves the table, deletes the data
+    db.execute(
+        'INSERT INTO user_categories(name , photo , colorCode) values (\'Italian\', \'-\', \'0xff00f3ff\')');
+    db.execute(
+        'INSERT INTO user_categories(name , photo , colorCode) values (\'Quick & Easy\', \'-\', \'0xff8aefc3\')');
     //equivalent of truncate for sqlite
   }
-}   
+}

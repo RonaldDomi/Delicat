@@ -78,11 +78,8 @@ class Recipes with ChangeNotifier {
       (item) {
         //So then I can link the category manually to the created meals. This is a workaround to having properly relational tables in the database.
         //It needs to be fixed at some point
-        print("This recipe has categoryId of ${item['categoryId']}");
         for (Category cat in _cats) {
           if (int.parse(item['categoryId']) == categoryId) {
-            print("Returning a recipe for category $categoryId");
-
             Recipe recipe = Recipe(
               id: item['id'],
               name: item['name'],
@@ -90,18 +87,15 @@ class Recipes with ChangeNotifier {
               instructions: item['instructions'],
               category: cat,
             );
-            print("recipe is $recipe");
-            return recipe; 
+            return recipe;
           }
-          print("first run, _recipes length is ${_recipes.length}");
         }
 
         // Category cat = _cats.firstWhere((cat) => cat.id == item['categoryId']);
       },
     ).toList();
 
-    if(_recipes[0]==null && _recipes.length == 1){
-      print("probabkly no recipes found, but map returns null anyawy");
+    if (_recipes[0] == null) {
       _recipes = [];
     }
     notifyListeners();

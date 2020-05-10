@@ -10,23 +10,22 @@ class RecipeListScreen extends StatelessWidget {
   void navigateTo(routeName, BuildContext ctx) {
     Navigator.of(ctx).pushNamed(routeName);
   }
+
   //we need to get categoryId by route argument and pass it to fetchAndSetRecipesByCategory(categoryId)
   @override
   Widget build(BuildContext context) {
-
-  final arguments =
+    final arguments =
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
     final categoryId = arguments['categoryId'] as int;
     print("categoryId is $categoryId");
-
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Your {name} meals"),
       ),
       body: FutureBuilder(
-        future:
-            Provider.of<Recipes>(context, listen: false).fetchAndSetRecipesByCategory(categoryId),
+        future: Provider.of<Recipes>(context, listen: false)
+            .fetchAndSetRecipesByCategory(categoryId),
         builder: (ctx, snapshotRecipes) => snapshotRecipes.connectionState ==
                 ConnectionState.waiting
             ? Center(
@@ -48,13 +47,14 @@ class RecipeListScreen extends StatelessWidget {
                           : ListView.builder(
                               itemCount: recipes.items.length,
                               itemBuilder: (ctx, i) => Container(
-                                color: Color(
-                                    int.parse(recipes.items[i].category.colorCode)),
+                                color: Color(int.parse(
+                                    recipes.items[i].category.colorCode)),
                                 child: ListTile(
                                   title: Text(recipes.items[i].name),
                                   contentPadding: EdgeInsets.all(15),
                                   onTap: () {
-                                    navigateTo(RecipeListScreen.routeName, context);
+                                    navigateTo(
+                                        RecipeListScreen.routeName, context);
                                   },
                                 ),
                               ),

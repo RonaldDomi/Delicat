@@ -106,10 +106,9 @@ class Categories with ChangeNotifier {
   }
 
   Future<void> fetchAndSetCategories() async {
-    print("Tring to get categories from db");
     final dataList = await DBHelper.getData('user_categories');
-    print("datalist ${dataList.toString()}");
 
+    // dataList is a List of objects
     _categories = dataList.map(
       (item) {
         Category createdCategory = Category(
@@ -122,6 +121,7 @@ class Categories with ChangeNotifier {
         return createdCategory;
       },
     ).toList();
+    // toList because the return type of .map() is a lazy Iterable
     notifyListeners();
   }
 
