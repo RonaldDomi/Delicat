@@ -91,7 +91,7 @@ class Recipes with ChangeNotifier {
               category: cat,
             );
             print("recipe is $recipe");
-            return recipe;
+            return recipe; 
           }
           print("first run, _recipes length is ${_recipes.length}");
         }
@@ -100,7 +100,7 @@ class Recipes with ChangeNotifier {
       },
     ).toList();
 
-    if(_recipes[0]==null){
+    if(_recipes[0]==null && _recipes.length == 1){
       print("probabkly no recipes found, but map returns null anyawy");
       _recipes = [];
     }
