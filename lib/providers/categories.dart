@@ -24,18 +24,90 @@ class Categories with ChangeNotifier {
     return [..._predefinedCategories];
   }
 
-  Future<Category> findById(catId){
-    print("Not implemented yet.");
+  Future<List<Category>> getAllCategories() async {
+    // AWS should try and give us something of the shape:
+    // [
+    //   { 'uid' : 'x',
+    //   'name' : 'x',
+    //   'photo' : 'x',
+    //   'colorCode' : 'x',
+    //   'recipes' : [{}{}]
+    //   },
+    //  { another cateogry object ... }
+    // ]
+    const url = '/category/all';
+
+    try {
+      final response = await http.get(url);
+
+      for (var category in json.decode(response.body)) {
+        //purge existing categories
+        _categories = [];
+        //then load again with data coming from server
+
+        //now we create a Category model object from the json data
+        var categoryToAdd =
+            Category(name: category.name, colorCode: category.colorCode);
+
+        //finally we add each parsed category object to our master list
+        _categories.add(categoryToAdd);
+      }
+      notifyListeners();
+    } catch (error) {
+      //if we have erorr with our request
+      throw error;
+    }
+  }
+
+  Future<List<Category>> getAllPredefinedCategories() async {
+    // AWS should try and give us something of the shape:
+    // [
+    //   { 'uid' : 'x',
+    //   'name' : 'x',
+    //   'photo' : 'x',
+    //   'colorCode' : 'x',
+    //   'recipes' : [{}{}]
+    //   },
+    //  { another cateogry object ... }
+    // ]
+    const url = '/category/predefined';
+
+    try {
+      final response = await http.get(url);
+
+      for (var category in json.decode(response.body)) {
+        //purge existing categories
+        _predefinedCategories = [];
+        //then load again with data coming from server
+
+        //now we create a Category model object from the json data
+        var predefinedCategoryToAdd =
+            Category(name: category.name, colorCode: category.colorCode);
+
+        //finally we add each parsed category object to our master list
+        _predefinedCategories.add(predefinedCategoryToAdd);
+      }
+      notifyListeners();
+    } catch (error) {
+      //if we have erorr with our request
+      throw error;
+    }
+  }
+
+  Category getCategoryById(catId) {
+    //Here we rely solely on the memory data. We take for granted that _categories is already loaded with the up-to-date
+    //data from the server. For our app, this should work as intended.
+
+    //When we will have the option to share recipes online, we will have to implement this with api, but only for recipes. This version is MVP 1 consistent
+    return _categories.singleWhere((element) => element.id == catId);
+  }
+
+  Future<void> updateCategoryById(int id, Category editedCategory) {
+    print("Not implemented yet. Will return a constant test category.");
+
     Future.delayed(
       Duration(seconds: 2),
       () => Category(name: "Test Cat", colorCode: "#f3f3f3"),
-    );
-  }
-
-  Future<void> updateCategory(int id, Category editedCategory){
-    Future.delayed(
-      Duration(seconds: 2),
-      () => print("Not implemented yet."),
     );
   }
 
@@ -51,7 +123,7 @@ class Categories with ChangeNotifier {
 
     //We define the call url
 
-    const url = '/product';
+    const url = '/category';
 
     //a future is automatically returned since we're using 'async' as function signature
     try {
@@ -86,44 +158,55 @@ class Categories with ChangeNotifier {
     //see chapter 10 episode 10 for how to fully implement in frontend
   }
 
-  void removeCategory(id) {
-    _categories.removeWhere((item) => item.id == id);
+  Future<void> removeCategory(id) async{
+
+    final url = '/category/$id';
+    try {
+      final response = await http.delete(url);
+
+      _categories.removeWhere((item) => item.id == id); //here we assume response finished correctly, maybe additional checks needed
+      notifyListeners();
+    } catch (error) {
+      throw error; 
+    }
 
     notifyListeners();
-
-    DBHelper.delete('user_categories', id);
   }
 
-  void editCategory(id, Category editedCategory) {
+  void editCategory(Category editedCategory) async {
+    final url = '/category/${editedCategory.id}';
+    try {
+      final response = await http.put(url, body: {
+        'name': editedCategory.name,
+        'colorCode': editedCategory.colorCode,
+      });
+
+      Category existingCategory = _categories.firstWhere(
+          (element) =>
+              element.id ==
+              json.decode(response.body)[
+                  'id'], //here we'd actually like to use the response from the server,
+          //just to make sure what we're updating the list with is a category coming from the server, not from what it's supposed to be from the frontend
+          orElse: () => null);
+      if (existingCategory == null) {
+        // means orElse executed, and this element is not found
+        print("This category doesn't exist in _categories. Issue. ");
+      } else {
+        existingCategory = new Category(
+            id: json.decode(response.body)['id'],
+            name: json.decode(response.body)['name'],
+            colorCode: json.decode(response.body)['colorCode']); // here we make the pointer of the exsisting category inside _categories to point to a new Category object
+            //hopefully updated correctly
+        print(
+            "In our _categories list, we have updated our category with the new value: ${_categories.firstWhere((element) => element.id == editedCategory.id)}");
+      }
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
     notifyListeners();
-
-    DBHelper.edit('user_categories', id, {
-      'id': editedCategory.id,
-      'name': editedCategory.name,
-      // 'photo': editedCategory.photo.path,
-      'colorCode': editedCategory.colorCode,
-    });
   }
 
-  Future<void> fetchAndSetCategories() async {
-    final dataList = await DBHelper.getData('user_categories');
-
-    // dataList is a List of objects
-    _categories = dataList.map(
-      (item) {
-        Category createdCategory = Category(
-          id: item['id'],
-          name: item['name'],
-          // photo: File(item['photo']),
-          colorCode: item['colorCode'],
-        );
-
-        return createdCategory;
-      },
-    ).toList();
-    // toList because the return type of .map() is a lazy Iterable
-    notifyListeners();
-  }
 
   void editFirstHitStatus() async {
     final dataList = await DBHelper.getData('app_info');
