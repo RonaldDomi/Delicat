@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/recipes.dart';
+import '../routeNames.dart';
 
 class RecipeListScreen extends StatelessWidget {
   const RecipeListScreen({Key key}) : super(key: key);
@@ -54,7 +55,7 @@ class RecipeListScreen extends StatelessWidget {
                                   contentPadding: EdgeInsets.all(15),
                                   onTap: () {
                                     navigateTo(
-                                        RecipeListScreen.routeName, context);
+                                        Router.RecipeListScreen, context);
                                   },
                                 ),
                               ),

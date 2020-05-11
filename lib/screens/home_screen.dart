@@ -1,17 +1,10 @@
-import 'package:delicat/providers/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/categories.dart';
 
-import '../helpers/db_helper.dart';
-
-// import './new_recipe_screen.dart';
-// import './meal_details_screen.dart';
-// import './new_cat_screen.dart';
-import './cat_selection_screen.dart';
-import './recipe_list_screen.dart';
+import '../routeNames.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key key}) : super(key: key);
@@ -21,9 +14,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // void navigateTo(routeName, BuildContext ctx) {
-  //   Navigator.of(ctx).pushNamed(routeName);
-  // }
+  void navigateTo(routeName, BuildContext ctx) {
+    Navigator.of(ctx).pushNamed(routeName);
+  }
+
   checkFirstHitStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
@@ -32,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     } else if (firstTime == null) {
       prefs.setBool('first_time', false);
-      Navigator.of(context).pushReplacementNamed(CatSelectionScreen.routeName);
+      Navigator.of(context).pushReplacementNamed(Router.CatSelectionScreen);
     }
   }
 
@@ -49,9 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void clearTableData() {
-    setState(() {
-      DBHelper.truncateTable("user_categories"); //actually is truncateTable
-    });
+    print("not implemented");
   }
 
   Widget _buildSelectedCatsListItem(category) {
@@ -70,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(category.name),
         contentPadding: EdgeInsets.all(15),
         onTap: () {
-          navigateToRecipes(RecipeListScreen.routeName, context, category.id);
+          navigateToRecipes(Router.RecipeListScreen, context, category.id);
         },
       ),
     );
@@ -124,6 +116,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text("Flip first time status (you have to reload)"),
                     onPressed: flipFirstHitStatus,
                   ),
+                  Divider(),
+                  RaisedButton(
+                    child: Text("Create a new category"),
+                    onPressed: () => navigateTo(Router.NewCatScreen, context),
+                  ),
+                  RaisedButton(
+                    child: Text("ColorPicker"),
+                    onPressed: () => navigateTo(Router.ColorScreen, context),
+                  )
                 ],
               ),
       ),

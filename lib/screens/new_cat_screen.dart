@@ -13,7 +13,6 @@ class NewCatScreen extends StatefulWidget {
 }
 
 class _NewCatScreenState extends State<NewCatScreen> {
-
   var _initValues = {
     'name': '',
     'colorCode': '',
@@ -26,7 +25,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
   final _form = GlobalKey<FormState>();
   var _isInit = true;
   var _isLoading = false;
-
 
   Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
@@ -44,28 +42,31 @@ class _NewCatScreenState extends State<NewCatScreen> {
       try {
         await Provider.of<Categories>(context, listen: false)
             .createCategory(_editedCategory);
+
+        Navigator.of(context).pop();
       } catch (error) {
+        print("edited category: $_editedCategory");
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
-                title: Text('An error occurred!'),
-                content: Text('Something went wrong.'),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text('Okay'),
-                    onPressed: () {
-                      Navigator.of(ctx).pop();
-                    },
-                  )
-                ],
-              ),
+            title: Text('An error occurred!'),
+            content: Text('Something went wrong.'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Okay'),
+                onPressed: () {
+                  Navigator.of(ctx).pop();
+                },
+              )
+            ],
+          ),
         );
       }
     }
     setState(() {
       _isLoading = false;
     });
-    Navigator.of(context).pop();
+    // Navigator.of(context).pop();
   }
 
   @override
@@ -76,12 +77,13 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
   @override
   //This function will check for existing values if we're editing a Category
-  void didChangeDependencies() async{
+  void didChangeDependencies() async {
     if (_isInit) {
       //Getting product id from the link, only when editing
       final catId = ModalRoute.of(context).settings.arguments as String;
       if (catId != null) {
-        _editedCategory = await Provider.of<Categories>(context, listen: false).findById(catId); // this function will be available shortly from the provider
+        _editedCategory = await Provider.of<Categories>(context, listen: false)
+            .findById(catId); // not available
         _initValues = {
           'name': _editedCategory.name,
           'colorCode': _editedCategory.colorCode,
@@ -103,58 +105,60 @@ class _NewCatScreenState extends State<NewCatScreen> {
               child: CircularProgressIndicator(),
             )
           : Container(
-        child: Form(
-          key: _form,
-          child: ListView(
-            children: <Widget>[
-              TextFormField(
-                initialValue: _initValues['name'],
-                decoration: InputDecoration(labelText: 'Name'),
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_colorFocusNode);
-                },
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please provide a value.';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _editedCategory = Category(
-                      name: value,
-                      colorCode: _editedCategory.colorCode);
-                },
+              child: Form(
+                key: _form,
+                child: ListView(
+                  children: <Widget>[
+                    TextFormField(
+                      initialValue: _initValues['name'],
+                      decoration: InputDecoration(labelText: 'Name'),
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        FocusScope.of(context).requestFocus(_colorFocusNode);
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please provide a value.';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _editedCategory = Category(
+                          name: value,
+                          colorCode: _editedCategory.colorCode,
+                        );
+                      },
+                    ),
+                    TextFormField(
+                      initialValue: _initValues['colorCode'],
+                      decoration: InputDecoration(labelText: 'Color'),
+                      focusNode: _colorFocusNode,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) {
+                        //for now this is the last input field, so we save form
+                        _saveForm();
+                        //move this to the last input field as needed
+                        //preferrably with a submit button in the form
+                        //FocusScope.of(context).requestFocus(_); got to next field, if we'll have eventually
+                      },
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Select a value from color picker:';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _editedCategory = Category(
+                          name: _editedCategory.name,
+                          colorCode: value,
+                        );
+                      },
+                    ),
+                    FlatButton(onPressed: _saveForm, child: Text("Submit form"))
+                  ],
+                ),
               ),
-              TextFormField(
-                initialValue: _initValues['colorCode'],
-                decoration: InputDecoration(labelText: 'Color'),
-                focusNode: _colorFocusNode,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  //for now this is the last input field, so we save form
-                  _saveForm();
-                  //move this to the last input field as needed
-                  //preferrably with a submit button in the form
-                  //FocusScope.of(context).requestFocus(_); got to next field, if we'll have eventually
-                },
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Select a value from color picker:';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _editedCategory = Category(
-                      name: _editedCategory.name,
-                      colorCode: value);
-                },
-              ),
-              FlatButton(onPressed: _saveForm, child: Text("Submit form"))
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'dart:convert';
 
-import 'package:delicat/helpers/db_helper.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -24,7 +21,7 @@ class Categories with ChangeNotifier {
     return [..._predefinedCategories];
   }
 
-  Future<Category> findById(catId){
+  Future<Category> findById(catId) {
     print("Not implemented yet.");
     Future.delayed(
       Duration(seconds: 2),
@@ -32,7 +29,7 @@ class Categories with ChangeNotifier {
     );
   }
 
-  Future<void> updateCategory(int id, Category editedCategory){
+  Future<void> updateCategory(int id, Category editedCategory) {
     Future.delayed(
       Duration(seconds: 2),
       () => print("Not implemented yet."),
@@ -71,6 +68,21 @@ class Categories with ChangeNotifier {
       _categories.add(newCategory);
       notifyListeners();
     } catch (error) {
+      print("error: no api call implemented");
+      final newCategory = Category(
+        id: 3,
+        name: category.name,
+        photo: "-",
+        colorCode: category.colorCode,
+      );
+      _categories.add(newCategory);
+      notifyListeners();
+      print(" ");
+      print(" ");
+      print("category $category added to provider");
+      print(" ");
+      print("categories $_categories");
+      print(" ");
       // throw error; //throws the error to the frontend so it can be handled there
       //Provider....createCategory()...catchError((error){
       // showDialog(context: context, builder: (ctx) => AlertDialog(title: Text("An error occured"), content: Text("An error occured"), actions: <Widget>[FlatButton(child: Text("ok"), onPressed: (){Navigator.of(context).pop();})])
@@ -91,54 +103,58 @@ class Categories with ChangeNotifier {
 
     notifyListeners();
 
-    DBHelper.delete('user_categories', id);
+    // DBHelper.delete('user_categories', id);
   }
 
   void editCategory(id, Category editedCategory) {
+    print("not implemented");
     notifyListeners();
 
-    DBHelper.edit('user_categories', id, {
-      'id': editedCategory.id,
-      'name': editedCategory.name,
-      // 'photo': editedCategory.photo.path,
-      'colorCode': editedCategory.colorCode,
-    });
+    // DBHelper.edit('user_categories', id, {
+    //   'id': editedCategory.id,
+    //   'name': editedCategory.name,
+    //   // 'photo': editedCategory.photo.path,
+    //   'colorCode': editedCategory.colorCode,
+    // });
   }
 
   Future<void> fetchAndSetCategories() async {
-    final dataList = await DBHelper.getData('user_categories');
-
+    print("not implemented");
+    // final dataList = await DBHelper.getData('user_categories');
+    // final dataList = [];
     // dataList is a List of objects
-    _categories = dataList.map(
-      (item) {
-        Category createdCategory = Category(
-          id: item['id'],
-          name: item['name'],
-          // photo: File(item['photo']),
-          colorCode: item['colorCode'],
-        );
+    // _categories = dataList.map(
+    //   (item) {
+    //     Category createdCategory = Category(
+    //       id: item['id'],
+    //       name: item['name'],
+    //       // photo: File(item['photo']),
+    //       colorCode: item['colorCode'],
+    //     );
 
-        return createdCategory;
-      },
-    ).toList();
+    //     return createdCategory;
+    //   },
+    // ).toList();
     // toList because the return type of .map() is a lazy Iterable
     notifyListeners();
   }
 
   void editFirstHitStatus() async {
-    final dataList = await DBHelper.getData('app_info');
-    Map<String, dynamic> mapRead = dataList.first;
+    print("not implemented");
+    // final dataList = await DBHelper.getData('app_info');
+    // final dataList = [];
+    // Map<String, dynamic> mapRead = dataList.first;
 
-    DBHelper.edit("app_info", "1", {
-      "firstTime": mapRead['firstTime'] == 1 ? 0 : 1,
-    });
+    // DBHelper.edit("app_info", "1", {
+    //   "firstTime": mapRead['firstTime'] == 1 ? 0 : 1,
+    // });
   }
 
   Future<int> getFirstHitStatus() async {
-    final dataList = await DBHelper.getData('app_info');
-
+    print("not implemented");
+    // final dataList = await DBHelper.getData('app_info');
     // get the first record
-    Map<String, dynamic> mapRead = dataList.first;
-    return mapRead['firstTime'];
+    // Map<String, dynamic> mapRead = dataList.first;
+    // return mapRead['firstTime'];
   }
 }
