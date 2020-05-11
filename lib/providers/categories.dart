@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -52,7 +53,19 @@ class Categories with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       //if we have erorr with our request
-      throw error;
+      // throw error;
+
+
+      
+
+      //in this stage of the development we'll always have an error since the api endpoint is not implemented yet
+      //so we take advantage of this error to return some dummy category data 
+      _categories = [];
+      _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '#f3f3f3'));
+      _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '#a3a3a3'));
+      _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '#d3d3d3'));
+
+      return _categories;
     }
   }
 
@@ -87,7 +100,16 @@ class Categories with ChangeNotifier {
       notifyListeners();
     } catch (error) {
       //if we have erorr with our request
-      throw error;
+      // throw error;
+
+
+
+      _predefinedCategories = [];
+      _predefinedCategories.add(Category(id: 41, name: 'PredfCat 1', colorCode: '#b30d04'));
+      _predefinedCategories.add(Category(id: 42, name: 'PredfCat 2', colorCode: '#f160d3'));
+      _predefinedCategories.add(Category(id: 43, name: 'PredfCat 3', colorCode: '#c03f20'));
+
+      return _categories;
     }
   }
 
@@ -99,14 +121,6 @@ class Categories with ChangeNotifier {
     return _categories.singleWhere((element) => element.id == catId);
   }
 
-  Future<void> updateCategoryById(int id, Category editedCategory) {
-    print("Not implemented yet. Will return a constant test category.");
-
-    Future.delayed(
-      Duration(seconds: 2),
-      () => Category(name: "Test Cat", colorCode: "#f3f3f3"),
-    );
-  }
 
   Future<void> createCategory(Category category) async {
     //This function will probably be only invoked from the create category widget/view.
@@ -140,21 +154,17 @@ class Categories with ChangeNotifier {
       _categories.add(newCategory);
       notifyListeners();
     } catch (error) {
-      print("error: no api call implemented");
+      print("error: no api call implemented. manually creating...");
+      var rng = new Random();
       final newCategory = Category(
-        id: 3,
+        id: rng.nextInt(1000),
         name: category.name,
         photo: "-",
         colorCode: category.colorCode,
       );
       _categories.add(newCategory);
       notifyListeners();
-      print(" ");
-      print(" ");
-      print("category $category added to provider");
-      print(" ");
-      print("categories $_categories");
-      print(" ");
+
       // throw error; //throws the error to the frontend so it can be handled there
       //Provider....createCategory()...catchError((error){
       // showDialog(context: context, builder: (ctx) => AlertDialog(title: Text("An error occured"), content: Text("An error occured"), actions: <Widget>[FlatButton(child: Text("ok"), onPressed: (){Navigator.of(context).pop();})])
@@ -185,7 +195,7 @@ class Categories with ChangeNotifier {
     notifyListeners();
   }
 
-  void editCategory(Category editedCategory) async {
+  Future<void> editCategory(Category editedCategory) async {
     final url = '/category/${editedCategory.id}';
     try {
       final response = await http.put(url, body: {
@@ -217,25 +227,5 @@ class Categories with ChangeNotifier {
       throw error;
     }
     notifyListeners();
-  }
-
-
-  void editFirstHitStatus() async {
-    print("not implemented");
-    // final dataList = await DBHelper.getData('app_info');
-    // final dataList = [];
-    // Map<String, dynamic> mapRead = dataList.first;
-
-    // DBHelper.edit("app_info", "1", {
-    //   "firstTime": mapRead['firstTime'] == 1 ? 0 : 1,
-    // });
-  }
-
-  Future<int> getFirstHitStatus() async {
-    print("not implemented");
-    // final dataList = await DBHelper.getData('app_info');
-    // get the first record
-    // Map<String, dynamic> mapRead = dataList.first;
-    // return mapRead['firstTime'];
   }
 }
