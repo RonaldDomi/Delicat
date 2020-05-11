@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'dart:convert';
 
-import 'package:delicat/helpers/db_helper.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -143,6 +140,21 @@ class Categories with ChangeNotifier {
       _categories.add(newCategory);
       notifyListeners();
     } catch (error) {
+      print("error: no api call implemented");
+      final newCategory = Category(
+        id: 3,
+        name: category.name,
+        photo: "-",
+        colorCode: category.colorCode,
+      );
+      _categories.add(newCategory);
+      notifyListeners();
+      print(" ");
+      print(" ");
+      print("category $category added to provider");
+      print(" ");
+      print("categories $_categories");
+      print(" ");
       // throw error; //throws the error to the frontend so it can be handled there
       //Provider....createCategory()...catchError((error){
       // showDialog(context: context, builder: (ctx) => AlertDialog(title: Text("An error occured"), content: Text("An error occured"), actions: <Widget>[FlatButton(child: Text("ok"), onPressed: (){Navigator.of(context).pop();})])
@@ -209,19 +221,21 @@ class Categories with ChangeNotifier {
 
 
   void editFirstHitStatus() async {
-    final dataList = await DBHelper.getData('app_info');
-    Map<String, dynamic> mapRead = dataList.first;
+    print("not implemented");
+    // final dataList = await DBHelper.getData('app_info');
+    // final dataList = [];
+    // Map<String, dynamic> mapRead = dataList.first;
 
-    DBHelper.edit("app_info", "1", {
-      "firstTime": mapRead['firstTime'] == 1 ? 0 : 1,
-    });
+    // DBHelper.edit("app_info", "1", {
+    //   "firstTime": mapRead['firstTime'] == 1 ? 0 : 1,
+    // });
   }
 
   Future<int> getFirstHitStatus() async {
-    final dataList = await DBHelper.getData('app_info');
-
+    print("not implemented");
+    // final dataList = await DBHelper.getData('app_info');
     // get the first record
-    Map<String, dynamic> mapRead = dataList.first;
-    return mapRead['firstTime'];
+    // Map<String, dynamic> mapRead = dataList.first;
+    // return mapRead['firstTime'];
   }
 }
