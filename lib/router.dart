@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'screens/cat_selection_screen.dart';
-import 'screens/colorscreen.dart';
 import 'screens/home_screen.dart';
 import 'screens/meal_details_screen.dart';
 import 'screens/new_cat_screen.dart';
@@ -23,8 +22,6 @@ class Router {
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
       case NewRecipeScreen.routeName:
         return MaterialPageRoute(builder: (_) => NewRecipeScreen());
-      case ColorScreen.routeName:
-        return MaterialPageRoute(builder: (_) => ColorScreen());
 
       default:
         return MaterialPageRoute(

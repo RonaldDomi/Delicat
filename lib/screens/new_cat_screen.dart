@@ -1,7 +1,9 @@
-import 'package:delicat/models/category.dart';
-import 'package:delicat/providers/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
+import 'package:delicat/models/category.dart';
+import 'package:delicat/providers/categories.dart';
 
 class NewCatScreen extends StatefulWidget {
   const NewCatScreen({Key key}) : super(key: key);
@@ -13,6 +15,20 @@ class NewCatScreen extends StatefulWidget {
 }
 
 class _NewCatScreenState extends State<NewCatScreen> {
+  Color pickerColor = Color(0xff443a49);
+
+  Color currentColor = Color(0xff443a49);
+  void changeColor(Color color) {
+    setState(() => {
+          currentColor = color,
+        });
+    final currentColorCode = "0xff" + currentColor.value.toRadixString(16);
+    _editedCategory = Category(
+      name: _editedCategory.name,
+      colorCode: currentColorCode,
+    );
+  }
+
   var _initValues = {
     'name': '',
     'colorCode': '',
@@ -20,7 +36,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
   var _editedCategory = Category(name: "", colorCode: "");
 
-  final _colorFocusNode = FocusNode();
+  // final _colorFocusNode = FocusNode();
 
   final _form = GlobalKey<FormState>();
   var _isInit = true;
@@ -37,7 +53,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
     });
     if (_editedCategory.id != null) {
       await Provider.of<Categories>(context, listen: false)
-          .updateCategory(_editedCategory.id, _editedCategory);
+          .editCategory(_editedCategory);
     } else {
       try {
         await Provider.of<Categories>(context, listen: false)
@@ -45,7 +61,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
         Navigator.of(context).pop();
       } catch (error) {
-        print("edited category: $_editedCategory");
+        print("error: sent category $_editedCategory");
         await showDialog(
           context: context,
           builder: (ctx) => AlertDialog(
@@ -69,11 +85,11 @@ class _NewCatScreenState extends State<NewCatScreen> {
     // Navigator.of(context).pop();
   }
 
-  @override
-  void dispose() {
-    _colorFocusNode.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _colorFocusNode.dispose();
+  //   super.dispose();
+  // }
 
   @override
   //This function will check for existing values if we're editing a Category
@@ -83,7 +99,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
       final catId = ModalRoute.of(context).settings.arguments as String;
       if (catId != null) {
         _editedCategory = await Provider.of<Categories>(context, listen: false)
-            .findById(catId); // not available
+            .getCategoryById(catId); // not available
         _initValues = {
           'name': _editedCategory.name,
           'colorCode': _editedCategory.colorCode,
@@ -113,9 +129,9 @@ class _NewCatScreenState extends State<NewCatScreen> {
                       initialValue: _initValues['name'],
                       decoration: InputDecoration(labelText: 'Name'),
                       textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) {
-                        FocusScope.of(context).requestFocus(_colorFocusNode);
-                      },
+                      // onFieldSubmitted: (_) {
+                      //   FocusScope.of(context).requestFocus(_colorFocusNode);
+                      // },
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please provide a value.';
@@ -129,30 +145,57 @@ class _NewCatScreenState extends State<NewCatScreen> {
                         );
                       },
                     ),
-                    TextFormField(
-                      initialValue: _initValues['colorCode'],
-                      decoration: InputDecoration(labelText: 'Color'),
-                      focusNode: _colorFocusNode,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) {
-                        //for now this is the last input field, so we save form
-                        _saveForm();
-                        //move this to the last input field as needed
-                        //preferrably with a submit button in the form
-                        //FocusScope.of(context).requestFocus(_); got to next field, if we'll have eventually
-                      },
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Select a value from color picker:';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) {
-                        _editedCategory = Category(
-                          name: _editedCategory.name,
-                          colorCode: value,
+                    // TextFormField(
+                    //   initialValue: _initValues['colorCode'],
+                    //   decoration: InputDecoration(labelText: 'Color'),
+                    //   focusNode: _colorFocusNode,
+                    //   textInputAction: TextInputAction.next,
+                    //   onFieldSubmitted: (_) {
+                    //     //for now this is the last input field, so we save form
+                    //     _saveForm();
+                    //     //move this to the last input field as needed
+                    //     //preferrably with a submit button in the form
+                    //     //FocusScope.of(context).requestFocus(_); got to next field, if we'll have eventually
+                    //   },
+                    //   validator: (value) {
+                    //     if (value.isEmpty) {
+                    //       return 'Select a value from color picker:';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onSaved: (value) {
+                    //     _editedCategory = Category(
+                    //       name: _editedCategory.name,
+                    //       colorCode: value,
+                    //     );
+                    //   },
+                    // ),
+                    RaisedButton(
+                      elevation: 3.0,
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Select a color'),
+                              content: SingleChildScrollView(
+                                child: BlockPicker(
+                                  pickerColor: currentColor,
+                                  onColorChanged: changeColor,
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
+                      child: const Text(
+                        'Select Color',
+                        textAlign: TextAlign.left,
+                      ),
+                      color: currentColor,
+                      textColor: useWhiteForeground(currentColor)
+                          ? const Color(0xffffffff)
+                          : const Color(0xff000000),
                     ),
                     FlatButton(onPressed: _saveForm, child: Text("Submit form"))
                   ],

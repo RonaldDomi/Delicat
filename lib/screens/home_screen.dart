@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void clearTableData() {
-    print("not implemented");
+    print("clear table: not implemented");
   }
 
   Widget _buildSelectedCatsListItem(category) {
@@ -73,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
     checkFirstHitStatus();
 
     var selectedCats =
-        Provider.of<Categories>(context, listen: false).fetchAndSetCategories();
+        Provider.of<Categories>(context, listen: false).getAllCategories();
 
     return Scaffold(
       appBar: AppBar(
@@ -121,10 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text("Create a new category"),
                     onPressed: () => navigateTo(Router.NewCatScreen, context),
                   ),
-                  RaisedButton(
-                    child: Text("ColorPicker"),
-                    onPressed: () => navigateTo(Router.ColorScreen, context),
-                  )
                 ],
               ),
       ),

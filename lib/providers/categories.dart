@@ -18,7 +18,7 @@ class Categories with ChangeNotifier {
     return [..._categories];
   }
 
-  List<Category> get predefinedImtes {
+  List<Category> get predefinedItems {
     return [..._predefinedCategories];
   }
 
@@ -55,15 +55,21 @@ class Categories with ChangeNotifier {
       //if we have erorr with our request
       // throw error;
 
-
-      
-
       //in this stage of the development we'll always have an error since the api endpoint is not implemented yet
-      //so we take advantage of this error to return some dummy category data 
-      _categories = [];
-      _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '#f3f3f3'));
-      _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '#a3a3a3'));
-      _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '#d3d3d3'));
+      //so we take advantage of this error to return some dummy category data
+
+      // HOW IT SHOULD BE
+      // _categories = [];
+
+      // _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '#f3f3f3'));
+      // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '#a3a3a3'));
+      // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '#d3d3d3'));
+
+      // DEBUGGING
+      // _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '0xfff3f3f3'));
+      // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '0xffa3a3a3'));
+      // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '0xffd3d3d3'));
+      // _categories.add(Category(id: 3, name: 'Cat 4', colorCode: '0xff939393'));
 
       return _categories;
     }
@@ -102,12 +108,18 @@ class Categories with ChangeNotifier {
       //if we have erorr with our request
       // throw error;
 
-
-
       _predefinedCategories = [];
-      _predefinedCategories.add(Category(id: 41, name: 'PredfCat 1', colorCode: '#b30d04'));
-      _predefinedCategories.add(Category(id: 42, name: 'PredfCat 2', colorCode: '#f160d3'));
-      _predefinedCategories.add(Category(id: 43, name: 'PredfCat 3', colorCode: '#c03f20'));
+      // _predefinedCategories.add(Category(id: 41, name: 'PredfCat 1', colorCode: '#b30d04'));
+      // _predefinedCategories.add(Category(id: 42, name: 'PredfCat 2', colorCode: '#f160d3'));
+      // _predefinedCategories.add(Category(id: 43, name: 'PredfCat 3', colorCode: '#c03f20'));
+      _predefinedCategories
+          .add(Category(id: 41, name: 'PredfCat 1', colorCode: '0xffb30d04'));
+      _predefinedCategories
+          .add(Category(id: 42, name: 'PredfCat 2', colorCode: '0xfff160d3'));
+      _predefinedCategories
+          .add(Category(id: 43, name: 'PredfCat 3', colorCode: '0xffc03f20'));
+      _predefinedCategories
+          .add(Category(id: 43, name: 'PredfCat 3', colorCode: '0xffd04120'));
 
       return _categories;
     }
@@ -120,7 +132,6 @@ class Categories with ChangeNotifier {
     //When we will have the option to share recipes online, we will have to implement this with api, but only for recipes. This version is MVP 1 consistent
     return _categories.singleWhere((element) => element.id == catId);
   }
-
 
   Future<void> createCategory(Category category) async {
     //This function will probably be only invoked from the create category widget/view.
@@ -164,6 +175,7 @@ class Categories with ChangeNotifier {
       );
       _categories.add(newCategory);
       notifyListeners();
+      print("created a new catogory: current_caterogy_list: $_categories");
 
       // throw error; //throws the error to the frontend so it can be handled there
       //Provider....createCategory()...catchError((error){
@@ -180,16 +192,17 @@ class Categories with ChangeNotifier {
     //see chapter 10 episode 10 for how to fully implement in frontend
   }
 
-  Future<void> removeCategory(id) async{
-
+  Future<void> removeCategory(id) async {
     final url = '/category/$id';
     try {
       final response = await http.delete(url);
 
-      _categories.removeWhere((item) => item.id == id); //here we assume response finished correctly, maybe additional checks needed
+      _categories.removeWhere((item) =>
+          item.id ==
+          id); //here we assume response finished correctly, maybe additional checks needed
       notifyListeners();
     } catch (error) {
-      throw error; 
+      throw error;
     }
 
     notifyListeners();
@@ -217,8 +230,9 @@ class Categories with ChangeNotifier {
         existingCategory = new Category(
             id: json.decode(response.body)['id'],
             name: json.decode(response.body)['name'],
-            colorCode: json.decode(response.body)['colorCode']); // here we make the pointer of the exsisting category inside _categories to point to a new Category object
-            //hopefully updated correctly
+            colorCode: json.decode(response.body)[
+                'colorCode']); // here we make the pointer of the exsisting category inside _categories to point to a new Category object
+        //hopefully updated correctly
         print(
             "In our _categories list, we have updated our category with the new value: ${_categories.firstWhere((element) => element.id == editedCategory.id)}");
       }

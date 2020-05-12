@@ -38,6 +38,7 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     //   //
     //   //
     // }
+    print("select categories: not implemented");
     Navigator.of(context).pushReplacementNamed('/');
   }
 
@@ -48,8 +49,8 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
         title: Text("Category Selection Screen"),
       ),
       body: FutureBuilder(
-        future: Provider.of<Categories>(context, listen: false)
-            .fetchAndSetCategories(),
+        future:
+            Provider.of<Categories>(context, listen: false).getAllCategories(),
         builder: (ctx, snapshotCategories) =>
             snapshotCategories.connectionState == ConnectionState.waiting
                 ? Center(
