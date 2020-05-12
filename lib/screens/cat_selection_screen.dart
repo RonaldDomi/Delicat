@@ -5,7 +5,7 @@ import 'package:delicat/providers/categories.dart';
 import 'package:provider/provider.dart';
 
 import '../models/category.dart';
-import '../widgets/categoy_item.dart';
+import '../widgets/predefined_categoy_item.dart';
 
 class CatSelectionScreen extends StatefulWidget {
   const CatSelectionScreen({Key key}) : super(key: key);
@@ -20,6 +20,9 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   List<Category> selectedCategories = [];
 
   void addCategoryToSelection(Category category) {
+    print("  ");
+    print("  ");
+    print("adding $category to selectedCats");
     var existingItem = selectedCategories.firstWhere(
         (itemToCheck) => itemToCheck.id == category.id,
         orElse: () => null);
@@ -28,17 +31,19 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     } else {
       selectedCategories.removeWhere((item) => item.id == category.id);
     }
+    print("selected Cats $selectedCategories");
   }
 
   void submitCategories(context) {
-    // for (Category cat in selectedCategories) {
-    //   Provider.of<Categories>(context)
-    //       .addCategory(cat.id, cat.name, cat.colorCode);
-    //   //
-    //   //
-    //   //
-    // }
-    print("select categories: not implemented");
+    print("selected categories: $selectedCategories");
+    for (Category cat in selectedCategories) {
+      print(" ");
+      print(" ");
+      print("trying to create a new category");
+      print(" ");
+      print(" ");
+      Provider.of<Categories>(context).createCategory(cat);
+    }
     Navigator.of(context).pushReplacementNamed('/');
   }
 
@@ -49,8 +54,8 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
         title: Text("Category Selection Screen"),
       ),
       body: FutureBuilder(
-        future:
-            Provider.of<Categories>(context, listen: false).getAllCategories(),
+        future: Provider.of<Categories>(context, listen: false)
+            .getAllPredefinedCategories(),
         builder: (ctx, snapshotCategories) =>
             snapshotCategories.connectionState == ConnectionState.waiting
                 ? Center(
@@ -59,7 +64,8 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
                 : Column(
                     children: <Widget>[
                       Container(
-                        color: Colors.red,
+                        margin: EdgeInsets.all(10),
+                        decoration: BoxDecoration(border: Border.all(width: 1)),
                         constraints: BoxConstraints.expand(height: 300),
                         child: Consumer<Categories>(
                           builder: (ctx, categories, _) => GridView.builder(
@@ -71,10 +77,9 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
                               mainAxisSpacing: 20,
                             ),
                             padding: const EdgeInsets.all(25),
-                            itemCount: categories.items.length,
-                            itemBuilder: (ctx, i) => CategoryItem(
-                              categories.items[i].name,
-                              categories.items[i].colorCode,
+                            itemCount: categories.predefinedItems.length,
+                            itemBuilder: (ctx, i) => PredefinedCategoryItem(
+                              categories.predefinedItems[i],
                               addCategoryToSelection,
                             ),
                           ),

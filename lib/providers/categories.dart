@@ -107,21 +107,20 @@ class Categories with ChangeNotifier {
     } catch (error) {
       //if we have erorr with our request
       // throw error;
-
       _predefinedCategories = [];
-      // _predefinedCategories.add(Category(id: 41, name: 'PredfCat 1', colorCode: '#b30d04'));
-      // _predefinedCategories.add(Category(id: 42, name: 'PredfCat 2', colorCode: '#f160d3'));
-      // _predefinedCategories.add(Category(id: 43, name: 'PredfCat 3', colorCode: '#c03f20'));
       _predefinedCategories
           .add(Category(id: 41, name: 'PredfCat 1', colorCode: '0xffb30d04'));
       _predefinedCategories
-          .add(Category(id: 42, name: 'PredfCat 2', colorCode: '0xfff160d3'));
+          .add(Category(id: 42, name: 'PredfCat 2', colorCode: '0xffD1B3C4'));
       _predefinedCategories
           .add(Category(id: 43, name: 'PredfCat 3', colorCode: '0xffc03f20'));
       _predefinedCategories
-          .add(Category(id: 43, name: 'PredfCat 3', colorCode: '0xffd04120'));
-
-      return _categories;
+          .add(Category(id: 44, name: 'PredfCat 4', colorCode: '0xff735D78'));
+      _predefinedCategories
+          .add(Category(id: 45, name: 'PredfCat 5', colorCode: '0xffEDFF86'));
+      _predefinedCategories
+          .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
+      return _predefinedCategories;
     }
   }
 

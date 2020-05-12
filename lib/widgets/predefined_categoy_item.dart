@@ -3,26 +3,23 @@ import 'package:flutter/material.dart';
 
 import '../models/category.dart';
 
-class CategoryItem extends StatefulWidget {
-  final String title;
-  final String colorCode;
+class PredefinedCategoryItem extends StatefulWidget {
+  final Category category;
   final Function addCategoryToSelection;
   bool isSelected;
 
-  CategoryItem(this.title, this.colorCode, this.addCategoryToSelection) {
+  PredefinedCategoryItem(this.category, this.addCategoryToSelection) {
     isSelected = false;
   }
 
   @override
-  _CategoryItemState createState() => _CategoryItemState();
+  _PredefinedCategoryItemState createState() => _PredefinedCategoryItemState();
 }
 
-class _CategoryItemState extends State<CategoryItem> {
+class _PredefinedCategoryItemState extends State<PredefinedCategoryItem> {
   selectCategory() {
     setState(() {
-      widget.addCategoryToSelection(
-        Category(name: widget.title, colorCode: widget.colorCode),
-      );
+      widget.addCategoryToSelection(widget.category);
       widget.isSelected = !widget.isSelected;
     });
   }
@@ -36,14 +33,14 @@ class _CategoryItemState extends State<CategoryItem> {
       child: Container(
         padding: const EdgeInsets.all(15),
         child: Text(
-          widget.title,
+          widget.category.name,
           style: Theme.of(context).textTheme.title,
         ),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Color(int.parse(widget.colorCode)).withOpacity(0.7),
-              Color(int.parse(widget.colorCode)),
+              Color(int.parse(widget.category.colorCode)).withOpacity(0.7),
+              Color(int.parse(widget.category.colorCode)),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,

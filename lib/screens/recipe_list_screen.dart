@@ -36,7 +36,8 @@ class RecipeListScreen extends StatelessWidget {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    color: Colors.red,
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(border: Border.all(width: 1)),
                     constraints: BoxConstraints.expand(height: 300),
                     child: Consumer<Recipes>(
                       child: Center(

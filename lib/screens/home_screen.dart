@@ -91,7 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                    color: Colors.red,
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(border: Border.all(width: 1)),
                     constraints: BoxConstraints.expand(height: 300),
                     child: Consumer<Categories>(
                       child: Center(
