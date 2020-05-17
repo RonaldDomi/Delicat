@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/recipe.dart';
 import '../models/category.dart';
@@ -55,51 +57,47 @@ class Recipes with ChangeNotifier {
     // });
   }
 
-  Future<void> fetchAndSetRecipesByCategory(categoryId) async {
-    // final dataList = await DBHelper.getData('user_recipes');
+  //We can do an eager load of the recipes at home screen
+  //Alternatively we load recipes only when selecting the category, which is the default behavior
+  Future<void> getRecipesByCategoryId(categoryId) async {
+            //Assuming this function is called when wanting to list recipes of a certain category, then the _recipe "store" variable 
+        //only holds the currenct category recipes
+     _recipes = [];
 
-    //I need this to get all categories
-    // final categoryList = await DBHelper.getData('user_categories');
-    //Map them to list
-    // List<Category> _cats = categoryList.map(
-    //   (item) {
-    //     Category createdCategory = Category(
-    //       id: item['id'],
-    //       name: item['name'],
-    //       colorCode: item['colorCode'],
-    //     );
-    //     return createdCategory;
-    //   },
-    // ).toList();
+    const url = 'category/{categoryId}/recipe/all'; //find string interpolation syntax for dart
 
-    _recipes = [];
-    _recipes.add(Recipe(
-      category: _categories[0],
-    ));
-    // _recipes = dataList.map(
-    //   (item) {
-    //     //So then I can link the category manually to the created meals. This is a workaround to having properly relational tables in the database.
-    //     //It needs to be fixed at some point
-    //     for (Category cat in _cats) {
-    //       if (int.parse(item['categoryId']) == categoryId) {
-    //         Recipe recipe = Recipe(
-    //           id: item['id'],
-    //           name: item['name'],
-    //           photo: File(item['photo']),
-    //           instructions: item['instructions'],
-    //           category: cat,
-    //         );
-    //         return recipe;
-    //       }
-    //     }
+    try {
+      final response = await http.get(url);
 
-    //     // Category cat = _cats.firstWhere((cat) => cat.id == item['categoryId']);
-    //   },
-    // ).toList();
+      for (var bodyRecipe in json.decode(response.body)) {
 
-    if (_recipes[0] == null) {
+        var recipe =
+            Recipe(name: bodyRecipe.name, instructions: bodyRecipe.instructions, photo: bodyRecipe.photo, categoryId: bodyRecipe.category.uid);
+
+
+        _recipes.add(recipe);
+      }
+      notifyListeners();
+    } catch (error) {
+      //if we have erorr with our request
+      // throw error;
       _recipes = [];
+      _recipes
+          .add(Recipe(id: 41, name: 'Pancakes 1', instructions: 'Fry the pancakes then eat.', photo: 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg', categoryId: '1'));
+      _recipes
+          .add(Recipe(id: 42, name: 'Pancakes 2', instructions: 'Fry the pancakes then eat.', photo: 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg', categoryId: '1'));
+      _recipes
+          .add(Recipe(id: 43, name: 'Pancakes 3', instructions: 'Fry the pancakes then eat.', photo: 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg', categoryId: '1'));
+
+      return _recipes;
     }
     notifyListeners();
+  }
+
+
+  Recipe getRecipeById(recipeId) {
+    //Here we rely solely on the memory data. We take for granted that _recipes is already loaded with the up-to-date
+    //data from the server. For our app, this should work as intended.
+    return _recipes.singleWhere((element) => element.id == recipeId);
   }
 }
