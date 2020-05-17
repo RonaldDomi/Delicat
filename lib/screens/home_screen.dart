@@ -38,11 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void navigateToRecipes(routeName, BuildContext ctx, categoryId) {
-    Navigator.of(ctx)
-        .pushNamed(routeName, arguments: {'categoryId': categoryId});
-  }
-
   void clearTableData() {
     print("clear table: not implemented");
   }
@@ -81,11 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         child: ListTile(
+          // title: Text(category.id.toString()),
           title: Text(category.name),
           contentPadding: EdgeInsets.all(15),
           onTap: () {
-            navigateToRecipes(
-                RouterNames.RecipeListScreen, context, category.id);
+            Navigator.of(context).pushNamed(RouterNames.RecipeListScreen,
+                arguments: category.id.toString());
           },
         ),
       ),

@@ -11,7 +11,10 @@ class Categories with ChangeNotifier {
   //This is the base url for making the api calls
   final baseUrl = 'aws';
 
-  List<Category> _categories = [];
+  List<Category> _categories = [
+    Category(id: 1, name: 'Cat 1', colorCode: '0xfff3f3f3'),
+    Category(id: 2, name: 'Cat 2', colorCode: '0xffa3a3a3'),
+  ];
   List<Category> _predefinedCategories = [];
 
   List<Category> get items {
@@ -70,13 +73,13 @@ class Categories with ChangeNotifier {
       // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '0xffa3a3a3'));
       // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '0xffd3d3d3'));
       // _categories.add(Category(id: 3, name: 'Cat 4', colorCode: '0xff939393'));
-      print(" ");
-      print(" ");
-      print(" ");
-      print("provider getting all ${_categories}");
-      print(" ");
-      print(" ");
-      print(" ");
+      print("-");
+      print("--");
+      print("---");
+      print("provider categories ${_categories}");
+      print("---");
+      print("--");
+      print("-");
       return _categories;
     }
   }
@@ -127,23 +130,25 @@ class Categories with ChangeNotifier {
       _predefinedCategories
           .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
 
-      print(" ");
-      print(" ");
-      print(" ");
-      print("provider getting all ${_predefinedCategories}");
-      print(" ");
-      print(" ");
-      print(" ");
+      print("-");
+      print("--");
+      print("---");
+      print("provider predefined ${_predefinedCategories}");
+      print("---");
+      print("--");
+      print("-");
       return _predefinedCategories;
     }
   }
 
-  Category getCategoryById(catId) {
+  Category getCategoryById(String catId) {
     //Here we rely solely on the memory data. We take for granted that _categories is already loaded with the up-to-date
     //data from the server. For our app, this should work as intended.
 
+    final cat =
+        _categories.singleWhere((element) => element.id.toString() == catId);
     //When we will have the option to share recipes online, we will have to implement this with api, but only for recipes. This version is MVP 1 consistent
-    return _categories.singleWhere((element) => element.id == catId);
+    return cat;
   }
 
   Future<void> createCategory(Category category) async {

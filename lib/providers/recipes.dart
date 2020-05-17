@@ -14,12 +14,12 @@ class Recipes with ChangeNotifier {
     return [..._recipes];
   }
 
-  void addRecipe(name, photo, instructions, category) {
+  void addRecipe(name, photo, instructions, categoryId) {
     Recipe newRecipe = Recipe(
       name: name,
       photo: photo,
       instructions: instructions,
-      category: category,
+      categoryId: categoryId,
     );
 
     _recipes.add(newRecipe);
@@ -60,20 +60,22 @@ class Recipes with ChangeNotifier {
   //We can do an eager load of the recipes at home screen
   //Alternatively we load recipes only when selecting the category, which is the default behavior
   Future<void> getRecipesByCategoryId(categoryId) async {
-            //Assuming this function is called when wanting to list recipes of a certain category, then the _recipe "store" variable 
-        //only holds the currenct category recipes
-     _recipes = [];
+    //Assuming this function is called when wanting to list recipes of a certain category, then the _recipe "store" variable
+    //only holds the currenct category recipes
+    _recipes = [];
 
-    const url = 'category/{categoryId}/recipe/all'; //find string interpolation syntax for dart
+    const url =
+        'category/{categoryId}/recipe/all'; //find string interpolation syntax for dart
 
     try {
       final response = await http.get(url);
 
       for (var bodyRecipe in json.decode(response.body)) {
-
-        var recipe =
-            Recipe(name: bodyRecipe.name, instructions: bodyRecipe.instructions, photo: bodyRecipe.photo, categoryId: bodyRecipe.category.uid);
-
+        var recipe = Recipe(
+            name: bodyRecipe.name,
+            instructions: bodyRecipe.instructions,
+            photo: bodyRecipe.photo,
+            categoryId: bodyRecipe.category.uid);
 
         _recipes.add(recipe);
       }
@@ -82,22 +84,37 @@ class Recipes with ChangeNotifier {
       //if we have erorr with our request
       // throw error;
       _recipes = [];
-      _recipes
-          .add(Recipe(id: 41, name: 'Pancakes 1', instructions: 'Fry the pancakes then eat.', photo: 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg', categoryId: '1'));
-      _recipes
-          .add(Recipe(id: 42, name: 'Pancakes 2', instructions: 'Fry the pancakes then eat.', photo: 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg', categoryId: '1'));
-      _recipes
-          .add(Recipe(id: 43, name: 'Pancakes 3', instructions: 'Fry the pancakes then eat.', photo: 'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg', categoryId: '1'));
+      _recipes.add(Recipe(
+          id: 41,
+          name: 'Pancakes 1',
+          instructions: 'Fry the pancakes then eat.',
+          photo:
+              'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+          categoryId: '1'));
+      _recipes.add(Recipe(
+          id: 42,
+          name: 'Pancakes 2',
+          instructions: 'Fry the pancakes then eat.',
+          photo:
+              'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+          categoryId: '1'));
+      _recipes.add(Recipe(
+          id: 43,
+          name: 'Pancakes 3',
+          instructions: 'Fry the pancakes then eat.',
+          photo:
+              'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+          categoryId: '1'));
 
       return _recipes;
     }
     notifyListeners();
   }
 
-
   Recipe getRecipeById(recipeId) {
     //Here we rely solely on the memory data. We take for granted that _recipes is already loaded with the up-to-date
     //data from the server. For our app, this should work as intended.
-    return _recipes.singleWhere((element) => element.id == recipeId);
+    print("recipeId : $recipeId, recipes: $_recipes");
+    return _recipes.singleWhere((element) => element.id.toString() == recipeId);
   }
 }

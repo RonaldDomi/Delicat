@@ -18,8 +18,8 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   List<Category> selectedCategories = [];
 
   void addCategoryToSelection(Category category) {
-    print("  ");
-    print("  ");
+    print("-");
+    print("--");
     print("adding $category to selectedCats");
     var existingItem = selectedCategories.firstWhere(
         (itemToCheck) => itemToCheck.id == category.id,
@@ -35,11 +35,11 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   void submitCategories(context) {
     print("selected categories: $selectedCategories");
     for (Category cat in selectedCategories) {
-      print(" ");
-      print(" ");
+      print("-");
+      print("--");
       print("trying to create a new category");
-      print(" ");
-      print(" ");
+      print("--");
+      print("-");
       Provider.of<Categories>(context).createCategory(cat);
     }
     Navigator.of(context).pushReplacementNamed('/');

@@ -6,6 +6,7 @@ import 'screens/meal_details_screen.dart';
 import 'screens/new_cat_screen.dart';
 import 'screens/new_recipe_screen.dart';
 import 'screens/recipe_list_screen.dart';
+import 'screens/recipe_details_screen.dart';
 
 import './routeNames.dart';
 
@@ -16,14 +17,21 @@ class Router {
         return MaterialPageRoute(builder: (_) => HomeScreen());
       case RouterNames.NewCatScreen:
         return MaterialPageRoute(builder: (_) => NewCatScreen());
-      case RouterNames.RecipeListScreen:
-        return MaterialPageRoute(builder: (_) => RecipeListScreen());
       case RouterNames.MealDetailsScreen:
         return MaterialPageRoute(builder: (_) => MealDetailsScreen());
       case RouterNames.CatSelectionScreen:
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
+      case RouterNames.RecipeListScreen:
+        var categoryId = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => RecipeListScreen(categoryId: categoryId));
+        break;
       case RouterNames.NewRecipeScreen:
         return MaterialPageRoute(builder: (_) => NewRecipeScreen());
+      case RouterNames.RecipeDetailsScreen:
+        var recipeId = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => RecipeDetailsScreen(recipeId: recipeId));
 
       default:
         return MaterialPageRoute(

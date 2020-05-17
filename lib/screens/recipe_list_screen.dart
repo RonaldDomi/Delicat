@@ -1,32 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/categories.dart';
 import '../providers/recipes.dart';
 import '../routeNames.dart';
 
 class RecipeListScreen extends StatelessWidget {
-  const RecipeListScreen({Key key}) : super(key: key);
-
-  void navigateTo(routeName, BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(routeName);
-  }
+  final String categoryId;
+  RecipeListScreen({this.categoryId});
 
   //we need to get categoryId by route argument and pass it to fetchAndSetRecipesByCategory(categoryId)
   @override
   Widget build(BuildContext context) {
-    final arguments =
-        ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    print("arguments: ${arguments['categoryId']}");
-    final categoryId = arguments['categoryId'] as String;
-    print("categoryId is $categoryId");
-
+    final category =
+        Provider.of<Categories>(context).getCategoryById(categoryId);
+    print("Widget category: $category");
     return Scaffold(
       appBar: AppBar(
-        title: Text("Your {name} meals"),
+        title: Text("Your ${category.name} meals"),
       ),
       body: FutureBuilder(
         future: Provider.of<Recipes>(context, listen: false)
-            .fetchAndSetRecipesByCategory(categoryId),
+            .getRecipesByCategoryId(category.id),
         builder: (ctx, snapshotRecipes) => snapshotRecipes.connectionState ==
                 ConnectionState.waiting
             ? Center(
@@ -49,14 +44,15 @@ class RecipeListScreen extends StatelessWidget {
                           : ListView.builder(
                               itemCount: recipes.items.length,
                               itemBuilder: (ctx, i) => Container(
-                                color: Color(int.parse(
-                                    recipes.items[i].category.colorCode)),
+                                color: Color(int.parse(category.colorCode)),
                                 child: ListTile(
                                   title: Text(recipes.items[i].name),
                                   contentPadding: EdgeInsets.all(15),
                                   onTap: () {
-                                    navigateTo(
-                                        RouterNames.RecipeListScreen, context);
+                                    Navigator.of(context).pushNamed(
+                                      RouterNames.RecipeDetailsScreen,
+                                      arguments: recipes.items[i].id.toString(),
+                                    );
                                   },
                                 ),
                               ),
