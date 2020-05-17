@@ -5,9 +5,9 @@ import 'category.dart';
 class Recipe {
   int id;
   String name;
-  File photo;
+  String photo;
   String instructions;
-  Category category;
+  String categoryId; 
 
-  Recipe({this.id, this.name, this.photo, this.instructions, this.category});
+  Recipe({this.id, this.name, this.photo, this.instructions, this.categoryId});
 }
