@@ -70,7 +70,13 @@ class Categories with ChangeNotifier {
       // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '0xffa3a3a3'));
       // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '0xffd3d3d3'));
       // _categories.add(Category(id: 3, name: 'Cat 4', colorCode: '0xff939393'));
-
+      print(" ");
+      print(" ");
+      print(" ");
+      print("provider getting all ${_categories}");
+      print(" ");
+      print(" ");
+      print(" ");
       return _categories;
     }
   }
@@ -120,6 +126,14 @@ class Categories with ChangeNotifier {
           .add(Category(id: 45, name: 'PredfCat 5', colorCode: '0xffEDFF86'));
       _predefinedCategories
           .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
+
+      print(" ");
+      print(" ");
+      print(" ");
+      print("provider getting all ${_predefinedCategories}");
+      print(" ");
+      print(" ");
+      print(" ");
       return _predefinedCategories;
     }
   }
@@ -199,9 +213,12 @@ class Categories with ChangeNotifier {
       _categories.removeWhere((item) =>
           item.id ==
           id); //here we assume response finished correctly, maybe additional checks needed
-      notifyListeners();
     } catch (error) {
-      throw error;
+      // throw error;
+      print("error: no api call implemented");
+      _categories.removeWhere((item) =>
+          item.id ==
+          id); //here we assume response finished correctly, maybe additional checks needed
     }
 
     notifyListeners();

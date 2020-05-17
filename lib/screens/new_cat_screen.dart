@@ -5,10 +5,31 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:delicat/models/category.dart';
 import 'package:delicat/providers/categories.dart';
 
+const List<Color> _availableColors = [
+  Colors.red,
+  Colors.pink,
+  Colors.purple,
+  Colors.deepPurple,
+  Colors.indigo,
+  Colors.blue,
+  Colors.lightBlue,
+  Colors.cyan,
+  Colors.teal,
+  Colors.green,
+  Colors.lightGreen,
+  Colors.lime,
+  Colors.yellow,
+  Colors.amber,
+  Colors.orange,
+  Colors.deepOrange,
+  Colors.brown,
+  Colors.grey,
+  Colors.blueGrey,
+  Colors.black,
+];
+
 class NewCatScreen extends StatefulWidget {
   const NewCatScreen({Key key}) : super(key: key);
-
-  static const routeName = '/new-cat';
 
   @override
   _NewCatScreenState createState() => _NewCatScreenState();
@@ -181,6 +202,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
                               content: SingleChildScrollView(
                                 child: BlockPicker(
                                   pickerColor: currentColor,
+                                  availableColors: _availableColors,
                                   onColorChanged: changeColor,
                                 ),
                               ),

@@ -7,20 +7,22 @@ import 'screens/new_cat_screen.dart';
 import 'screens/new_recipe_screen.dart';
 import 'screens/recipe_list_screen.dart';
 
+import './routeNames.dart';
+
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => HomeScreen());
-      case NewCatScreen.routeName:
+      case RouterNames.NewCatScreen:
         return MaterialPageRoute(builder: (_) => NewCatScreen());
-      case RecipeListScreen.routeName:
+      case RouterNames.RecipeListScreen:
         return MaterialPageRoute(builder: (_) => RecipeListScreen());
-      case MealDetailsScreen.routeName:
+      case RouterNames.MealDetailsScreen:
         return MaterialPageRoute(builder: (_) => MealDetailsScreen());
-      case CatSelectionScreen.routeName:
+      case RouterNames.CatSelectionScreen:
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
-      case NewRecipeScreen.routeName:
+      case RouterNames.NewRecipeScreen:
         return MaterialPageRoute(builder: (_) => NewRecipeScreen());
 
       default:

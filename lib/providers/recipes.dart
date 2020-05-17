@@ -73,6 +73,9 @@ class Recipes with ChangeNotifier {
     // ).toList();
 
     _recipes = [];
+    _recipes.add(Recipe(
+      category: _categories[0],
+    ));
     // _recipes = dataList.map(
     //   (item) {
     //     //So then I can link the category manually to the created meals. This is a workaround to having properly relational tables in the database.

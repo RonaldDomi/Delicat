@@ -9,8 +9,6 @@ import '../providers/recipes.dart';
 import '../models/category.dart';
 
 class NewRecipeScreen extends StatefulWidget {
-  static const routeName = '/new-recipe';
-
   const NewRecipeScreen({Key key}) : super(key: key);
 
   @override
@@ -29,12 +27,10 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     if (_titleController.text.isEmpty || _pickedImage == null) {
       return;
     }
-    Provider.of<Recipes>(context, listen: false)
-        .addRecipe(_titleController.text, _pickedImage, "instructions", Category());
+    Provider.of<Recipes>(context, listen: false).addRecipe(
+        _titleController.text, _pickedImage, "instructions", Category());
     Navigator.of(context).pop();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

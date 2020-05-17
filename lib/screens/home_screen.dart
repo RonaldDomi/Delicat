@@ -26,7 +26,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     } else if (firstTime == null) {
       prefs.setBool('first_time', false);
-      Navigator.of(context).pushReplacementNamed(Router.CatSelectionScreen);
+      Navigator.of(context)
+          .pushReplacementNamed(RouterNames.CatSelectionScreen);
     }
   }
 
@@ -47,23 +48,46 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSelectedCatsListItem(category) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(int.parse(category.colorCode)).withOpacity(0.7),
-            Color(int.parse(category.colorCode)),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return Dismissible(
+      key: ValueKey(category.id),
+      background: Container(
+        color: Theme.of(context).errorColor,
+        child: Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 40,
+        ),
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        margin: EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 4,
         ),
       ),
-      child: ListTile(
-        title: Text(category.name),
-        contentPadding: EdgeInsets.all(15),
-        onTap: () {
-          navigateToRecipes(Router.RecipeListScreen, context, category.id);
-        },
+      direction: DismissDirection.endToStart,
+      onDismissed: (direction) {
+        Provider.of<Categories>(context, listen: false)
+            .removeCategory(category.id);
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(int.parse(category.colorCode)).withOpacity(0.7),
+              Color(int.parse(category.colorCode)),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: ListTile(
+          title: Text(category.name),
+          contentPadding: EdgeInsets.all(15),
+          onTap: () {
+            navigateToRecipes(
+                RouterNames.RecipeListScreen, context, category.id);
+          },
+        ),
       ),
     );
   }
@@ -120,7 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Divider(),
                   RaisedButton(
                     child: Text("Create a new category"),
-                    onPressed: () => navigateTo(Router.NewCatScreen, context),
+                    onPressed: () =>
+                        navigateTo(RouterNames.NewCatScreen, context),
                   ),
                 ],
               ),

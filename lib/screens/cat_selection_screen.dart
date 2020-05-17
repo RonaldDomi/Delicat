@@ -10,8 +10,6 @@ import '../widgets/predefined_categoy_item.dart';
 class CatSelectionScreen extends StatefulWidget {
   const CatSelectionScreen({Key key}) : super(key: key);
 
-  static const routeName = '/cat-selection';
-
   @override
   _CatSelectionScreenState createState() => _CatSelectionScreenState();
 }

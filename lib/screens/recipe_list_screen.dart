@@ -7,7 +7,6 @@ import '../routeNames.dart';
 class RecipeListScreen extends StatelessWidget {
   const RecipeListScreen({Key key}) : super(key: key);
 
-  static const routeName = '/recipe-list';
   void navigateTo(routeName, BuildContext ctx) {
     Navigator.of(ctx).pushNamed(routeName);
   }
@@ -17,7 +16,8 @@ class RecipeListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final arguments =
         ModalRoute.of(context).settings.arguments as Map<String, Object>;
-    final categoryId = arguments['categoryId'] as int;
+    print("arguments: ${arguments['categoryId']}");
+    final categoryId = arguments['categoryId'] as String;
     print("categoryId is $categoryId");
 
     return Scaffold(
@@ -56,7 +56,7 @@ class RecipeListScreen extends StatelessWidget {
                                   contentPadding: EdgeInsets.all(15),
                                   onTap: () {
                                     navigateTo(
-                                        Router.RecipeListScreen, context);
+                                        RouterNames.RecipeListScreen, context);
                                   },
                                 ),
                               ),
