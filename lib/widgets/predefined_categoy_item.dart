@@ -31,25 +31,67 @@ class _PredefinedCategoryItemState extends State<PredefinedCategoryItem> {
       splashColor: Theme.of(context).primaryColor,
       borderRadius: BorderRadius.circular(15),
       child: Container(
-        padding: const EdgeInsets.all(15),
-        child: Text(
-          widget.category.name,
-          style: Theme.of(context).textTheme.title,
-        ),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(int.parse(widget.category.colorCode)).withOpacity(0.7),
-              Color(int.parse(widget.category.colorCode)),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color(int.parse(widget.category.colorCode)).withOpacity(0.7),
+                Color(int.parse(widget.category.colorCode)),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: widget.isSelected
+                ? BorderRadius.circular(0)
+                : BorderRadius.circular(15),
           ),
-          borderRadius: widget.isSelected
-              ? BorderRadius.circular(0)
-              : BorderRadius.circular(15),
-        ),
-      ),
+          child: Column(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(top: 4),
+                    child: Image.network(
+                      widget.category.photo,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  // Positioned(
+                  // right: 0,
+                  // bottom: 0,
+                  // child: Container(
+                  Container(
+                    margin: EdgeInsets.only(top: 4),
+                    color: Colors.black54,
+                    child: Text(
+                      widget.category.name,
+                      // style: Theme.of(context).textTheme.title,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  // ),
+                ],
+              ),
+            ],
+          )),
     );
   }
 }
+
+// decoration: BoxDecoration(
+//             gradient: LinearGradient(
+//               colors: [
+//                 Color(int.parse(widget.category.colorCode)).withOpacity(0.7),
+//                 Color(int.parse(widget.category.colorCode)),
+//               ],
+//               begin: Alignment.topLeft,
+//               end: Alignment.bottomRight,
+//             ),
+//             borderRadius: widget.isSelected
+//                 ? BorderRadius.circular(0)
+//                 : BorderRadius.circular(15),
+//           ),

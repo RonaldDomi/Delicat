@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:delicat/providers/recipes.dart';
-// import 'package:delicat/screens/home_screen.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:provider/provider.dart';
 
@@ -64,17 +62,17 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
                       Container(
                         margin: EdgeInsets.all(10),
                         decoration: BoxDecoration(border: Border.all(width: 1)),
-                        constraints: BoxConstraints.expand(height: 300),
+                        constraints: BoxConstraints.expand(height: 600),
                         child: Consumer<Categories>(
                           builder: (ctx, categories, _) => GridView.builder(
                             gridDelegate:
                                 SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: 200,
                               childAspectRatio: 3 / 2,
-                              crossAxisSpacing: 20,
+                              crossAxisSpacing: 10,
                               mainAxisSpacing: 20,
                             ),
-                            padding: const EdgeInsets.all(25),
+                            padding: const EdgeInsets.all(15),
                             itemCount: categories.predefinedItems.length,
                             itemBuilder: (ctx, i) => PredefinedCategoryItem(
                               categories.predefinedItems[i],

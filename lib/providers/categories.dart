@@ -134,9 +134,12 @@ class Categories with ChangeNotifier {
       print("--");
       print("---");
       print("provider predefined ${_predefinedCategories}");
+      print("before returning: wait 2 seconds");
+      await Future.delayed(const Duration(seconds: 2), () {});
       print("---");
       print("--");
       print("-");
+
       return _predefinedCategories;
     }
   }
