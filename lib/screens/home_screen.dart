@@ -14,10 +14,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  void navigateTo(routeName, BuildContext ctx) {
-    Navigator.of(ctx).pushNamed(routeName);
-  }
-
   checkFirstHitStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
@@ -134,14 +130,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     onPressed: clearTableData,
                   ),
                   RaisedButton(
-                    child: Text("Flip first time status (you have to reload)"),
+                    child: Text("Flip first time status"),
                     onPressed: flipFirstHitStatus,
                   ),
                   Divider(),
                   RaisedButton(
                     child: Text("Create a new category"),
                     onPressed: () =>
-                        navigateTo(RouterNames.NewCatScreen, context),
+                        Navigator.of(ctx).pushNamed(RouterNames.NewCatScreen),
                   ),
                 ],
               ),

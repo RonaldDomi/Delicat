@@ -5,16 +5,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart' as syspaths;
 
-class ImageInput extends StatefulWidget {
+class RecipeImagePicker extends StatefulWidget {
   final Function onSelectImage;
 
-  ImageInput(this.onSelectImage);
+  RecipeImagePicker(this.onSelectImage);
 
   @override
-  _ImageInputState createState() => _ImageInputState();
+  _RecipeImagePickerState createState() => _RecipeImagePickerState();
 }
 
-class _ImageInputState extends State<ImageInput> {
+class _RecipeImagePickerState extends State<RecipeImagePicker> {
   File _storedImage;
 
   Future<void> _takePicture() async {
