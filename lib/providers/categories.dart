@@ -77,6 +77,8 @@ class Categories with ChangeNotifier {
       print("--");
       print("---");
       print("provider categories ${_categories}");
+      print("before returning: wait 2 seconds");
+      await Future.delayed(const Duration(seconds: 2), () {});
       print("---");
       print("--");
       print("-");

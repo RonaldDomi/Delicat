@@ -142,6 +142,10 @@ class _NewCatScreenState extends State<NewCatScreen> {
               child: CircularProgressIndicator(),
             )
           : Container(
+              margin: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border.all(width: 1),
+              ),
               child: Form(
                 key: _form,
                 child: ListView(

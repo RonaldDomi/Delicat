@@ -106,6 +106,7 @@ class Recipes with ChangeNotifier {
               'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
           categoryId: '1'));
 
+      await Future.delayed(const Duration(seconds: 2), () {});
       return _recipes;
     }
     notifyListeners();
