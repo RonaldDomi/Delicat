@@ -12,8 +12,8 @@ class Categories with ChangeNotifier {
   final baseUrl = 'aws';
 
   List<Category> _categories = [
-    Category(id: 1, name: 'Cat 1', colorCode: '0xfff3f3f3'),
-    Category(id: 2, name: 'Cat 2', colorCode: '0xffa3a3a3'),
+    Category(id: 1, name: 'PredefCat 1', colorCode: '0xfff3f3f3'),
+    Category(id: 2, name: 'PredefCat 2', colorCode: '0xffa3a3a3'),
   ];
   List<Category> _predefinedCategories = [];
 
@@ -224,8 +224,6 @@ class Categories with ChangeNotifier {
           item.id ==
           id); //here we assume response finished correctly, maybe additional checks needed
     } catch (error) {
-      // throw error;
-      print("error: no api call implemented");
       _categories.removeWhere((item) =>
           item.id ==
           id); //here we assume response finished correctly, maybe additional checks needed
@@ -253,6 +251,7 @@ class Categories with ChangeNotifier {
         // means orElse executed, and this element is not found
         print("This category doesn't exist in _categories. Issue. ");
       } else {
+        print("error: no api call implemented");
         existingCategory = new Category(
             id: json.decode(response.body)['id'],
             name: json.decode(response.body)['name'],
@@ -264,7 +263,12 @@ class Categories with ChangeNotifier {
       }
       notifyListeners();
     } catch (error) {
-      throw error;
+      final existingCategoryIndex =
+          _categories.indexWhere((element) => element.id == editedCategory.id);
+      _categories[existingCategoryIndex] = editedCategory;
+      print(
+          "In our _categories list, we have updated our category with the new value: ${_categories.firstWhere((element) => element.id == editedCategory.id)}");
+      print("now new updated categories: $_categories");
     }
     notifyListeners();
   }

@@ -17,6 +17,7 @@ dependencies:
   http: ^0.12.1
   flutter_colorpicker: ^0.3.4
   cupertino_icons: ^0.1.2
+  sliding_up_panel: ^1.0.2
 
   flutter_swiper: ^1.1.6
 
@@ -37,6 +38,8 @@ flutter:
     - assets/photos/salads.jpg
     - assets/photos/turkish.jpg
     - assets/photos/veggies.jpg
+    # logo
+    - assets/logo/logo-hdpi.png
   # fonts:
   #   - family: Schyler
   #     fonts:

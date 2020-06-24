@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 
+import '../models/category.dart';
 import '../providers/categories.dart';
 import '../providers/recipes.dart';
 import '../routeNames.dart';
@@ -16,10 +17,14 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
+  final TextEditingController _nameController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final category =
         Provider.of<Categories>(context).getCategoryById(widget.categoryId);
+    _nameController.text = category.name;
+
     print("Widget category: $category");
     return Scaffold(
       appBar: AppBar(
@@ -68,6 +73,39 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             child: Text("Add a new Recipe"),
                             onPressed: () => Navigator.of(ctx)
                                 .pushNamed(RouterNames.NewRecipeScreen),
+                          ),
+                          RaisedButton(
+                            child: Text("Delete Category"),
+                            onPressed: () => {
+                              Provider.of<Categories>(context, listen: false)
+                                  .removeCategory(category.id),
+
+                              // !IMPORTANT TODO: Fix error Shown after removal.
+
+                              Navigator.of(ctx).pop()
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: TextField(
+                              controller: _nameController,
+                              decoration: InputDecoration(labelText: "Rename"),
+                              onSubmitted: (String value) {
+                                print("-");
+                                print("-");
+                                print("category: $category");
+                                print("-");
+                                print("-");
+                                Provider.of<Categories>(context, listen: false)
+                                    .editCategory(
+                                  Category(
+                                    name: value,
+                                    colorCode: category.colorCode,
+                                    id: category.id,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       ),

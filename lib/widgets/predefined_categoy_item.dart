@@ -50,24 +50,13 @@ class _PredefinedCategoryItemState extends State<PredefinedCategoryItem> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(top: 4),
-                    child: Image.network(
-                      widget.category.photo,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
                   ),
-                  // Positioned(
-                  // right: 0,
-                  // bottom: 0,
-                  // child: Container(
                   Container(
                     margin: EdgeInsets.only(top: 4),
-                    color: Colors.black54,
                     child: Text(
                       widget.category.name,
-                      // style: Theme.of(context).textTheme.title,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 10,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),

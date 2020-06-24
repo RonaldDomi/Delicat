@@ -25,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.of(context)
           .pushReplacementNamed(RouterNames.CatSelectionScreen);
     }
+    // Navigator.of(context).pushReplacementNamed(RouterNames.CatSelectionScreen);
   }
 
   flipFirstHitStatus() async {

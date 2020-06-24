@@ -1,3 +1,4 @@
+import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,6 +6,7 @@ import 'router.dart';
 
 import './providers/recipes.dart';
 import './providers/categories.dart';
+// import 'screens/splash_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: '/',
+        initialRoute: RouterNames.SplashScreen,
         onGenerateRoute: Router.generateRoute,
       ),
     );

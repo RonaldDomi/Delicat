@@ -1,14 +1,35 @@
-import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/recipe.dart';
-import '../models/category.dart';
+// import '../models/category.dart';
 
 class Recipes with ChangeNotifier {
-  List<Recipe> _recipes = [];
+  List<Recipe> _recipes = [
+    Recipe(
+        id: 1,
+        name: 'Pancakes 1',
+        instructions: 'Fry the pancakes then eat.',
+        photo:
+            'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+        categoryId: '1'),
+    Recipe(
+        id: 2,
+        name: 'Pancakes 2',
+        instructions: 'Fry the pancakes then eat.',
+        photo:
+            'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+        categoryId: '1'),
+    Recipe(
+        id: 3,
+        name: 'Pancakes 3',
+        instructions: 'Fry the pancakes then eat.',
+        photo:
+            'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+        categoryId: '1'),
+  ];
 
   List<Recipe> get items {
     return [..._recipes];
@@ -24,37 +45,22 @@ class Recipes with ChangeNotifier {
 
     _recipes.add(newRecipe);
     notifyListeners();
-
-    // DBHelper.insert('user_recipes', {
-    //   'id': newRecipe.id,
-    //   'name': newRecipe.name,
-    //   'photo': newRecipe.photo.path,
-    //   'instructions': newRecipe.instructions,
-    //   'category_id': newRecipe.category.id,
-    // });
   }
 
   void removeRecipe(id) {
+    print("_recipes before removal: $_recipes");
+    print("targeted id: $id");
     _recipes.removeWhere((item) => item.id == id);
-
+    print("removed a recipe: new recipeList: $_recipes");
     notifyListeners();
-
-    // DBHelper.delete('user_recipes', id);
   }
 
-  void editRecipe(id, Recipe editedRecipe) {
-    final recipeIndex = _recipes.indexWhere((item) => item.id == id);
+  void editRecipe(Recipe editedRecipe) {
+    final recipeIndex =
+        _recipes.indexWhere((item) => item.id == editedRecipe.id);
     _recipes[recipeIndex] = editedRecipe;
 
     notifyListeners();
-
-    // DBHelper.edit('user_recipes', id, {
-    //   'id': editedRecipe.id,
-    //   'name': editedRecipe.name,
-    //   'photo': editedRecipe.photo.path,
-    //   'instructions': editedRecipe.instructions,
-    //   'category_id': editedRecipe.category.id,
-    // });
   }
 
   //We can do an eager load of the recipes at home screen
@@ -62,7 +68,6 @@ class Recipes with ChangeNotifier {
   Future<void> getRecipesByCategoryId(categoryId) async {
     //Assuming this function is called when wanting to list recipes of a certain category, then the _recipe "store" variable
     //only holds the currenct category recipes
-    _recipes = [];
 
     const url =
         'category/{categoryId}/recipe/all'; //find string interpolation syntax for dart
@@ -83,28 +88,6 @@ class Recipes with ChangeNotifier {
     } catch (error) {
       //if we have erorr with our request
       // throw error;
-      _recipes = [];
-      _recipes.add(Recipe(
-          id: 41,
-          name: 'Pancakes 1',
-          instructions: 'Fry the pancakes then eat.',
-          photo:
-              'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
-          categoryId: '1'));
-      _recipes.add(Recipe(
-          id: 42,
-          name: 'Pancakes 2',
-          instructions: 'Fry the pancakes then eat.',
-          photo:
-              'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
-          categoryId: '1'));
-      _recipes.add(Recipe(
-          id: 43,
-          name: 'Pancakes 3',
-          instructions: 'Fry the pancakes then eat.',
-          photo:
-              'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
-          categoryId: '1'));
 
       await Future.delayed(const Duration(seconds: 2), () {});
       return _recipes;

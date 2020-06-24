@@ -85,7 +85,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         minLines: 3,
                         maxLines: null,
                         validator: (value) {
-                          if (value.isEmpty || value.length <= 4) {
+                          if (value.isEmpty || value.length <= 1) {
                             return 'Please don\'t be lazy and enter some descriptive instructions.';
                           }
                           return null;

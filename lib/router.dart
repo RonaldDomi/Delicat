@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/cat_selection_screen.dart';
+import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/meal_details_screen.dart';
 import 'screens/new_cat_screen.dart';
@@ -15,6 +16,8 @@ class Router {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => HomeScreen());
+      case RouterNames.SplashScreen:
+        return MaterialPageRoute(builder: (_) => SplashScreen());
       case RouterNames.NewCatScreen:
         return MaterialPageRoute(builder: (_) => NewCatScreen());
       case RouterNames.MealDetailsScreen:

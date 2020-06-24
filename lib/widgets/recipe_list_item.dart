@@ -20,7 +20,7 @@ class RecipeListItem extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            "${recipe.name} index: ${recipe.id}",
+            "${recipe.name} \n index: ${recipe.id}",
             style: TextStyle(fontSize: 32),
           ),
         ),
