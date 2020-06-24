@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:core';
-import './home_screen.dart';
+import './tabs_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,12 +11,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    print("init state for SplashScreen");
     super.initState();
 
     Timer(Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (BuildContext context) => HomeScreen(),
+          builder: (BuildContext context) => TabsScreen(),
         ),
       );
     });

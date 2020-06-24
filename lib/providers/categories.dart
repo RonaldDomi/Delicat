@@ -73,15 +73,7 @@ class Categories with ChangeNotifier {
       // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '0xffa3a3a3'));
       // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '0xffd3d3d3'));
       // _categories.add(Category(id: 3, name: 'Cat 4', colorCode: '0xff939393'));
-      print("-");
-      print("--");
-      print("---");
-      print("provider categories ${_categories}");
-      print("before returning: wait 2 seconds");
       await Future.delayed(const Duration(seconds: 2), () {});
-      print("---");
-      print("--");
-      print("-");
       return _categories;
     }
   }
@@ -132,15 +124,7 @@ class Categories with ChangeNotifier {
       _predefinedCategories
           .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
 
-      print("-");
-      print("--");
-      print("---");
-      print("provider predefined ${_predefinedCategories}");
-      print("before returning: wait 2 seconds");
       await Future.delayed(const Duration(seconds: 2), () {});
-      print("---");
-      print("--");
-      print("-");
 
       return _predefinedCategories;
     }
@@ -198,7 +182,6 @@ class Categories with ChangeNotifier {
       );
       _categories.add(newCategory);
       notifyListeners();
-      print("created a new catogory: current_caterogy_list: $_categories");
 
       // throw error; //throws the error to the frontend so it can be handled there
       //Provider....createCategory()...catchError((error){
@@ -258,17 +241,12 @@ class Categories with ChangeNotifier {
             colorCode: json.decode(response.body)[
                 'colorCode']); // here we make the pointer of the exsisting category inside _categories to point to a new Category object
         //hopefully updated correctly
-        print(
-            "In our _categories list, we have updated our category with the new value: ${_categories.firstWhere((element) => element.id == editedCategory.id)}");
       }
       notifyListeners();
     } catch (error) {
       final existingCategoryIndex =
           _categories.indexWhere((element) => element.id == editedCategory.id);
       _categories[existingCategoryIndex] = editedCategory;
-      print(
-          "In our _categories list, we have updated our category with the new value: ${_categories.firstWhere((element) => element.id == editedCategory.id)}");
-      print("now new updated categories: $_categories");
     }
     notifyListeners();
   }

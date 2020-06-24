@@ -1,13 +1,12 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
-import 'category.dart';
-
-class Recipe {
+class Recipe with ChangeNotifier {
   int id;
   String name;
   String photo;
   String instructions;
   String categoryId;
+  bool isFavorite;
 
   Recipe({this.id, this.name, this.photo, this.instructions, this.categoryId});
 

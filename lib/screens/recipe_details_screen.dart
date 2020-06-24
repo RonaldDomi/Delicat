@@ -32,11 +32,6 @@ class RecipeDetailsScreen extends StatelessWidget {
               controller: _nameController,
               decoration: InputDecoration(labelText: "Rename"),
               onSubmitted: (String value) {
-                print("-");
-                print("-");
-                print("recipe: $recipe");
-                print("-");
-                print("-");
                 Provider.of<Recipes>(context, listen: false).editRecipe(
                   Recipe(
                     name: value,

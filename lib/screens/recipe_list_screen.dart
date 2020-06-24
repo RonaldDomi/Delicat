@@ -91,11 +91,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                               controller: _nameController,
                               decoration: InputDecoration(labelText: "Rename"),
                               onSubmitted: (String value) {
-                                print("-");
-                                print("-");
-                                print("category: $category");
-                                print("-");
-                                print("-");
                                 Provider.of<Categories>(context, listen: false)
                                     .editCategory(
                                   Category(

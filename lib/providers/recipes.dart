@@ -35,6 +35,10 @@ class Recipes with ChangeNotifier {
     return [..._recipes];
   }
 
+  List<Recipe> get favoriteItems {
+    return _recipes.where((recipe) => recipe.isFavorite).toList();
+  }
+
   void addRecipe(name, photo, instructions, categoryId) {
     Recipe newRecipe = Recipe(
       name: name,
@@ -48,10 +52,7 @@ class Recipes with ChangeNotifier {
   }
 
   void removeRecipe(id) {
-    print("_recipes before removal: $_recipes");
-    print("targeted id: $id");
     _recipes.removeWhere((item) => item.id == id);
-    print("removed a recipe: new recipeList: $_recipes");
     notifyListeners();
   }
 
@@ -98,7 +99,6 @@ class Recipes with ChangeNotifier {
   Recipe getRecipeById(recipeId) {
     //Here we rely solely on the memory data. We take for granted that _recipes is already loaded with the up-to-date
     //data from the server. For our app, this should work as intended.
-    print("recipeId : $recipeId, recipes: $_recipes");
     return _recipes.singleWhere((element) => element.id.toString() == recipeId);
   }
 }

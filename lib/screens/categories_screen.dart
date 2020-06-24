@@ -6,14 +6,12 @@ import '../providers/categories.dart';
 
 import '../routeNames.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key key}) : super(key: key);
-
+class CategoriesScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _CategoriesScreenState createState() => _CategoriesScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _CategoriesScreenState extends State<CategoriesScreen> {
   checkFirstHitStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool firstTime = prefs.getBool('first_time');
@@ -92,19 +90,18 @@ class _HomeScreenState extends State<HomeScreen> {
     var selectedCats =
         Provider.of<Categories>(context, listen: false).getAllCategories();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Home Screen"),
-      ),
-      body: FutureBuilder(
-        future: selectedCats,
-        builder: (ctx, snapshotCategories) => snapshotCategories
-                    .connectionState ==
-                ConnectionState.waiting
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
+    return FutureBuilder(
+      future: selectedCats,
+      builder: (ctx, snapshotCategories) => snapshotCategories
+                  .connectionState ==
+              ConnectionState.waiting
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              // padding: EdgeInsets.all(10),
+              color: Color.fromRGBO(241, 235, 232, 1),
+              child: Column(
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
@@ -142,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-      ),
+            ),
     );
   }
 }

@@ -26,8 +26,9 @@ class MyApp extends StatelessWidget {
         title: 'Delicat',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          // accentColor: Colors.deepOrange[200],
         ),
-        initialRoute: RouterNames.SplashScreen,
+        initialRoute: '/',
         onGenerateRoute: Router.generateRoute,
       ),
     );
