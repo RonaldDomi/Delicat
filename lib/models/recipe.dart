@@ -1,14 +1,19 @@
 import 'package:flutter/foundation.dart';
 
-class Recipe with ChangeNotifier {
+class Recipe {
   int id;
   String name;
   String photo;
   String instructions;
   String categoryId;
-  bool isFavorite;
 
-  Recipe({this.id, this.name, this.photo, this.instructions, this.categoryId});
+  Recipe({
+    this.id,
+    this.name,
+    this.photo,
+    this.instructions,
+    this.categoryId,
+  });
 
   @override
   String toString() {

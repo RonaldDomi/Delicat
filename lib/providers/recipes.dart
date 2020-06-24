@@ -9,34 +9,73 @@ import '../models/recipe.dart';
 class Recipes with ChangeNotifier {
   List<Recipe> _recipes = [
     Recipe(
-        id: 1,
-        name: 'Pancakes 1',
-        instructions: 'Fry the pancakes then eat.',
-        photo:
-            'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
-        categoryId: '1'),
+      id: 1,
+      name: 'Pancakes 1',
+      instructions: 'Fry the pancakes then eat.',
+      photo:
+          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      categoryId: '1',
+    ),
     Recipe(
-        id: 2,
-        name: 'Pancakes 2',
-        instructions: 'Fry the pancakes then eat.',
-        photo:
-            'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
-        categoryId: '1'),
+      id: 2,
+      name: 'Pancakes 2',
+      instructions: 'Fry the pancakes then eat.',
+      photo:
+          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      categoryId: '1',
+    ),
     Recipe(
-        id: 3,
-        name: 'Pancakes 3',
-        instructions: 'Fry the pancakes then eat.',
-        photo:
-            'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
-        categoryId: '1'),
+      id: 3,
+      name: 'Pancakes 2 but better',
+      instructions: 'Fry the pancakes better then eat.',
+      photo:
+          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      categoryId: '1',
+    ),
+  ];
+  List<Recipe> _favoriteRecipes = [
+    Recipe(
+      id: 2,
+      name: 'Pancakes 2',
+      instructions: 'Fry the pancakes then eat.',
+      photo:
+          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      categoryId: '1',
+    ),
+    Recipe(
+      id: 3,
+      name: 'Pancakes 2 but better',
+      instructions: 'Fry the pancakes better then eat.',
+      photo:
+          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      categoryId: '1',
+    ),
   ];
 
-  List<Recipe> get items {
+  List<Recipe> get recipes {
     return [..._recipes];
   }
 
-  List<Recipe> get favoriteItems {
-    return _recipes.where((recipe) => recipe.isFavorite).toList();
+  List<Recipe> get favoriteRecipes {
+    return [..._favoriteRecipes];
+  }
+
+  void toggleFavorite(int recipeId) {
+    final existingIndex =
+        _favoriteRecipes.indexWhere((recipe) => recipe.id == recipeId);
+    if (existingIndex >= 0) {
+      _favoriteRecipes.removeAt(existingIndex);
+    } else {
+      _favoriteRecipes.add(
+        _recipes.firstWhere((recipe) => recipe.id == recipeId),
+      );
+    }
+    print("$_favoriteRecipes");
+    notifyListeners();
+  }
+
+  bool isRecipeFavorite(id) {
+    return _favoriteRecipes.any((recipe) => recipe.id.toString() == id);
   }
 
   void addRecipe(name, photo, instructions, categoryId) {

@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-
-// import '../providers/recipes.dart';
 import './favorites_screen.dart';
 import './categories_screen.dart';
 import '../models/recipe.dart';
@@ -18,15 +15,15 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   void initState() {
+    // List<Recipe> favoriteRecipes = [];
     // List<Recipe> favoriteRecipes = Provider.of<Recipes>(context).favoriteItems;
-    // CANNOT USE THE PROVIDER INSIDE THE INITSTATE METHOD
-    List<Recipe> favoriteRecipes = [];
     _pages = [
       {
         'page': CategoriesScreen(),
       },
       {
-        'page': FavoritesScreen(favoriteRecipes),
+        // 'page': FavoritesScreen(favoriteRecipes),
+        'page': FavoritesScreen(),
       },
       {
         'page': SearchScreen(),

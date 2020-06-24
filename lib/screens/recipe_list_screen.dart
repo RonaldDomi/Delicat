@@ -42,7 +42,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 child: Center(
                   child: const Text("you have no recipes in this category."),
                 ),
-                builder: (ctx, recipes, ch) => recipes.items.length <= 0
+                builder: (ctx, recipesProvider, ch) => recipesProvider
+                            .recipes.length <=
+                        0
                     ? ch
                     : Column(
                         children: <Widget>[
@@ -52,16 +54,17 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                               onTap: (index) {
                                 Navigator.of(context).pushNamed(
                                   RouterNames.RecipeDetailsScreen,
-                                  arguments: recipes.items[index].id.toString(),
+                                  arguments: recipesProvider.recipes[index].id
+                                      .toString(),
                                 );
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 return RecipeListItem(
-                                  recipes.items[index],
+                                  recipesProvider.recipes[index],
                                   category.colorCode,
                                 );
                               },
-                              itemCount: recipes.items.length,
+                              itemCount: recipesProvider.recipes.length,
                               viewportFraction: 0.7,
                               scale: 0.8,
                             ),
