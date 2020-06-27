@@ -18,6 +18,7 @@ dependencies:
   flutter_colorpicker: ^0.3.4
   cupertino_icons: ^0.1.2
   sliding_up_panel: ^1.0.2
+  progress_indicators: ^0.1.5
 
   flutter_swiper: ^1.1.6
 
@@ -39,7 +40,14 @@ flutter:
     - assets/photos/turkish.jpg
     - assets/photos/veggies.jpg
     # logo
-    - assets/logo/logo-hdpi.png
+    - assets/logo/logo.png
+    # circle-images
+    - assets/photos/breakfast-circle.png
+    - assets/photos/burgers-circle.png
+    - assets/photos/dessert-circle.png
+    - assets/photos/sushi-circle.png
+    - assets/photos/pasta-circle.png
+    - assets/photos/vegetable-circle.png
   # fonts:
   #   - family: Schyler
   #     fonts:

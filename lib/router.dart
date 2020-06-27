@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'screens/cat_selection_screen.dart';
 import 'screens/splash_screen.dart';
+import 'screens/generating_cats_screen.dart';
 import 'screens/tabs_screen.dart';
 import 'screens/meal_details_screen.dart';
 import 'screens/new_cat_screen.dart';
@@ -16,14 +17,20 @@ class Router {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => TabsScreen());
+      case RouterNames.GeneratingCategoriesScreen:
+        return MaterialPageRoute(builder: (_) => GeneratingCategoriesScreen());
       case RouterNames.SplashScreen:
         return MaterialPageRoute(builder: (_) => SplashScreen());
+
       case RouterNames.NewCatScreen:
-        return MaterialPageRoute(builder: (_) => NewCatScreen());
+        return MaterialPageRoute(
+            builder: (_) => TabsScreen(pageName: RouterNames.NewCatScreen));
+        break;
       case RouterNames.MealDetailsScreen:
         return MaterialPageRoute(builder: (_) => MealDetailsScreen());
       case RouterNames.CatSelectionScreen:
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
+
       case RouterNames.RecipeListScreen:
         var categoryId = settings.arguments as String;
         return MaterialPageRoute(

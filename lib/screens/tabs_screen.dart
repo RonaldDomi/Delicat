@@ -1,36 +1,37 @@
+import 'package:delicat/screens/new_cat_screen.dart';
 import 'package:flutter/material.dart';
+
+import '../models/recipe.dart';
+import '../routeNames.dart';
+
+import 'new_cat_screen.dart';
 import './favorites_screen.dart';
 import './categories_screen.dart';
-import '../models/recipe.dart';
 import './search_screen.dart';
 
 class TabsScreen extends StatefulWidget {
+  final String pageName;
+
+  TabsScreen({this.pageName = "Default"});
   @override
   _TabsScreenState createState() => _TabsScreenState();
 }
 
 class _TabsScreenState extends State<TabsScreen> {
-  List<Map<String, Object>> _pages;
-  int _selectedPageIndex = 0;
+  List<Object> _pages;
+  int _selectedPageIndex;
 
   @override
   void initState() {
     // List<Recipe> favoriteRecipes = [];
     // List<Recipe> favoriteRecipes = Provider.of<Recipes>(context).favoriteItems;
+    _selectedPageIndex = 0;
     _pages = [
-      {
-        'page': CategoriesScreen(),
-      },
-      {
-        // 'page': FavoritesScreen(favoriteRecipes),
-        'page': FavoritesScreen(),
-      },
-      {
-        'page': SearchScreen(),
-      },
-      {
-        'page': SearchScreen(),
-      },
+      CategoriesScreen(_selectPage),
+      FavoritesScreen(),
+      SearchScreen(),
+      SearchScreen(),
+      NewCatScreen(),
     ];
     super.initState();
   }
@@ -44,20 +45,20 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedPageIndex]['page'],
+      body: _pages[_selectedPageIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
-        // showSelectedLabels: false,
-        // showUnselectedLabels: false,
-        currentIndex: _selectedPageIndex,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        currentIndex: 0,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
-            backgroundColor: Color.fromRGBO(246, 194, 164, 1),
+            backgroundColor: Color(0xffF6C2A4),
             icon: RawMaterialButton(
               elevation: 3,
               padding: EdgeInsets.all(10),
-              fillColor: Color.fromRGBO(246, 194, 164, 1),
+              fillColor: Color(0xffF6C2A4),
               child: Icon(
                 Icons.home,
                 color: Colors.white,
@@ -71,7 +72,7 @@ class _TabsScreenState extends State<TabsScreen> {
             icon: RawMaterialButton(
               elevation: 3,
               padding: EdgeInsets.all(10),
-              fillColor: Color.fromRGBO(246, 194, 164, 1),
+              fillColor: Color(0xffF6C2A4),
               child: Icon(
                 Icons.favorite_border,
                 color: Colors.white,
@@ -85,7 +86,7 @@ class _TabsScreenState extends State<TabsScreen> {
             icon: RawMaterialButton(
               elevation: 3,
               padding: EdgeInsets.all(10),
-              fillColor: Color.fromRGBO(246, 194, 164, 1),
+              fillColor: Color(0xffF6C2A4),
               child: Icon(
                 Icons.search,
                 color: Colors.white,
@@ -99,7 +100,7 @@ class _TabsScreenState extends State<TabsScreen> {
             icon: RawMaterialButton(
               elevation: 3,
               padding: EdgeInsets.all(10),
-              fillColor: Color.fromRGBO(246, 194, 164, 1),
+              fillColor: Color(0xffF6C2A4),
               child: Icon(
                 Icons.apps,
                 color: Colors.white,
@@ -113,7 +114,7 @@ class _TabsScreenState extends State<TabsScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
         child: IconButton(
-          icon: Image.asset("assets/logo/logo-hdpi.png"),
+          icon: Image.asset("assets/logo/logo.png"),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

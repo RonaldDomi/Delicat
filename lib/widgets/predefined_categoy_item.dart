@@ -28,59 +28,21 @@ class _PredefinedCategoryItemState extends State<PredefinedCategoryItem> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: selectCategory,
-      splashColor: Theme.of(context).primaryColor,
-      borderRadius: BorderRadius.circular(15),
       child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(int.parse(widget.category.colorCode)).withOpacity(0.7),
-                Color(int.parse(widget.category.colorCode)),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: widget.isSelected
-                ? BorderRadius.circular(0)
-                : BorderRadius.circular(15),
+            color: Color(0xff48332A),
+            borderRadius: BorderRadius.circular(15),
           ),
-          child: Column(
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 4),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 4),
-                    child: Text(
-                      widget.category.name,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  // ),
-                ],
+          child: Center(
+            child: Text(
+              widget.category.name,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: widget.isSelected ? Color(0xffF6C2A4) : Colors.white,
               ),
-            ],
+            ),
           )),
     );
   }
 }
-
-// decoration: BoxDecoration(
-//             gradient: LinearGradient(
-//               colors: [
-//                 Color(int.parse(widget.category.colorCode)).withOpacity(0.7),
-//                 Color(int.parse(widget.category.colorCode)),
-//               ],
-//               begin: Alignment.topLeft,
-//               end: Alignment.bottomRight,
-//             ),
-//             borderRadius: widget.isSelected
-//                 ? BorderRadius.circular(0)
-//                 : BorderRadius.circular(15),
-//           ),

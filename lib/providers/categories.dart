@@ -12,10 +12,40 @@ class Categories with ChangeNotifier {
   final baseUrl = 'aws';
 
   List<Category> _categories = [
-    Category(id: 1, name: 'PredefCat 1', colorCode: '0xfff3f3f3'),
-    Category(id: 2, name: 'PredefCat 2', colorCode: '0xffa3a3a3'),
+    Category(
+      id: 1,
+      name: 'Pasta',
+      colorCode: '0xff1B2E46',
+      photo: "assets/photos/pasta.jpg",
+    ),
   ];
-  List<Category> _predefinedCategories = [];
+  List<Category> _predefinedCategories = [
+    Category(
+        id: 41,
+        name: 'Sushi',
+        colorCode: '0xffD44C22',
+        photo: "assets/photos/sushi-circle.png"),
+    Category(
+        id: 42,
+        name: 'Dessert',
+        colorCode: '0xffE5C1CB',
+        photo: "assets/photos/dessert-circle.png"),
+    Category(
+        id: 43,
+        name: 'Vegetable',
+        colorCode: '0xffDDE5B0',
+        photo: "assets/photos/vegetable-circle.png"),
+    Category(
+        id: 44,
+        name: 'Breakfast',
+        colorCode: '0xffABBFB5',
+        photo: "assets/photos/breakfast-circle.png"),
+    Category(
+        id: 45,
+        name: 'Burger',
+        colorCode: '0xff1B2E46',
+        photo: "assets/photos/burgers-circle.png"),
+  ];
 
   List<Category> get items {
     return [..._categories];
@@ -69,66 +99,66 @@ class Categories with ChangeNotifier {
       // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '#d3d3d3'));
 
       // DEBUGGING
-      // _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '0xfff3f3f3'));
-      // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '0xffa3a3a3'));
-      // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '0xffd3d3d3'));
-      // _categories.add(Category(id: 3, name: 'Cat 4', colorCode: '0xff939393'));
+      // _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '0xffABBFB5'));
+      // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '0xffE5C1CB'));
+      // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '0xffD44C22'));
+      // _categories.add(Category(id: 3, name: 'Cat 4', colorCode: '0xffEEDA76'));
       await Future.delayed(const Duration(seconds: 2), () {});
       return _categories;
     }
   }
 
-  Future<List<Category>> getAllPredefinedCategories() async {
-    // AWS should try and give us something of the shape:
-    // [
-    //   { 'uid' : 'x',
-    //   'name' : 'x',
-    //   'photo' : 'x',
-    //   'colorCode' : 'x',
-    //   'recipes' : [{}{}]
-    //   },
-    //  { another cateogry object ... }
-    // ]
-    const url = '/category/predefined';
+  // Future<List<Category>> getAllPredefinedCategories() async {
+  //   // AWS should try and give us something of the shape:
+  //   // [
+  //   //   { 'uid' : 'x',
+  //   //   'name' : 'x',
+  //   //   'photo' : 'x',
+  //   //   'colorCode' : 'x',
+  //   //   'recipes' : [{}{}]
+  //   //   },
+  //   //  { another cateogry object ... }
+  //   // ]
+  //   const url = '/category/predefined';
 
-    try {
-      final response = await http.get(url);
+  //   try {
+  //     final response = await http.get(url);
 
-      for (var category in json.decode(response.body)) {
-        //purge existing categories
-        _predefinedCategories = [];
-        //then load again with data coming from server
+  //     for (var category in json.decode(response.body)) {
+  //       //purge existing categories
+  //       _predefinedCategories = [];
+  //       //then load again with data coming from server
 
-        //now we create a Category model object from the json data
-        var predefinedCategoryToAdd =
-            Category(name: category.name, colorCode: category.colorCode);
+  //       //now we create a Category model object from the json data
+  //       var predefinedCategoryToAdd =
+  //           Category(name: category.name, colorCode: category.colorCode);
 
-        //finally we add each parsed category object to our master list
-        _predefinedCategories.add(predefinedCategoryToAdd);
-      }
-      notifyListeners();
-    } catch (error) {
-      //if we have erorr with our request
-      // throw error;
-      _predefinedCategories = [];
-      _predefinedCategories
-          .add(Category(id: 41, name: 'PredfCat 1', colorCode: '0xffb30d04'));
-      _predefinedCategories
-          .add(Category(id: 42, name: 'PredfCat 2', colorCode: '0xffD1B3C4'));
-      _predefinedCategories
-          .add(Category(id: 43, name: 'PredfCat 3', colorCode: '0xffc03f20'));
-      _predefinedCategories
-          .add(Category(id: 44, name: 'PredfCat 4', colorCode: '0xff735D78'));
-      _predefinedCategories
-          .add(Category(id: 45, name: 'PredfCat 5', colorCode: '0xffEDFF86'));
-      _predefinedCategories
-          .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
+  //       //finally we add each parsed category object to our master list
+  //       _predefinedCategories.add(predefinedCategoryToAdd);
+  //     }
+  //     notifyListeners();
+  //   } catch (error) {
+  //     //if we have erorr with our request
+  //     // throw error;
+  //     _predefinedCategories = [];
+  //     _predefinedCategories
+  //         .add(Category(id: 41, name: 'PredfCat 1', colorCode: '0xffb30d04'));
+  //     _predefinedCategories
+  //         .add(Category(id: 42, name: 'PredfCat 2', colorCode: '0xffD1B3C4'));
+  //     _predefinedCategories
+  //         .add(Category(id: 43, name: 'PredfCat 3', colorCode: '0xffc03f20'));
+  //     _predefinedCategories
+  //         .add(Category(id: 44, name: 'PredfCat 4', colorCode: '0xff735D78'));
+  //     _predefinedCategories
+  //         .add(Category(id: 45, name: 'PredfCat 5', colorCode: '0xffEDFF86'));
+  //     _predefinedCategories
+  //         .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
 
-      await Future.delayed(const Duration(seconds: 2), () {});
+  //     await Future.delayed(const Duration(seconds: 2), () {});
 
-      return _predefinedCategories;
-    }
-  }
+  //     return _predefinedCategories;
+  //   }
+  // }
 
   Category getCategoryById(String catId) {
     //Here we rely solely on the memory data. We take for granted that _categories is already loaded with the up-to-date
@@ -177,9 +207,10 @@ class Categories with ChangeNotifier {
       final newCategory = Category(
         id: rng.nextInt(1000),
         name: category.name,
-        photo: "-",
+        photo: category.photo,
         colorCode: category.colorCode,
       );
+      print("new category: $newCategory");
       _categories.add(newCategory);
       notifyListeners();
 

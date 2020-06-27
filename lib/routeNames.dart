@@ -1,5 +1,6 @@
 class RouterNames {
   static const SplashScreen = '/splash-screen';
+  static const GeneratingCategoriesScreen = '/generating';
   static const NewCatScreen = '/new-cat';
   static const CatSelectionScreen = '/cat-selection';
   static const RecipeListScreen = '/recipe-list';

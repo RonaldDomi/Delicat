@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'dart:core';
 import './tabs_screen.dart';
 
@@ -14,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
     print("init state for SplashScreen");
     super.initState();
 
-    Timer(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (BuildContext context) => TabsScreen(),
@@ -28,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Color.fromRGBO(241, 235, 232, 1),
+          color: Color(0xffF1EBE8),
         ),
         child: Container(
           child: Row(
@@ -37,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 backgroundColor: Colors.transparent,
                 child: Container(
                   child: Image(
-                    image: AssetImage("assets/logo/logo-hdpi.png"),
+                    image: AssetImage("assets/logo/logo.png"),
                   ),
                 ),
                 radius: 100.0,
