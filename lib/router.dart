@@ -23,8 +23,7 @@ class Router {
         return MaterialPageRoute(builder: (_) => SplashScreen());
 
       case RouterNames.NewCatScreen:
-        return MaterialPageRoute(
-            builder: (_) => TabsScreen(pageName: RouterNames.NewCatScreen));
+        return MaterialPageRoute(builder: (_) => TabsScreen());
         break;
       case RouterNames.MealDetailsScreen:
         return MaterialPageRoute(builder: (_) => MealDetailsScreen());

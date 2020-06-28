@@ -121,168 +121,167 @@ class _NewCatScreenState extends State<NewCatScreen> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : Form(
-            key: _form,
-            child: Container(
-              color: Color(0xffF1EBE8),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Your Menu",
-                          style: TextStyle(
-                            fontSize: 23,
-                          ),
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            var pass;
-                          },
-                          color: Colors.white,
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                          child: Text(
-                            "add a new cat",
+        : Container(
+            color: Color(0xffF1EBE8),
+            height: MediaQuery.of(context).size.height,
+            child: SingleChildScrollView(
+              child: Form(
+                key: _form,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "Your Menu",
                             style: TextStyle(
-                              color: Color(0xffD6D6D6),
+                              fontSize: 23,
                             ),
                           ),
-                        )
-                      ],
+                          RaisedButton(
+                            disabledTextColor: Color(0xffD6D6D6),
+                            disabledColor: Colors.white,
+                            disabledElevation: 6,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                            child: Text(
+                              "add a new cat",
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(29),
-                      color: Color(0xffF9F9F9),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.all(10),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          "New Categorie",
-                          style: TextStyle(
-                            fontSize: 23,
-                            color: Color(0xffBB9982),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(29),
+                        color: Color(0xffF9F9F9),
+                      ),
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.all(10),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            "New Categorie",
+                            style: TextStyle(
+                              fontSize: 23,
+                              color: Color(0xffBB9982),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: Row(
-                            children: <Widget>[
-                              Container(
-                                // width: 80.0,
-                                child: Text(
-                                  "Cat Name",
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Color(0xff927C6C),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 20),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 3.7,
-                                child: TextFormField(
-                                  initialValue: _initValues['name'],
-                                  decoration:
-                                      InputDecoration(labelText: 'Name'),
-                                  textInputAction: TextInputAction.next,
-                                  // onFieldSubmitted: (_) {
-                                  //   FocusScope.of(context).requestFocus(_colorFocusNode);
-                                  // },
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Please provide a value.';
-                                    }
-                                    return null;
-                                  },
-                                  onSaved: (value) {
-                                    _initValues['name'] = value;
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        RaisedButton(
-                          elevation: 3.0,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Select a color'),
-                                  content: SingleChildScrollView(
-                                    child: BlockPicker(
-                                      pickerColor: currentColor,
-                                      availableColors: _availableColors,
-                                      onColorChanged: changeColor,
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  // width: 80.0,
+                                  child: Text(
+                                    "Cat Name",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      color: Color(0xff927C6C),
                                     ),
                                   ),
-                                );
-                              },
-                            );
-                          },
-                          child: const Text(
-                            'Select Color',
-                            textAlign: TextAlign.left,
-                          ),
-                          color: currentColor,
-                          textColor: useWhiteForeground(currentColor)
-                              ? const Color(0xffffffff)
-                              : const Color(0xff000000),
-                        ),
-                        FlatButton(
-                          onPressed: _saveForm,
-                          child: Text("Submit form"),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    // width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(29),
-                      color: Color(0xffF9F9F9),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.all(10),
-                    child: Column(
-                      children: <Widget>[
-                        Text("Please choose what we have made for you"),
-                        RaisedButton(
-                          onPressed: () {
-                            // var pass;
-                            Navigator.of(context).pushReplacementNamed(
-                                RouterNames.CatSelectionScreen);
-                          },
-                          color: Colors.white,
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                          child: Text(
-                            "Go to Predefined Cats",
-                            style: TextStyle(
-                              color: Color(0xffF6C2A4),
+                                ),
+                                SizedBox(width: 20),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.7,
+                                  child: TextFormField(
+                                    initialValue: _initValues['name'],
+                                    decoration:
+                                        InputDecoration(labelText: 'Name'),
+                                    textInputAction: TextInputAction.next,
+                                    // onFieldSubmitted: (_) {
+                                    //   FocusScope.of(context).requestFocus(_colorFocusNode);
+                                    // },
+                                    validator: (value) {
+                                      if (value.isEmpty) {
+                                        return 'Please provide a value.';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value) {
+                                      _initValues['name'] = value;
+                                    },
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        )
-                      ],
+                          RaisedButton(
+                            elevation: 3.0,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Select a color'),
+                                    content: SingleChildScrollView(
+                                      child: BlockPicker(
+                                        pickerColor: currentColor,
+                                        availableColors: _availableColors,
+                                        onColorChanged: changeColor,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            child: const Text(
+                              'Select Color',
+                              textAlign: TextAlign.left,
+                            ),
+                            color: currentColor,
+                            textColor: useWhiteForeground(currentColor)
+                                ? const Color(0xffffffff)
+                                : const Color(0xff000000),
+                          ),
+                          FlatButton(
+                            onPressed: _saveForm,
+                            child: Text("Submit form"),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      // width: MediaQuery.of(context).size.width * 0.8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(29),
+                        color: Color(0xffF9F9F9),
+                      ),
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.all(10),
+                      child: Column(
+                        children: <Widget>[
+                          Text("Please choose what we have made for you"),
+                          RaisedButton(
+                            onPressed: () {
+                              // var pass;
+                              Navigator.of(context).pushReplacementNamed(
+                                  RouterNames.CatSelectionScreen);
+                            },
+                            color: Colors.white,
+                            elevation: 6,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                            child: Text(
+                              "Go to Predefined Cats       ",
+                              style: TextStyle(
+                                color: Color(0xffF6C2A4),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

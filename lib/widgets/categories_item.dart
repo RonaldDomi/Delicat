@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/category.dart';
-import '../routeNames.dart';
 
 class CategoryItem extends StatelessWidget {
-  Category category;
+  final Category category;
 
   CategoryItem(this.category);
 
@@ -34,12 +33,6 @@ class CategoryItem extends StatelessWidget {
               ),
             ),
           ),
-          // CircleAvatar(
-          //   backgroundImage: DecorationImage(
-          //       fit: BoxFit.fill,
-          //       image: AssetImage(category.photo),
-          //     ),,
-          // ),
           Text(
             category.name,
             textAlign: TextAlign.center,
@@ -53,8 +46,3 @@ class CategoryItem extends StatelessWidget {
     );
   }
 }
-
-// onTap: () {
-//   Navigator.of(context).pushNamed(RouterNames.RecipeListScreen,
-//       arguments: category.id.toString());
-// },
