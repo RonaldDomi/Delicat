@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class Recipe {
-  int id;
+  String id;
   String name;
   String photo;
   String instructions;

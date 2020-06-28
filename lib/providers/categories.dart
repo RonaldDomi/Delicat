@@ -1,49 +1,75 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 
+import '../helperFunctions.dart';
 import '../models/category.dart';
 
 class Categories with ChangeNotifier {
   //This is the base url for making the api calls
   final baseUrl = 'aws';
 
+  // print("og red: ${TinyColor(Colors.red).color}");
+  // print("lightened() ${TinyColor(Colors.red).lighten().color}");
+  // print("lightened 50${TinyColor(Colors.red).lighten(50).color}");
+  // print("darkened 50${TinyColor(Colors.red).darken(50).color}");
+
+  // print("brighten ${TinyColor(Colors.red).brighten().color}");
+  // print("brighten 20${TinyColor(Colors.red).brighten(20).color}");
   List<Category> _categories = [
     Category(
-      id: 1,
+      id: "1",
       name: 'Pasta',
-      colorCode: '0xff1B2E46',
-      photo: "assets/photos/pasta.jpg",
+      photo: "assets/photos/pasta-circle.png",
+      colorCode: '#EEDA76',
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#EEDA76"),
+      ).brighten(14).color),
     ),
+    Category(
+        id: "41",
+        name: 'Sushi',
+        colorCode: '#D44C22',
+        colorLightCode: colorToHex(TinyColor(
+          hexToColor("#D44C22"),
+        ).brighten(14).color),
+        photo: "assets/photos/sushi-circle.png"),
   ];
   List<Category> _predefinedCategories = [
     Category(
-        id: 41,
-        name: 'Sushi',
-        colorCode: '0xffD44C22',
-        photo: "assets/photos/sushi-circle.png"),
-    Category(
-        id: 42,
+        id: "42",
         name: 'Dessert',
-        colorCode: '0xffE5C1CB',
+        colorCode: '#E5C1CB',
+        colorLightCode: colorToHex(TinyColor(
+          hexToColor("#E5C1CB"),
+        ).brighten(14).color),
         photo: "assets/photos/dessert-circle.png"),
     Category(
-        id: 43,
+        id: "43",
         name: 'Vegetable',
-        colorCode: '0xffDDE5B0',
+        colorCode: '#DDE5B0',
+        colorLightCode: colorToHex(TinyColor(
+          hexToColor("#DDE5B0"),
+        ).brighten(14).color),
         photo: "assets/photos/vegetable-circle.png"),
     Category(
-        id: 44,
+        id: "44",
         name: 'Breakfast',
-        colorCode: '0xffABBFB5',
+        colorCode: '#ABBFB5',
+        colorLightCode: colorToHex(TinyColor(
+          hexToColor("#ABBFB5"),
+        ).brighten(14).color),
         photo: "assets/photos/breakfast-circle.png"),
     Category(
-        id: 45,
+        id: "45",
         name: 'Burger',
-        colorCode: '0xff1B2E46',
+        colorCode: '#1B2E46',
+        colorLightCode: colorToHex(TinyColor(
+          hexToColor("#1B2E46"),
+        ).brighten(14).color),
         photo: "assets/photos/burgers-circle.png"),
   ];
 
@@ -87,22 +113,6 @@ class Categories with ChangeNotifier {
     } catch (error) {
       //if we have erorr with our request
       // throw error;
-
-      //in this stage of the development we'll always have an error since the api endpoint is not implemented yet
-      //so we take advantage of this error to return some dummy category data
-
-      // HOW IT SHOULD BE
-      // _categories = [];
-
-      // _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '#f3f3f3'));
-      // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '#a3a3a3'));
-      // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '#d3d3d3'));
-
-      // DEBUGGING
-      // _categories.add(Category(id: 1, name: 'Cat 1', colorCode: '0xffABBFB5'));
-      // _categories.add(Category(id: 2, name: 'Cat 2', colorCode: '0xffE5C1CB'));
-      // _categories.add(Category(id: 3, name: 'Cat 3', colorCode: '0xffD44C22'));
-      // _categories.add(Category(id: 3, name: 'Cat 4', colorCode: '0xffEEDA76'));
       await Future.delayed(const Duration(seconds: 2), () {});
       return _categories;
     }
@@ -205,7 +215,7 @@ class Categories with ChangeNotifier {
       print("error: no api call implemented. manually creating...");
       var rng = new Random();
       final newCategory = Category(
-        id: rng.nextInt(1000),
+        id: rng.nextInt(1000).toString(),
         name: category.name,
         photo: category.photo,
         colorCode: category.colorCode,
@@ -229,7 +239,7 @@ class Categories with ChangeNotifier {
     //see chapter 10 episode 10 for how to fully implement in frontend
   }
 
-  Future<void> removeCategory(id) async {
+  Future<void> removeCategory(String id) async {
     final url = '/category/$id';
     try {
       final response = await http.delete(url);

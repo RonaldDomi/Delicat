@@ -48,7 +48,7 @@ class _SearchScreenState extends State<SearchScreen> {
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
-              onSubmitted: (value) {
+              onChanged: (value) {
                 filterSearchResults(value);
               },
               controller: editingController,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../helperFunctions.dart';
 import '../models/recipe.dart';
 
 class RecipeListItem extends StatelessWidget {
@@ -14,7 +14,7 @@ class RecipeListItem extends StatelessWidget {
       height: 250,
       child: Card(
         elevation: 6,
-        color: Color(int.parse(categoryColorCode)),
+        color: hexToColor(categoryColorCode),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),

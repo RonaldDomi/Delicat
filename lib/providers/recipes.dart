@@ -9,7 +9,7 @@ import '../models/recipe.dart';
 class Recipes with ChangeNotifier {
   List<Recipe> _recipes = [
     Recipe(
-      id: 1,
+      id: "1",
       name: 'Pancakes 1',
       instructions: 'Fry the pancakes then eat.',
       photo:
@@ -17,7 +17,7 @@ class Recipes with ChangeNotifier {
       categoryId: '1',
     ),
     Recipe(
-      id: 2,
+      id: "2",
       name: 'Pancakes 2',
       instructions: 'Fry the pancakes then eat.',
       photo:
@@ -25,7 +25,7 @@ class Recipes with ChangeNotifier {
       categoryId: '1',
     ),
     Recipe(
-      id: 3,
+      id: "3",
       name: 'Pancakes 2 but better',
       instructions: 'Fry the pancakes better then eat.',
       photo:
@@ -35,7 +35,7 @@ class Recipes with ChangeNotifier {
   ];
   List<Recipe> _favoriteRecipes = [
     Recipe(
-      id: 2,
+      id: "2",
       name: 'Pancakes 2',
       instructions: 'Fry the pancakes then eat.',
       photo:
@@ -43,7 +43,7 @@ class Recipes with ChangeNotifier {
       categoryId: '1',
     ),
     Recipe(
-      id: 3,
+      id: "3",
       name: 'Pancakes 2 but better',
       instructions: 'Fry the pancakes better then eat.',
       photo:
@@ -60,7 +60,7 @@ class Recipes with ChangeNotifier {
     return [..._favoriteRecipes];
   }
 
-  void toggleFavorite(int recipeId) {
+  void toggleFavorite(String recipeId) {
     final existingIndex =
         _favoriteRecipes.indexWhere((recipe) => recipe.id == recipeId);
     if (existingIndex >= 0) {
@@ -74,8 +74,8 @@ class Recipes with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isRecipeFavorite(id) {
-    return _favoriteRecipes.any((recipe) => recipe.id.toString() == id);
+  bool isRecipeFavorite(String id) {
+    return _favoriteRecipes.any((recipe) => recipe.id == id);
   }
 
   void addRecipe(name, photo, instructions, categoryId) {
@@ -90,7 +90,7 @@ class Recipes with ChangeNotifier {
     notifyListeners();
   }
 
-  void removeRecipe(id) {
+  void removeRecipe(String id) {
     _recipes.removeWhere((item) => item.id == id);
     notifyListeners();
   }
@@ -105,7 +105,7 @@ class Recipes with ChangeNotifier {
 
   //We can do an eager load of the recipes at home screen
   //Alternatively we load recipes only when selecting the category, which is the default behavior
-  Future<void> getRecipesByCategoryId(categoryId) async {
+  Future<void> getRecipesByCategoryId(String categoryId) async {
     //Assuming this function is called when wanting to list recipes of a certain category, then the _recipe "store" variable
     //only holds the currenct category recipes
 
@@ -135,9 +135,9 @@ class Recipes with ChangeNotifier {
     notifyListeners();
   }
 
-  Recipe getRecipeById(recipeId) {
+  Recipe getRecipeById(String recipeId) {
     //Here we rely solely on the memory data. We take for granted that _recipes is already loaded with the up-to-date
     //data from the server. For our app, this should work as intended.
-    return _recipes.singleWhere((element) => element.id.toString() == recipeId);
+    return _recipes.singleWhere((element) => element.id == recipeId);
   }
 }

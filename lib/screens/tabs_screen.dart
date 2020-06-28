@@ -39,11 +39,11 @@ class _TabsScreenState extends State<TabsScreen> {
     super.initState();
   }
 
-  void _selectPage(int index, [int catId]) {
+  void _selectPage(int index, [String catId]) {
     setState(() {
       if (catId != null) {
         _isCustomBody = true;
-        _customBody = RecipeListScreen(categoryId: catId.toString());
+        _customBody = RecipeListScreen(categoryId: catId);
       } else {
         _isCustomBody = false;
         _selectedPageIndex = index;

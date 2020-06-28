@@ -1,3 +1,4 @@
+import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
@@ -68,9 +69,10 @@ class _NewCatScreenState extends State<NewCatScreen> {
     setState(() {
       _isLoading = true;
     });
-    print(_initValues);
+    String newCode = colorCodeToHex(_initValues['colorCode']);
+
     Category _newCategory = Category(
-      colorCode: _initValues['colorCode'],
+      colorCode: newCode,
       name: _initValues['name'],
       photo: "assets/photos/salads.jpg",
     );

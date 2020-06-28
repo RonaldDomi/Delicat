@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../helperFunctions.dart';
 import '../models/category.dart';
 
 class CategoryItem extends StatelessWidget {
@@ -12,8 +13,8 @@ class CategoryItem extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(int.parse(category.colorCode)).withOpacity(0.7),
-            Color(int.parse(category.colorCode)),
+            hexToColor(category.colorCode).withOpacity(0.7),
+            hexToColor(category.colorCode),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
