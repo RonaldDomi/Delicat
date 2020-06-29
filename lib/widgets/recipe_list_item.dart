@@ -6,12 +6,13 @@ import '../models/recipe.dart';
 import '../providers/recipes.dart';
 
 class RecipeListItem extends StatelessWidget {
+  Function restartParent;
   Recipe recipe;
   String categoryColorCode;
   String categoryPhoto;
 
   RecipeListItem(@required this.recipe, @required this.categoryColorCode,
-      this.categoryPhoto);
+      this.restartParent, this.categoryPhoto);
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +52,7 @@ class RecipeListItem extends StatelessWidget {
                         onPressed: () {
                           Provider.of<Recipes>(context, listen: false)
                               .removeRecipe(recipe.id);
+                          restartParent();
                         },
                         fillColor: Color(0xffF6C2A4),
                         child: Icon(

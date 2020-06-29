@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
-  Function selectPage;
+  final Function selectPage;
 
   BottomNavigationBarWidget(this.selectPage);
 

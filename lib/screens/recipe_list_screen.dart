@@ -21,6 +21,10 @@ class RecipeListScreen extends StatefulWidget {
 class _RecipeListScreenState extends State<RecipeListScreen> {
   final TextEditingController _nameController = new TextEditingController();
 
+  void selfRestartState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final category =
@@ -60,10 +64,13 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                 ),
                                 RaisedButton(
                                   onPressed: () {
-                                    // widget.changeView(5); //NewRecipeScreen
-                                    Navigator.of(ctx)
-                                        .pushNamed(RouterNames.NewRecipeScreen);
-                                    var pass;
+                                    Navigator.of(ctx).pushNamed(
+                                      RouterNames.NewRecipeScreen,
+                                      arguments: [
+                                        category.name,
+                                        category.colorLightCode,
+                                      ],
+                                    );
                                   },
                                   color: Colors.white,
                                   elevation: 6,
@@ -93,6 +100,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                 return RecipeListItem(
                                   recipesProvider.recipes[index],
                                   category.colorCode,
+                                  selfRestartState,
                                   category.photo,
                                 );
                               },

@@ -77,15 +77,15 @@ class Recipes with ChangeNotifier {
     return _favoriteRecipes.any((recipe) => recipe.id == id);
   }
 
-  void addRecipe(name, photo, instructions, categoryId) {
-    Recipe newRecipe = Recipe(
-      name: name,
-      photo: photo,
-      instructions: instructions,
-      categoryId: categoryId,
+  void addRecipe(Recipe newRecipe) {
+    Recipe addRecipe = Recipe(
+      name: newRecipe.name,
+      photo: newRecipe.photo,
+      instructions: newRecipe.instructions,
+      categoryId: newRecipe.categoryId,
     );
 
-    _recipes.add(newRecipe);
+    _recipes.add(addRecipe);
     notifyListeners();
   }
 

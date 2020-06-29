@@ -31,14 +31,21 @@ class Router {
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
 
       case RouterNames.RecipeListScreen:
-        var categoryId = settings.arguments as String;
+        String categoryId = settings.arguments;
         return MaterialPageRoute(
             builder: (_) => RecipeListScreen(categoryId: categoryId));
         break;
       case RouterNames.NewRecipeScreen:
-        return MaterialPageRoute(builder: (_) => NewRecipeScreen());
+        List arguments = settings.arguments;
+        String categoryName = arguments[0];
+        String categoryColorCode = arguments[1];
+        return MaterialPageRoute(
+            builder: (_) => NewRecipeScreen(
+                  categoryName: categoryName,
+                  categoryColorCode: categoryColorCode,
+                ));
       case RouterNames.RecipeDetailsScreen:
-        var recipeId = settings.arguments as String;
+        String recipeId = settings.arguments;
         return MaterialPageRoute(
             builder: (_) => RecipeDetailsScreen(recipeId: recipeId));
 

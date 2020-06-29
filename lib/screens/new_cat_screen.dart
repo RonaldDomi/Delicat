@@ -187,7 +187,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                   child: Text(
                                     "Cat Name",
                                     style: TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 20,
                                       color: Color(0xff927C6C),
                                     ),
                                   ),
@@ -195,11 +195,19 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                 SizedBox(width: 20),
                                 Container(
                                   width:
-                                      MediaQuery.of(context).size.width / 3.7,
+                                      MediaQuery.of(context).size.width / 2.7,
                                   child: TextFormField(
                                     initialValue: _initValues['name'],
-                                    decoration:
-                                        InputDecoration(labelText: 'Name'),
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: hexToColor("#F1EBE8"),
+                                      enabledBorder: UnderlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(25.7),
+                                      ),
+                                    ),
                                     textInputAction: TextInputAction.next,
                                     // onFieldSubmitted: (_) {
                                     //   FocusScope.of(context).requestFocus(_colorFocusNode);
@@ -246,10 +254,23 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                 ? const Color(0xffffffff)
                                 : const Color(0xff000000),
                           ),
-                          FlatButton(
+                          SizedBox(height: 21),
+                          RaisedButton(
                             onPressed: _saveForm,
-                            child: Text("Submit form"),
+                            color: hexToColor("#F6C2A4"),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(19.0),
+                            ),
+                            elevation: 6,
+                            child: Text(
+                              "Submit form",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
                           ),
+                          SizedBox(height: 21),
                         ],
                       ),
                     ),
@@ -271,15 +292,15 @@ class _NewCatScreenState extends State<NewCatScreen> {
                               Navigator.of(context).pushReplacementNamed(
                                   RouterNames.CatSelectionScreen);
                             },
-                            color: Colors.white,
-                            elevation: 6,
+                            color: hexToColor("#F6C2A4"),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
+                              borderRadius: BorderRadius.circular(19.0),
                             ),
+                            elevation: 6,
                             child: Text(
-                              "Go to Predefined Cats       ",
+                              "Choose from ours",
                               style: TextStyle(
-                                color: Color(0xffF6C2A4),
+                                color: Colors.white,
                               ),
                             ),
                           )
