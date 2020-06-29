@@ -10,8 +10,8 @@ class Recipes with ChangeNotifier {
   List<Recipe> _recipes = [
     Recipe(
       id: "1",
-      name: 'Pancakes 1',
-      instructions: 'Fry the pancakes then eat.',
+      name: 'Blueberry Muffin',
+      instructions: "Delicious very easy to make amazing breakfast serve with",
       photo:
           'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
       categoryId: '1',
@@ -70,7 +70,6 @@ class Recipes with ChangeNotifier {
         _recipes.firstWhere((recipe) => recipe.id == recipeId),
       );
     }
-    print("$_favoriteRecipes");
     notifyListeners();
   }
 

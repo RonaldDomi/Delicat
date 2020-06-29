@@ -40,37 +40,41 @@ class Categories with ChangeNotifier {
   ];
   List<Category> _predefinedCategories = [
     Category(
-        id: "42",
-        name: 'Dessert',
-        colorCode: '#E5C1CB',
-        colorLightCode: colorToHex(TinyColor(
-          hexToColor("#E5C1CB"),
-        ).brighten(14).color),
-        photo: "assets/photos/dessert-circle.png"),
+      id: "42",
+      name: 'Dessert',
+      colorCode: '#E5C1CB',
+      photo: "assets/photos/dessert-circle.png",
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#E5C1CB"),
+      ).brighten(14).color),
+    ),
     Category(
-        id: "43",
-        name: 'Vegetable',
-        colorCode: '#DDE5B0',
-        colorLightCode: colorToHex(TinyColor(
-          hexToColor("#DDE5B0"),
-        ).brighten(14).color),
-        photo: "assets/photos/vegetable-circle.png"),
+      id: "43",
+      name: 'Vegetable',
+      colorCode: '#DDE5B0',
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#DDE5B0"),
+      ).brighten(14).color),
+      photo: "assets/photos/vegetable-circle.png",
+    ),
     Category(
-        id: "44",
-        name: 'Breakfast',
-        colorCode: '#ABBFB5',
-        colorLightCode: colorToHex(TinyColor(
-          hexToColor("#ABBFB5"),
-        ).brighten(14).color),
-        photo: "assets/photos/breakfast-circle.png"),
+      id: "44",
+      name: 'Breakfast',
+      colorCode: '#ABBFB5',
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#ABBFB5"),
+      ).brighten(14).color),
+      photo: "assets/photos/breakfast-circle.png",
+    ),
     Category(
-        id: "45",
-        name: 'Burger',
-        colorCode: '#1B2E46',
-        colorLightCode: colorToHex(TinyColor(
-          hexToColor("#1B2E46"),
-        ).brighten(14).color),
-        photo: "assets/photos/burgers-circle.png"),
+      id: "45",
+      name: 'Burger',
+      colorCode: '#1B2E46',
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#1B2E46"),
+      ).brighten(14).color),
+      photo: "assets/photos/burgers-circle.png",
+    ),
   ];
 
   List<Category> get items {
@@ -219,8 +223,8 @@ class Categories with ChangeNotifier {
         name: category.name,
         photo: category.photo,
         colorCode: category.colorCode,
+        colorLightCode: category.colorLightCode,
       );
-      print("new category: $newCategory");
       _categories.add(newCategory);
       notifyListeners();
 

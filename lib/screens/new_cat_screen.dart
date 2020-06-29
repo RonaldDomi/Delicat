@@ -2,6 +2,7 @@ import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:tinycolor/tinycolor.dart';
 
 import '../routeNames.dart';
 import './tabs_screen.dart';
@@ -72,9 +73,12 @@ class _NewCatScreenState extends State<NewCatScreen> {
     String newCode = colorCodeToHex(_initValues['colorCode']);
 
     Category _newCategory = Category(
-      colorCode: newCode,
       name: _initValues['name'],
       photo: "assets/photos/salads.jpg",
+      colorCode: newCode,
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor(newCode),
+      ).brighten(14).color),
     );
 
     try {

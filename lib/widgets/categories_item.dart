@@ -38,7 +38,7 @@ class CategoryItem extends StatelessWidget {
             category.name,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white,
+              color: hexToColor(category.colorLightCode),
               fontSize: 30,
             ),
           ),

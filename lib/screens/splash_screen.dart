@@ -10,7 +10,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    print("init state for SplashScreen");
     super.initState();
 
     Future.delayed(Duration(seconds: 3), () {
