@@ -19,6 +19,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   sliding_up_panel: ^1.0.2
   progress_indicators: ^0.1.5
+  unsplash_client: ^0.2.0
 
   tinycolor: ^1.0.2
   flutter_swiper: ^1.1.6
@@ -30,6 +31,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/Keys.json
     - assets/photos/breakfast.jpg
     - assets/photos/burgers.jpg
     - assets/photos/meat.jpg

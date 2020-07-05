@@ -226,33 +226,32 @@ class _NewCatScreenState extends State<NewCatScreen> {
                               ],
                             ),
                           ),
+                          SizedBox(width: 20),
                           RaisedButton(
-                            elevation: 3.0,
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Select a color'),
-                                    content: SingleChildScrollView(
-                                      child: BlockPicker(
-                                        pickerColor: currentColor,
-                                        availableColors: _availableColors,
-                                        onColorChanged: changeColor,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
+                              Navigator.of(context)
+                                  .pushNamed(RouterNames.ImageScreen);
                             },
-                            child: const Text(
-                              'Select Color',
-                              textAlign: TextAlign.left,
+                            color: hexToColor("#F6C2A4"),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(19.0),
                             ),
-                            color: currentColor,
-                            textColor: useWhiteForeground(currentColor)
-                                ? const Color(0xffffffff)
-                                : const Color(0xff000000),
+                            elevation: 6,
+                            child: Text(
+                              "Choose Photo",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            height: 150,
+                            child: BlockPicker(
+                              pickerColor: currentColor,
+                              availableColors: _availableColors,
+                              onColorChanged: changeColor,
+                            ),
                           ),
                           SizedBox(height: 21),
                           RaisedButton(

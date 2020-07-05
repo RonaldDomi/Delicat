@@ -128,7 +128,7 @@ class Recipes with ChangeNotifier {
       //if we have erorr with our request
       // throw error;
 
-      await Future.delayed(const Duration(seconds: 2), () {});
+      await Future.delayed(const Duration(milliseconds: 250), () {});
       return _recipes;
     }
     notifyListeners();

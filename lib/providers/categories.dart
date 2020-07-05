@@ -117,7 +117,8 @@ class Categories with ChangeNotifier {
     } catch (error) {
       //if we have erorr with our request
       // throw error;
-      await Future.delayed(const Duration(seconds: 2), () {});
+      await Future.delayed(const Duration(milliseconds: 250), () {});
+
       return _categories;
     }
   }
@@ -168,7 +169,7 @@ class Categories with ChangeNotifier {
   //     _predefinedCategories
   //         .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
 
-  //     await Future.delayed(const Duration(seconds: 2), () {});
+  // await Future.delayed(const Duration(milliseconds: 500), () {});
 
   //     return _predefinedCategories;
   //   }

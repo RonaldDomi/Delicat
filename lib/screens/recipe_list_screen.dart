@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 
-import '../models/category.dart';
+// import '../models/category.dart';
 import '../providers/categories.dart';
 import '../providers/recipes.dart';
 import '../routeNames.dart';

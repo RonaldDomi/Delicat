@@ -7,4 +7,5 @@ class RouterNames {
   static const RecipeDetailsScreen = '/recipe-details';
   static const NewRecipeScreen = '/new-recipe';
   static const MealDetailsScreen = '/meal-details';
+  static const ImageScreen = '/image-screen';
 }

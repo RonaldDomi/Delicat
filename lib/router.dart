@@ -10,6 +10,7 @@ import 'screens/new_recipe_screen.dart';
 import 'screens/recipe_list_screen.dart';
 import 'screens/recipe_details_screen.dart';
 
+import 'screens/imaga_input_screen.dart';
 import './routeNames.dart';
 
 class Router {
@@ -17,13 +18,16 @@ class Router {
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => TabsScreen());
+
+      case RouterNames.ImageScreen:
+        return MaterialPageRoute(builder: (_) => ImageScreen());
       case RouterNames.GeneratingCategoriesScreen:
         return MaterialPageRoute(builder: (_) => GeneratingCategoriesScreen());
       case RouterNames.SplashScreen:
         return MaterialPageRoute(builder: (_) => SplashScreen());
 
       case RouterNames.NewCatScreen:
-        return MaterialPageRoute(builder: (_) => TabsScreen());
+        return MaterialPageRoute(builder: (_) => NewCatScreen());
         break;
       case RouterNames.MealDetailsScreen:
         return MaterialPageRoute(builder: (_) => MealDetailsScreen());
