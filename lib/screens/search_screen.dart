@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/recipes.dart';
 import '../models/recipe.dart';
+import '../screen_scaffold.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -41,43 +42,45 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     }
 
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              onChanged: (value) {
-                filterSearchResults(value);
-              },
-              controller: editingController,
-              decoration: InputDecoration(
-                  labelText: "Search",
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+    return ScreenScaffold(
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: TextField(
+                onChanged: (value) {
+                  filterSearchResults(value);
+                },
+                controller: editingController,
+                decoration: InputDecoration(
+                    labelText: "Search",
+                    hintText: "Search",
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+              ),
             ),
-          ),
-          (editingController.text.isNotEmpty)
-              ? Expanded(
-                  child: ListView.builder(
-                    itemBuilder: (ctx, index) {
-                      return Container(
-                        margin: EdgeInsets.all(20),
-                        padding: EdgeInsets.all(20),
-                        color: Colors.grey,
-                        child: Text(items[index].name),
-                      );
-                    },
-                    itemCount: items.length,
-                  ),
-                )
-              : Center(
-                  child: Text('What are you looking for?'),
-                )
-        ],
+            (editingController.text.isNotEmpty)
+                ? Expanded(
+                    child: ListView.builder(
+                      itemBuilder: (ctx, index) {
+                        return Container(
+                          margin: EdgeInsets.all(20),
+                          padding: EdgeInsets.all(20),
+                          color: Colors.grey,
+                          child: Text(items[index].name),
+                        );
+                      },
+                      itemCount: items.length,
+                    ),
+                  )
+                : Center(
+                    child: Text('What are you looking for?'),
+                  )
+          ],
+        ),
       ),
     );
   }

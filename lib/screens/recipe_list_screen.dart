@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../providers/categories.dart';
 import '../providers/recipes.dart';
 import '../routeNames.dart';
+import '../screen_scaffold.dart';
 import '../widgets/recipe_list_item.dart';
 
 import '../helperFunctions.dart';
@@ -31,112 +32,115 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         Provider.of<Categories>(context).getCategoryById(widget.categoryId);
     _nameController.text = category.name;
 
-    return FutureBuilder(
-      future: Provider.of<Recipes>(context, listen: false)
-          .getRecipesByCategoryId(category.id),
-      builder: (ctx, snapshotRecipes) => snapshotRecipes.connectionState ==
-              ConnectionState.waiting
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              color: hexToColor(category.colorLightCode),
-              child: Consumer<Recipes>(
-                builder: (ctx, recipesProvider, ch) => recipesProvider
-                            .recipes.length <=
-                        0
-                    ? Center(
-                        child:
-                            const Text("you have no recipes in this category."),
-                      )
-                    : Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  "Pasta Catalogue",
-                                  style: TextStyle(
-                                    fontSize: 23,
-                                  ),
-                                ),
-                                RaisedButton(
-                                  onPressed: () {
-                                    Navigator.of(ctx).pushNamed(
-                                      RouterNames.NewRecipeScreen,
-                                      arguments: [
-                                        category.name,
-                                        category.colorLightCode,
-                                      ],
-                                    );
-                                  },
-                                  color: Colors.white,
-                                  elevation: 6,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(18.0),
-                                  ),
-                                  child: Text(
-                                    "add a new dish",
+    return ScreenScaffold(
+      child: FutureBuilder(
+        future: Provider.of<Recipes>(context, listen: false)
+            .getRecipesByCategoryId(category.id),
+        builder: (ctx, snapshotRecipes) => snapshotRecipes.connectionState ==
+                ConnectionState.waiting
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                color: hexToColor(category.colorLightCode),
+                child: Consumer<Recipes>(
+                  builder: (ctx, recipesProvider, ch) => recipesProvider
+                              .recipes.length <=
+                          0
+                      ? Center(
+                          child: const Text(
+                              "you have no recipes in this category."),
+                        )
+                      : Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "Pasta Catalogue",
                                     style: TextStyle(
-                                      color: Color(0xffF6C2A4),
+                                      fontSize: 23,
                                     ),
                                   ),
-                                )
-                              ],
+                                  RaisedButton(
+                                    onPressed: () {
+                                      Navigator.of(ctx).pushNamed(
+                                        RouterNames.NewRecipeScreen,
+                                        arguments: [
+                                          category.name,
+                                          category.colorLightCode,
+                                        ],
+                                      );
+                                    },
+                                    color: Colors.white,
+                                    elevation: 6,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                    ),
+                                    child: Text(
+                                      "add a new dish",
+                                      style: TextStyle(
+                                        color: Color(0xffF6C2A4),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          Container(
-                            height: MediaQuery.of(context).size.height * 0.5,
-                            child: Swiper(
-                              onTap: (index) {
-                                Navigator.of(context).pushNamed(
-                                  RouterNames.RecipeDetailsScreen,
-                                  arguments: recipesProvider.recipes[index].id,
-                                );
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.5,
+                              child: Swiper(
+                                onTap: (index) {
+                                  Navigator.of(context).pushNamed(
+                                    RouterNames.RecipeDetailsScreen,
+                                    arguments:
+                                        recipesProvider.recipes[index].id,
+                                  );
+                                },
+                                itemBuilder: (BuildContext context, int index) {
+                                  return RecipeListItem(
+                                    recipesProvider.recipes[index],
+                                    category.colorCode,
+                                    selfRestartState,
+                                    category.photo,
+                                  );
+                                },
+                                itemCount: recipesProvider.recipes.length,
+                                viewportFraction: 0.6,
+                                scale: 0.8,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 50,
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                var pass;
                               },
-                              itemBuilder: (BuildContext context, int index) {
-                                return RecipeListItem(
-                                  recipesProvider.recipes[index],
-                                  category.colorCode,
-                                  selfRestartState,
-                                  category.photo,
-                                );
-                              },
-                              itemCount: recipesProvider.recipes.length,
-                              viewportFraction: 0.6,
-                              scale: 0.8,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 50,
-                          ),
-                          RaisedButton(
-                            onPressed: () {
-                              var pass;
-                            },
-                            padding: EdgeInsets.symmetric(vertical: 6),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
-                            color: hexToColor(category.colorCode),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: Text(
-                                "Read More",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
+                              padding: EdgeInsets.symmetric(vertical: 6),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                              color: hexToColor(category.colorCode),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.6,
+                                child: Text(
+                                  "Read More",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                ),
               ),
-            ),
+      ),
     );
   }
 }

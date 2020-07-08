@@ -66,9 +66,11 @@ class _ImageScreenState extends State<ImageScreen> {
                         ),
                       )
                     : CircularProgressIndicator()
-                : Center(
-                    child: Text('What are you looking for?'),
-                  ),
+                : (isLoading)
+                    ? CircularProgressIndicator()
+                    : Center(
+                        child: Text('What are you looking for?'),
+                      ),
             SizedBox(height: 60),
             if (showSelectedImage = true && items.length != 0)
               Row(
@@ -85,7 +87,8 @@ class _ImageScreenState extends State<ImageScreen> {
                   RaisedButton(
                     child: Text('Next'),
                     onPressed: () {
-                      Navigator.of(context).pushNamed("/");
+                      Navigator.of(context)
+                          .pushNamed(RouterNames.CategoriesScreen);
                     },
                   ),
                 ],

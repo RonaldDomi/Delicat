@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class BottomNavigationBarWidget extends StatelessWidget {
-  final Function selectPage;
+  final Function handleTap;
 
-  BottomNavigationBarWidget(this.selectPage);
+  BottomNavigationBarWidget(this.handleTap);
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      onTap: selectPage,
+      onTap: (index) => handleTap(index, context),
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: 0,

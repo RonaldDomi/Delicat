@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:core';
-import './tabs_screen.dart';
+
+import './categories_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (BuildContext context) => TabsScreen(),
+          builder: (BuildContext context) => CategoriesScreen(),
         ),
       );
     });

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 import 'dart:async';
-import 'tabs_screen.dart';
+import 'package:delicat/screens/categories_screen.dart';
 
 class GeneratingCategoriesScreen extends StatefulWidget {
   const GeneratingCategoriesScreen({Key key}) : super(key: key);
@@ -21,7 +21,7 @@ class _GeneratingCategoriesScreenState
     Timer(Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (BuildContext context) => TabsScreen(),
+          builder: (BuildContext context) => CategoriesScreen(),
         ),
       );
     });

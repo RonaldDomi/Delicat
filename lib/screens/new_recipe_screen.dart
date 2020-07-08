@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:math';
 
+import '../screen_scaffold.dart';
 import '../widgets/recipe_image_picker.dart';
 import '../widgets/bottom_navigation_bar.dart';
 import '../providers/recipes.dart';
@@ -26,36 +27,10 @@ class NewRecipeScreen extends StatefulWidget {
 
 class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _form = GlobalKey<FormState>();
-  List<Object> _pages;
 
   final _nameController = TextEditingController();
   final _instructionsController = TextEditingController();
   final _instructionsNode = FocusNode();
-
-  int _selectedPageIndex;
-  File _pickedImage;
-
-  void _selectImage(File pickedImage) {
-    _pickedImage = pickedImage;
-  }
-
-  @override
-  void initState() {
-    _selectedPageIndex = 0;
-    _pages = [
-      CategoriesScreen(_selectPage),
-      FavoritesScreen(),
-      SearchScreen(),
-      SearchScreen(),
-    ];
-    super.initState();
-  }
-
-  void _selectPage(int index) {
-    setState(() {
-      _selectedPageIndex = index;
-    });
-  }
 
   void _saveRecipe() {
     final isValid = _form.currentState.validate();
@@ -82,8 +57,8 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return ScreenScaffold(
+      child: Container(
         height: MediaQuery.of(context).size.height,
         color: hexToColor(widget.categoryColorCode),
         child: SingleChildScrollView(
@@ -238,14 +213,6 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBarWidget(_selectPage),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        child: IconButton(
-          icon: Image.asset("assets/logo/logo.png"),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

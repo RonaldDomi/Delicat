@@ -1,11 +1,14 @@
 class RouterNames {
+  static const CategoriesScreen = '/categories-screen';
   static const SplashScreen = '/splash-screen';
   static const GeneratingCategoriesScreen = '/generating';
-  static const NewCatScreen = '/new-cat';
-  static const CatSelectionScreen = '/cat-selection';
+  static const NewCategoriesScreen = '/new-cat';
+  static const CategoriesSelectionScreen = '/cat-selection';
   static const RecipeListScreen = '/recipe-list';
   static const RecipeDetailsScreen = '/recipe-details';
   static const NewRecipeScreen = '/new-recipe';
+  static const FavoritesScreen = '/favorites-screen';
+  static const SearchScreen = '/new-recipe';
   static const MealDetailsScreen = '/meal-details';
   static const ImageScreen = '/image-screen';
 }

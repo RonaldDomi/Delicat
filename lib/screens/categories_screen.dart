@@ -6,12 +6,9 @@ import '../providers/categories.dart';
 import '../routeNames.dart';
 
 import '../widgets/categories_item.dart';
+import '../screen_scaffold.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  Function changeView;
-
-  CategoriesScreen(this.changeView);
-
   @override
   _CategoriesScreenState createState() => _CategoriesScreenState();
 }
@@ -26,9 +23,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     } else if (firstTime == null) {
       prefs.setBool('first_time', false);
       Navigator.of(context)
-          .pushReplacementNamed(RouterNames.CatSelectionScreen);
+          .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);
     }
-    // Navigator.of(context).pushReplacementNamed(RouterNames.CatSelectionScreen);
   }
 
   flipFirstHitStatus() async {
@@ -38,9 +34,32 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     });
   }
 
+  Future<bool> _onBackPressed() {
+    return showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit an App'),
+            actions: <Widget>[
+              new GestureDetector(
+                onTap: () => Navigator.of(context).pop(false),
+                child: Text("NO"),
+              ),
+              SizedBox(height: 16),
+              new GestureDetector(
+                onTap: () => Navigator.of(context).pop(true),
+                child: Text("YES"),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     checkFirstHitStatus();
+    print("\nCategoriesScreen navigator tree: ${Navigator.of(context)} \n");
 
     // var selectedCats =
     //     Provider.of<Categories>(context, listen: false).getAllCategories();
@@ -54,69 +73,78 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         //       ? Center(
         //           child: CircularProgressIndicator(),
         //         )
-        Container(
-      color: Color(0xffF1EBE8),
-      child: Column(
-        children: <Widget>[
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Your Menu",
-                  style: TextStyle(
-                    fontSize: 23,
-                  ),
+        ScreenScaffold(
+      child: WillPopScope(
+        onWillPop: _onBackPressed,
+        child: Container(
+          color: Color(0xffF1EBE8),
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.2,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Your Menu",
+                      style: TextStyle(
+                        fontSize: 23,
+                      ),
+                    ),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed(RouterNames.NewCategoriesScreen);
+                      },
+                      color: Colors.white,
+                      elevation: 6,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                      child: Text(
+                        "add a new cat",
+                        style: TextStyle(
+                          color: Color(0xffF6C2A4),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                RaisedButton(
-                  onPressed: () {
-                    widget.changeView(4); //NewCatScreen
-                  },
-                  color: Colors.white,
-                  elevation: 6,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
-                  child: Text(
-                    "add a new cat",
-                    style: TextStyle(
-                      color: Color(0xffF6C2A4),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            child: Consumer<Categories>(
-              child: Center(
-                child: const Text("you have no cats on your profile."),
               ),
-              builder: (ctx, categories, ch) => categories.items.length <= 0
-                  ? ch
-                  : GridView.builder(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        childAspectRatio: 2 / 2.5,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                      ),
-                      padding: const EdgeInsets.all(15),
-                      itemCount: categories.items.length,
-                      itemBuilder: (ctx, i) => InkWell(
-                        onTap: () => widget.changeView(
-                          0,
-                          categories.items[i].id,
-                        ), //RecipeList
-                        child: CategoryItem(categories.items[i]),
-                      ),
-                    ),
-            ),
+              Expanded(
+                child: Consumer<Categories>(
+                  child: Center(
+                    child: const Text("you have no cats on your profile."),
+                  ),
+                  builder: (ctx, categories, ch) => categories.items.length <= 0
+                      ? ch
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 200,
+                            childAspectRatio: 2 / 2.5,
+                            crossAxisSpacing: 20,
+                            mainAxisSpacing: 20,
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          itemCount: categories.items.length,
+                          itemBuilder: (ctx, i) => InkWell(
+                            onTap: () {
+                              // REROUTE TO RECIPELIST
+                              Navigator.of(context).pushNamed(
+                                  RouterNames.RecipeListScreen,
+                                  arguments: categories.items[i].id);
+                            },
+                            child: CategoryItem(categories.items[i]),
+                          ),
+                        ),
+                ),
+              ),
+            ],
           ),
-        ],
+          // ),
+        ),
       ),
-      // ),
     );
   }
 }
