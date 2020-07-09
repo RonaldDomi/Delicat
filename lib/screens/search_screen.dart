@@ -1,10 +1,12 @@
 import 'package:delicat/helperFunctions.dart';
+import 'package:delicat/widgets/favorites_item.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
 import '../providers/recipes.dart';
 import '../models/recipe.dart';
+import '../routeNames.dart';
 import '../screen_scaffold.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -70,18 +72,31 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
             (editingController.text.isNotEmpty)
-                ? Expanded(
-                    child: ListView.builder(
-                      itemBuilder: (ctx, index) {
-                        return Container(
-                          margin: EdgeInsets.all(20),
-                          padding: EdgeInsets.all(20),
-                          color: Colors.grey,
-                          child: Text(items[index].name),
-                        );
-                      },
-                      itemCount: items.length,
+                ? Consumer<Recipes>(
+                    child: Center(
+                      child: const Text("you have no recipes."),
                     ),
+                    builder: (ctx, recipes, ch) => recipes.recipes.length <= 0
+                        ? ch
+                        : GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 200,
+                              childAspectRatio: 2 / 2.5,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20,
+                            ),
+                            padding: const EdgeInsets.all(15),
+                            itemCount: recipes.recipes.length,
+                            itemBuilder: (ctx, i) => InkWell(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                    RouterNames.RecipeDetailsScreen,
+                                    arguments: recipes.recipes[i].id);
+                              },
+                              child: FavoriteItem(recipes.recipes[i]),
+                            ),
+                          ),
                   )
                 : Center(
                     child: Text('What are you looking for?'),

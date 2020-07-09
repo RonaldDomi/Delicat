@@ -85,9 +85,14 @@ class RecipeListItem extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
-                Text(
-                  "${recipe.instructions}",
-                )
+                if (recipe.description.length > 100)
+                  Text(
+                    "${recipe.description.substring(0, 100)}",
+                  )
+                else
+                  Text(
+                    "${recipe.description}",
+                  )
               ],
             ),
           ),

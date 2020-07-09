@@ -29,8 +29,8 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _form = GlobalKey<FormState>();
 
   final _nameController = TextEditingController();
-  final _instructionsController = TextEditingController();
-  final _instructionsNode = FocusNode();
+  final _descriptionController = TextEditingController();
+  final _descriptionNode = FocusNode();
 
   void _saveRecipe() {
     final isValid = _form.currentState.validate();
@@ -46,7 +46,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       categoryId: "1",
       id: rng.nextInt(1000).toString(),
       name: _nameController.text,
-      instructions: _instructionsController.text,
+      description: _descriptionController.text,
       photo: "assets/photos/sushi-circle.png",
     );
     print(newRecipe);
@@ -145,7 +145,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
                                   FocusScope.of(context)
-                                      .requestFocus(_instructionsNode);
+                                      .requestFocus(_descriptionNode);
                                 },
                                 validator: (value) {
                                   if (value.isEmpty) {
@@ -179,8 +179,8 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         ),
                         minLines: 4,
                         maxLines: 4,
-                        controller: _instructionsController,
-                        focusNode: _instructionsNode,
+                        controller: _descriptionController,
+                        focusNode: _descriptionNode,
                         validator: (value) {
                           if (value.isEmpty) {
                             return 'Please provide a value.';

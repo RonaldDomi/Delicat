@@ -11,22 +11,23 @@ class Recipes with ChangeNotifier {
     Recipe(
       id: "1",
       name: 'Blueberry Muffin',
-      instructions: "Delicious very easy to make amazing breakfast serve with",
-      photo: 'assets/photos/pasta-circle.png',
+      description: "Delicious very easy to make amazing breakfast serve with",
+      photo: 'assets/photos/veggies.jpg',
       categoryId: '1',
     ),
     Recipe(
       id: "2",
       name: 'Pancakes 2',
-      instructions: 'Fry the pancakes then eat.',
-      photo: 'assets/photos/pasta-circle.png',
+      description: 'Fry the pancakes then eat.',
+      photo: 'assets/photos/veggies.jpg',
       categoryId: '1',
     ),
     Recipe(
       id: "3",
       name: 'Pancakes 2 but better',
-      instructions: 'Fry the pancakes better then eat.',
-      photo: 'assets/photos/pasta-circle.png',
+      description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      photo: 'assets/photos/veggies.jpg',
       categoryId: '1',
     ),
   ];
@@ -34,15 +35,15 @@ class Recipes with ChangeNotifier {
     Recipe(
       id: "2",
       name: 'Pancakes 2',
-      instructions: 'Fry the pancakes then eat.',
-      photo: 'assets/photos/c',
+      description: 'Fry the pancakes then eat.',
+      photo: 'assets/photos/veggies.jpg',
       categoryId: '1',
     ),
     Recipe(
       id: "3",
       name: 'Pancakes 2 but better',
-      instructions: 'Fry the pancakes better then eat.',
-      photo: 'assets/photos/c',
+      description: 'Fry the pancakes better then eat.',
+      photo: 'assets/photos/veggies.jpg',
       categoryId: '1',
     ),
   ];
@@ -76,7 +77,7 @@ class Recipes with ChangeNotifier {
     Recipe addRecipe = Recipe(
       name: newRecipe.name,
       photo: newRecipe.photo,
-      instructions: newRecipe.instructions,
+      description: newRecipe.description,
       categoryId: newRecipe.categoryId,
     );
 
@@ -112,7 +113,7 @@ class Recipes with ChangeNotifier {
       for (var bodyRecipe in json.decode(response.body)) {
         var recipe = Recipe(
             name: bodyRecipe.name,
-            instructions: bodyRecipe.instructions,
+            description: bodyRecipe.description,
             photo: bodyRecipe.photo,
             categoryId: bodyRecipe.category.uid);
 

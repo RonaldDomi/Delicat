@@ -4,14 +4,14 @@ class Recipe {
   String id;
   String name;
   String photo;
-  String instructions;
+  String description;
   String categoryId;
 
   Recipe({
     this.id,
     this.name,
     this.photo,
-    this.instructions,
+    this.description,
     this.categoryId,
   });
 

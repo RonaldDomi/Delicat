@@ -1,7 +1,11 @@
+import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/recipes.dart';
+import '../providers/categories.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
+
 import '../models/recipe.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
@@ -18,72 +22,77 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
+    final category =
+        Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
     final isFavorite =
         Provider.of<Recipes>(context).isRecipeFavorite(widget.recipeId);
 
     _nameController.text = recipe.name;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(recipe.name),
-      ),
-      body: Column(
+      body: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
-          Center(
-            child: Text(recipe.instructions),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _nameController,
-              decoration:
-                  InputDecoration(labelText: "isFavorite : $isFavorite"),
-              onSubmitted: (String value) {
-                Provider.of<Recipes>(context, listen: false).editRecipe(
-                  Recipe(
-                    name: value,
-                    categoryId: recipe.categoryId,
-                    instructions: recipe.instructions,
-                    photo: recipe.photo,
-                    id: recipe.id,
-                  ),
-                );
-              },
+          Container(
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.fill,
+                image: AssetImage("assets/photos/veggies.jpg"),
+              ),
             ),
           ),
+          SlidingUpPanel(
+            minHeight: 40,
+            maxHeight: MediaQuery.of(context).size.height * 0.5,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(18.0),
+              topRight: Radius.circular(18.0),
+            ),
+            panelBuilder: (sc) => _panel(sc, recipe, category.colorCode),
+          )
         ],
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          FloatingActionButton(
-            heroTag: null,
-            child: IconButton(
-              icon: Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-              onPressed: () => {
-                Provider.of<Recipes>(context, listen: false)
-                    .removeRecipe(recipe.id),
-                Navigator.of(context).pop()
-              },
-            ),
+    );
+  }
+
+  Widget _panel(ScrollController sc, Recipe recipe, String colorCode) {
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(18.0),
+            topRight: Radius.circular(18.0),
           ),
-          FloatingActionButton(
-            heroTag: null,
-            child: IconButton(
-              icon: Icon(
-                isFavorite ? Icons.favorite : Icons.favorite_border,
-                color: Colors.white,
+          color: hexToColor(colorCode),
+        ),
+        child: ListView(
+          controller: sc,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Text(
+                recipe.name,
+                style: TextStyle(
+                  color: hexToColor("#9F8A22"),
+                  fontSize: 30,
+                ),
               ),
-              onPressed: () => {
-                Provider.of<Recipes>(context, listen: false)
-                    .toggleFavorite(recipe.id),
-              },
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.all(30.0),
+              child: Text(
+                recipe.description,
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -66,9 +66,8 @@ class FavoritesScreen extends StatelessWidget {
                         itemCount: recipes.recipes.length,
                         itemBuilder: (ctx, i) => InkWell(
                           onTap: () {
-                            // REROUTE TO RECIPELIST
                             Navigator.of(context).pushNamed(
-                                RouterNames.RecipeListScreen,
+                                RouterNames.RecipeDetailsScreen,
                                 arguments: recipes.recipes[i].id);
                           },
                           child: FavoriteItem(recipes.recipes[i]),
