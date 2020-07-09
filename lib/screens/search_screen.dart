@@ -1,3 +1,4 @@
+import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -44,6 +45,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return ScreenScaffold(
       child: Container(
+        color: hexToColor("#BB9982"),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -55,11 +57,16 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
                 controller: editingController,
                 decoration: InputDecoration(
-                    labelText: "Search",
-                    hintText: "Search",
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
+                  // labelText: "Search...",
+                  hintText: "Search...",
+                  fillColor: hexToColor("#F1EBE8"),
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(25.0),
+                    ),
+                  ),
+                ),
               ),
             ),
             (editingController.text.isNotEmpty)

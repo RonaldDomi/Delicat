@@ -12,24 +12,21 @@ class Recipes with ChangeNotifier {
       id: "1",
       name: 'Blueberry Muffin',
       instructions: "Delicious very easy to make amazing breakfast serve with",
-      photo:
-          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      photo: 'assets/photos/pasta-circle.png',
       categoryId: '1',
     ),
     Recipe(
       id: "2",
       name: 'Pancakes 2',
       instructions: 'Fry the pancakes then eat.',
-      photo:
-          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      photo: 'assets/photos/pasta-circle.png',
       categoryId: '1',
     ),
     Recipe(
       id: "3",
       name: 'Pancakes 2 but better',
       instructions: 'Fry the pancakes better then eat.',
-      photo:
-          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      photo: 'assets/photos/pasta-circle.png',
       categoryId: '1',
     ),
   ];
@@ -38,16 +35,14 @@ class Recipes with ChangeNotifier {
       id: "2",
       name: 'Pancakes 2',
       instructions: 'Fry the pancakes then eat.',
-      photo:
-          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      photo: 'assets/photos/c',
       categoryId: '1',
     ),
     Recipe(
       id: "3",
       name: 'Pancakes 2 but better',
       instructions: 'Fry the pancakes better then eat.',
-      photo:
-          'https://image.shutterstock.com/image-vector/ui-image-placeholder-wireframes-apps-260nw-1037719204.jpg',
+      photo: 'assets/photos/c',
       categoryId: '1',
     ),
   ];
