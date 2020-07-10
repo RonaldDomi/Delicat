@@ -19,7 +19,8 @@ import './search_screen.dart';
 class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
   final String categoryColorCode;
-  NewRecipeScreen({this.categoryName, this.categoryColorCode});
+  final Recipe recipe;
+  NewRecipeScreen({this.categoryName, this.categoryColorCode, this.recipe});
 
   @override
   _NewRecipeScreenState createState() => _NewRecipeScreenState();
@@ -27,15 +28,44 @@ class NewRecipeScreen extends StatefulWidget {
 
 class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _form = GlobalKey<FormState>();
+  bool _isEditing = false;
 
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _descriptionNode = FocusNode();
 
+  @override
+  void initState() {
+    if (widget.recipe != null) {
+      // edit recipe
+      _nameController.text = widget.recipe.name;
+      _descriptionController.text = widget.recipe.description;
+      _isEditing = true;
+    } else {
+      // new recipe
+    }
+
+    // TODO: implement initState
+    super.initState();
+  }
+
   void _saveRecipe() {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
+    }
+
+    if (_isEditing) {
+      Recipe editedRecipe = Recipe(
+        categoryId: "1",
+        id: widget.recipe.id,
+        name: _nameController.text,
+        description: _descriptionController.text,
+        photo: "assets/photos/sushi-circle.png",
+      );
+
+      Provider.of<Recipes>(context, listen: false).editRecipe(editedRecipe);
+      Navigator.of(context).pop();
     }
     // print(
     //     "----------------------------------------------------------------------");
@@ -197,7 +227,9 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         ),
                         elevation: 6,
                         child: Text(
-                          "Add a recipe",
+                          (_isEditing == true)
+                              ? "Update recipe"
+                              : "Add a recipe",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,

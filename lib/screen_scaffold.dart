@@ -25,7 +25,6 @@ class ScreenScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("\nscreenScaffold navigator tree: ${Navigator.of(context)} \n");
     return Scaffold(
       body: child,
       bottomNavigationBar: BottomNavigationBarWidget(handleTap),

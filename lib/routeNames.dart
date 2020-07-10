@@ -8,7 +8,7 @@ class RouterNames {
   static const RecipeDetailsScreen = '/recipe-details';
   static const NewRecipeScreen = '/new-recipe';
   static const FavoritesScreen = '/favorites-screen';
-  static const SearchScreen = '/new-recipe';
+  static const SearchScreen = '/search-screen';
   static const MealDetailsScreen = '/meal-details';
   static const ImageScreen = '/image-screen';
 }

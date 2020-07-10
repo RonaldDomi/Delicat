@@ -1,4 +1,5 @@
 import 'package:delicat/helperFunctions.dart';
+import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,6 +31,107 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     _nameController.text = recipe.name;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Color(0x44000000),
+        elevation: 0,
+        actions: <Widget>[
+          PopupMenuButton(
+            // child: Icon(Icons.more_horiz),
+            color: Colors.transparent,
+            itemBuilder: (context) {
+              return [
+                PopupMenuItem(
+                  value: 3,
+                  child: RawMaterialButton(
+                    onPressed: () {
+                      print("pressed dis shit");
+                      // Navigate to edit recipe
+                      Navigator.of(context).pushNamed(
+                        RouterNames.NewRecipeScreen,
+                        arguments: [
+                          category.name,
+                          category.colorLightCode,
+                          recipe,
+                        ],
+                      );
+                    },
+                    elevation: 2.0,
+                    fillColor: Color(0xffF6C2A4),
+                    child: Icon(
+                      Icons.edit,
+                      size: 35.0,
+                      color: Colors.black,
+                    ),
+                    // padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 2,
+                  child: RawMaterialButton(
+                    onPressed: () {},
+                    elevation: 2.0,
+                    fillColor: Color(0xffF6C2A4),
+                    child: Icon(
+                      Icons.favorite_border,
+                      size: 35.0,
+                      color: Colors.white,
+                    ),
+                    // padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 3,
+                  child: RawMaterialButton(
+                    onPressed: () {},
+                    elevation: 2.0,
+                    fillColor: hexToColor(category.colorCode),
+                    child: Icon(
+                      Icons.receipt,
+                      size: 35.0,
+                      color: Colors.black,
+                    ),
+                    // padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 4,
+                  child: RawMaterialButton(
+                    onPressed: () {},
+                    elevation: 2.0,
+                    fillColor: hexToColor(category.colorCode),
+                    child: Icon(
+                      Icons.home,
+                      size: 35.0,
+                      color: Colors.black,
+                    ),
+                    // padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 4,
+                  child: RawMaterialButton(
+                    onPressed: () {},
+                    elevation: 2.0,
+                    fillColor: hexToColor(category.colorCode),
+                    child: Icon(
+                      Icons.share,
+                      size: 35.0,
+                      color: Colors.black,
+                    ),
+                    // padding: EdgeInsets.all(15.0),
+                    shape: CircleBorder(),
+                  ),
+                ),
+              ];
+            },
+          ),
+        ],
+      ),
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -38,7 +140,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
             height: 150,
             decoration: BoxDecoration(
               image: DecorationImage(
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 image: AssetImage("assets/photos/veggies.jpg"),
               ),
             ),

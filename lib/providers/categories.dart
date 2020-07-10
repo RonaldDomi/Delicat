@@ -294,6 +294,8 @@ class Categories with ChangeNotifier {
           _categories.indexWhere((element) => element.id == editedCategory.id);
       _categories[existingCategoryIndex] = editedCategory;
     }
+
+    print(_categories);
     notifyListeners();
   }
 }

@@ -11,8 +11,8 @@ import 'screens/recipe_list_screen.dart';
 import 'screens/recipe_details_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/search_screen.dart';
-
 import 'screens/imaga_input_screen.dart';
+
 import './routeNames.dart';
 
 class Router {
@@ -41,9 +41,9 @@ class Router {
         return MaterialPageRoute(builder: (_) => SearchScreen());
 
       case RouterNames.NewCategoriesScreen:
+        var category = settings.arguments ?? null;
         return MaterialPageRoute(
-          builder: (_) => NewCatScreen(),
-          settings: RouteSettings(name: RouterNames.NewCategoriesScreen),
+          builder: (_) => NewCatScreen(category: category),
         );
         break;
       case RouterNames.MealDetailsScreen:
@@ -60,10 +60,12 @@ class Router {
         List arguments = settings.arguments;
         String categoryName = arguments[0];
         String categoryColorCode = arguments[1];
+        var recipe = arguments[2] ?? null;
         return MaterialPageRoute(
             builder: (_) => NewRecipeScreen(
                   categoryName: categoryName,
                   categoryColorCode: categoryColorCode,
+                  recipe: recipe,
                 ));
       case RouterNames.RecipeDetailsScreen:
         String recipeId = settings.arguments;

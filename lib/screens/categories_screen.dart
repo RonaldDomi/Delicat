@@ -59,21 +59,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     checkFirstHitStatus();
-    print("\nCategoriesScreen navigator tree: ${Navigator.of(context)} \n");
 
-    // var selectedCats =
-    //     Provider.of<Categories>(context, listen: false).getAllCategories();
-
-    return
-        // FutureBuilder(
-        //   future: selectedCats,
-        //   builder: (ctx, snapshotCategories) => snapshotCategories
-        //               .connectionState ==
-        //           ConnectionState.waiting
-        //       ? Center(
-        //           child: CircularProgressIndicator(),
-        //         )
-        ScreenScaffold(
+    return ScreenScaffold(
       child: WillPopScope(
         onWillPop: _onBackPressed,
         child: Container(
@@ -111,38 +98,42 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ],
                 ),
               ),
-              Expanded(
-                child: Consumer<Categories>(
-                  child: Center(
-                    child: const Text("you have no cats on your profile."),
-                  ),
-                  builder: (ctx, categories, ch) => categories.items.length <= 0
-                      ? ch
-                      : GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 200,
-                            childAspectRatio: 2 / 2.5,
-                            crossAxisSpacing: 20,
-                            mainAxisSpacing: 20,
+              FutureBuilder(
+                future: Provider.of<Categories>(context, listen: false)
+                    .getAllCategories(),
+                builder: (ctx, snapshotCategories) => snapshotCategories
+                            .connectionState ==
+                        ConnectionState.waiting
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : (snapshotCategories.data.length <= 0)
+                        ? Text("you have no cats on your profile.")
+                        : Expanded(
+                            child: GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 200,
+                                childAspectRatio: 2 / 2.5,
+                                crossAxisSpacing: 20,
+                                mainAxisSpacing: 20,
+                              ),
+                              padding: const EdgeInsets.all(15),
+                              itemCount: snapshotCategories.data.length,
+                              itemBuilder: (ctx, i) => InkWell(
+                                onTap: () {
+                                  // REROUTE TO RECIPELIST
+                                  Navigator.of(context).pushNamed(
+                                      RouterNames.RecipeListScreen,
+                                      arguments: snapshotCategories.data[i].id);
+                                },
+                                child: CategoryItem(snapshotCategories.data[i]),
+                              ),
+                            ),
                           ),
-                          padding: const EdgeInsets.all(15),
-                          itemCount: categories.items.length,
-                          itemBuilder: (ctx, i) => InkWell(
-                            onTap: () {
-                              // REROUTE TO RECIPELIST
-                              Navigator.of(context).pushNamed(
-                                  RouterNames.RecipeListScreen,
-                                  arguments: categories.items[i].id);
-                            },
-                            child: CategoryItem(categories.items[i]),
-                          ),
-                        ),
-                ),
               ),
             ],
           ),
-          // ),
         ),
       ),
     );

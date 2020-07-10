@@ -34,7 +34,9 @@ const List<Color> _availableColors = [
 ];
 
 class NewCatScreen extends StatefulWidget {
-  const NewCatScreen({Key key}) : super(key: key);
+  Category category;
+
+  NewCatScreen({this.category});
 
   @override
   _NewCatScreenState createState() => _NewCatScreenState();
@@ -42,20 +44,30 @@ class NewCatScreen extends StatefulWidget {
 
 class _NewCatScreenState extends State<NewCatScreen> {
   Color pickerColor = Color(0xff443a49);
+  bool _isEditing = false;
+
+  final _nameController = TextEditingController();
+  final _colorCodeController = TextEditingController();
 
   Color currentColor = Color(0xff443a49);
   void changeColor(Color color) {
     setState(() => {
           currentColor = color,
         });
-    final currentColorCode = "0xff" + currentColor.value.toRadixString(16);
-    _initValues['colorCode'] = currentColorCode;
+    final currentColorCode = colorToHex(color);
+    _colorCodeController.text = currentColorCode;
   }
 
-  var _initValues = {
-    'name': '',
-    'colorCode': '',
-  };
+  @override
+  void initState() {
+    if (widget.category != null) {
+      _nameController.text = widget.category.name;
+      _colorCodeController.text = widget.category.colorCode;
+      _isEditing = true;
+    }
+    // TODO: implement initState
+    super.initState();
+  }
 
   // final _colorFocusNode = FocusNode();
 
@@ -67,14 +79,29 @@ class _NewCatScreenState extends State<NewCatScreen> {
     if (!isValid) {
       return;
     }
+    if (_isEditing) {
+      Category editedCategory = Category(
+        id: widget.category.id,
+        name: _nameController.text,
+        colorCode: _colorCodeController.text,
+        photo: "assets/photos/sushi-circle.png",
+      );
+      print('edited category $editedCategory');
+
+      Provider.of<Categories>(context, listen: false)
+          .editCategory(editedCategory);
+      Navigator.of(context).pop();
+      return;
+    }
+
     _form.currentState.save();
     setState(() {
       _isLoading = true;
     });
-    String newCode = colorCodeToHex(_initValues['colorCode']);
+    String newCode = colorCodeToHex(_colorCodeController.text);
 
     Category _newCategory = Category(
-      name: _initValues['name'],
+      name: _nameController.text,
       photo: "assets/photos/salads.jpg",
       colorCode: newCode,
       colorLightCode: colorToHex(TinyColor(
@@ -124,9 +151,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        "\nnewCategoryScreen navigator tree: ${Navigator.of(context).toStringShort()} \n");
-
     return ScreenScaffold(
       child: _isLoading
           ? Center(
@@ -202,7 +226,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                     width:
                                         MediaQuery.of(context).size.width / 2.7,
                                     child: TextFormField(
-                                      initialValue: _initValues['name'],
+                                      initialValue: _nameController.text,
                                       decoration: InputDecoration(
                                         filled: true,
                                         fillColor: hexToColor("#F1EBE8"),
@@ -224,7 +248,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                         return null;
                                       },
                                       onSaved: (value) {
-                                        _initValues['name'] = value;
+                                        _nameController.text = value;
                                       },
                                     ),
                                   )
@@ -267,7 +291,9 @@ class _NewCatScreenState extends State<NewCatScreen> {
                               ),
                               elevation: 6,
                               child: Text(
-                                "Submit form",
+                                (_isEditing)
+                                    ? "Update Category"
+                                    : "Submit form",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
