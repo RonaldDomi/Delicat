@@ -51,20 +51,11 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
   Color currentColor = Color(0xff443a49);
   void changeColor(Color color) {
-    print(" ------- ");
-    print("  ");
-    print("  ");
-    print("current color: ${currentColor}");
-    print("new color: ${color}");
-    print("  ");
-    print("  ");
     setState(() => {
           currentColor = color,
         });
     final currentColorCode = colorToHex(color);
     _colorCodeController.text = currentColorCode;
-    print("controller color: ${_colorCodeController.text}");
-    print(" ------- ");
   }
 
   @override
@@ -87,17 +78,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
   var _isLoading = false;
 
   Future<void> _saveForm() async {
-    print(" --------  ");
-    print(" --------  ");
-    print(" ");
-    print(" ");
-    print('our form is saved');
-    print('name : ${_nameController.text}');
-    print('color : ${_colorCodeController.text}');
-    print(" ");
-    print(" ");
-    print(" --------  ");
-    print(" --------  ");
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -113,7 +93,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
         colorLightCode: colorToHex(newCodeLight),
         photo: "assets/photos/sushi-circle.png",
       );
-      print('edited category $editedCategory');
 
       Provider.of<Categories>(context, listen: false)
           .editCategory(editedCategory);
@@ -129,7 +108,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
     var newCodeLight = TinyColor(
       hexToColor(newCode),
     ).brighten(14).color;
-    print("newCodeLight : $newCodeLight");
 
     Category _newCategory = Category(
       name: _nameController.text,

@@ -12,13 +12,8 @@ class Categories with ChangeNotifier {
   //This is the base url for making the api calls
   final baseUrl = 'aws';
 
-  // print("og red: ${TinyColor(Colors.red).color}");
-  // print("lightened() ${TinyColor(Colors.red).lighten().color}");
-  // print("lightened 50${TinyColor(Colors.red).lighten(50).color}");
-  // print("darkened 50${TinyColor(Colors.red).darken(50).color}");
+  String _currentNewCategoryPhoto = "";
 
-  // print("brighten ${TinyColor(Colors.red).brighten().color}");
-  // print("brighten 20${TinyColor(Colors.red).brighten(20).color}");
   List<Category> _categories = [
     Category(
       id: "1",
@@ -79,6 +74,14 @@ class Categories with ChangeNotifier {
 
   List<Category> get items {
     return [..._categories];
+  }
+
+  String get currentNewCategoryPhoto {
+    return _currentNewCategoryPhoto;
+  }
+
+  String setCurrentNewCategoryPhoto(String newPhoto) {
+    _currentNewCategoryPhoto = newPhoto;
   }
 
   List<Category> get predefinedItems {

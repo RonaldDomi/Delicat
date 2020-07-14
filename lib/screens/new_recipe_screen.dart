@@ -66,6 +66,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
       Provider.of<Recipes>(context, listen: false).editRecipe(editedRecipe);
       Navigator.of(context).pop();
+      return;
     }
     // print(
     //     "----------------------------------------------------------------------");
@@ -79,7 +80,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       description: _descriptionController.text,
       photo: "assets/photos/sushi-circle.png",
     );
-    print(newRecipe);
+    print("adding a new recipe $newRecipe");
 
     Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe);
     Navigator.of(context).pop();

@@ -1,6 +1,8 @@
+import 'package:delicat/providers/categories.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:provider/provider.dart';
 
 import '../imagesHelperFunctions.dart';
 
@@ -87,8 +89,14 @@ class _ImageScreenState extends State<ImageScreen> {
                   RaisedButton(
                     child: Text('Next'),
                     onPressed: () {
-                      Navigator.of(context)
-                          .pushNamed(RouterNames.CategoriesScreen);
+                      String newPhoto = items[currentIndex].toString();
+                      Provider.of<Categories>(context)
+                          .setCurrentNewCategoryPhoto(newPhoto);
+
+                      Navigator.of(context).pushNamed(
+                        RouterNames.NewCategoriesScreen,
+                        // arguments: category,
+                      );
                     },
                   ),
                 ],
