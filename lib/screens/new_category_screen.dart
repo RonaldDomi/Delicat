@@ -43,7 +43,7 @@ class NewCatScreen extends StatefulWidget {
 }
 
 class _NewCatScreenState extends State<NewCatScreen> {
-  Color pickerColor = Color(0xff443a49);
+  Color pickerColor = Colors.red;
   bool _isEditing = false;
 
   final _nameController = TextEditingController();
@@ -51,11 +51,20 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
   Color currentColor = Color(0xff443a49);
   void changeColor(Color color) {
+    print(" ------- ");
+    print("  ");
+    print("  ");
+    print("current color: ${currentColor}");
+    print("new color: ${color}");
+    print("  ");
+    print("  ");
     setState(() => {
           currentColor = color,
         });
     final currentColorCode = colorToHex(color);
     _colorCodeController.text = currentColorCode;
+    print("controller color: ${_colorCodeController.text}");
+    print(" ------- ");
   }
 
   @override
@@ -63,7 +72,10 @@ class _NewCatScreenState extends State<NewCatScreen> {
     if (widget.category != null) {
       _nameController.text = widget.category.name;
       _colorCodeController.text = widget.category.colorCode;
+      pickerColor = hexToColor(widget.category.colorCode);
       _isEditing = true;
+    } else {
+      _colorCodeController.text = colorToHex(pickerColor);
     }
     // TODO: implement initState
     super.initState();
@@ -75,15 +87,30 @@ class _NewCatScreenState extends State<NewCatScreen> {
   var _isLoading = false;
 
   Future<void> _saveForm() async {
+    print(" --------  ");
+    print(" --------  ");
+    print(" ");
+    print(" ");
+    print('our form is saved');
+    print('name : ${_nameController.text}');
+    print('color : ${_colorCodeController.text}');
+    print(" ");
+    print(" ");
+    print(" --------  ");
+    print(" --------  ");
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
     }
     if (_isEditing) {
+      var newCodeLight = TinyColor(
+        hexToColor(_colorCodeController.text),
+      ).brighten(14).color;
       Category editedCategory = Category(
         id: widget.category.id,
         name: _nameController.text,
         colorCode: _colorCodeController.text,
+        colorLightCode: colorToHex(newCodeLight),
         photo: "assets/photos/sushi-circle.png",
       );
       print('edited category $editedCategory');
@@ -98,15 +125,17 @@ class _NewCatScreenState extends State<NewCatScreen> {
     setState(() {
       _isLoading = true;
     });
-    String newCode = colorCodeToHex(_colorCodeController.text);
+    String newCode = _colorCodeController.text;
+    var newCodeLight = TinyColor(
+      hexToColor(newCode),
+    ).brighten(14).color;
+    print("newCodeLight : $newCodeLight");
 
     Category _newCategory = Category(
       name: _nameController.text,
       photo: "assets/photos/salads.jpg",
       colorCode: newCode,
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor(newCode),
-      ).brighten(14).color),
+      colorLightCode: colorToHex(newCodeLight),
     );
 
     try {
@@ -247,7 +276,8 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                         }
                                         return null;
                                       },
-                                      onSaved: (value) {
+                                      onChanged: (value) {
+                                        print("value: $value");
                                         _nameController.text = value;
                                       },
                                     ),
@@ -277,7 +307,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
                             Container(
                               height: 150,
                               child: BlockPicker(
-                                pickerColor: currentColor,
+                                pickerColor: pickerColor,
                                 availableColors: _availableColors,
                                 onColorChanged: changeColor,
                               ),

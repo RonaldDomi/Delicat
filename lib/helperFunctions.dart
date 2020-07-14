@@ -72,7 +72,6 @@ int hexToColorCode(String hex, [opacity = 100]) {
     case 0:
       prefix = "00";
       break;
-    default:
   }
 
   String code = hex.substring(1, hex.length);
