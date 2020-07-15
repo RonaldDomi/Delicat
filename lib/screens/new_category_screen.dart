@@ -133,6 +133,8 @@ class _NewCatScreenState extends State<NewCatScreen> {
       await Provider.of<Categories>(context, listen: false)
           .createCategory(_newCategory);
       // Navigator.of(context).pop();
+      Provider.of<Categories>(context).zeroCurrentPhoto();
+      Provider.of<Categories>(context).zeroOngoingCategory();
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
     } catch (error) {
       print("error: sent category $_newCategory");
@@ -201,7 +203,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
                     borderRadius: BorderRadius.circular(29),
                     color: Color(0xffF9F9F9),
                   ),
-                  padding: EdgeInsets.all(10),
                   margin: EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[
@@ -260,16 +261,41 @@ class _NewCatScreenState extends State<NewCatScreen> {
                       ),
                       SizedBox(width: 20),
                       if (postedImage != "")
-                        Container(
-                          width: 130,
-                          height: 130,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: NetworkImage(postedImage),
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              width: 130,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(postedImage),
+                                ),
+                              ),
                             ),
-                          ),
+                            RaisedButton(
+                              onPressed: () {
+                                setState(() {
+                                  Provider.of<Categories>(context)
+                                      .zeroCurrentPhoto();
+                                  postedImage = "";
+                                });
+                              },
+                              color: hexToColor("#F6C2A4"),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(19.0),
+                              ),
+                              elevation: 6,
+                              child: Text(
+                                "Remove photo",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       RaisedButton(
                         onPressed: () {

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:math';
 
+import '../routeNames.dart';
 import '../screen_scaffold.dart';
 import '../widgets/recipe_image_picker.dart';
 import '../widgets/bottom_navigation_bar.dart';
@@ -218,6 +219,44 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                           }
                           return null;
                         },
+                      ),
+                      SizedBox(height: 21),
+                      Divider(
+                        thickness: 3,
+                      ),
+                      SizedBox(height: 21),
+                      RaisedButton(
+                        onPressed: () {
+                          // Category category = Category(
+                          //     name: _nameController.text,
+                          //     colorCode: _colorCodeController.text);
+                          // Provider.of<Categories>(context)
+                          //     .setOngoingCategory(category);
+
+                          Navigator.of(context).pushNamed(
+                            RouterNames.CameraScreen,
+                            arguments: [
+                              widget.categoryColorCode,
+                              widget.categoryName
+                            ],
+                          );
+                        },
+                        color: hexToColor("#F6C2A4"),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(19.0),
+                        ),
+                        elevation: 6,
+                        child: Text(
+                          "Choose Photo",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 21),
+                      Divider(
+                        thickness: 3,
                       ),
                       SizedBox(height: 21),
                       RaisedButton(

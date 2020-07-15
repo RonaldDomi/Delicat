@@ -11,4 +11,5 @@ class RouterNames {
   static const SearchScreen = '/search-screen';
   static const MealDetailsScreen = '/meal-details';
   static const ImageScreen = '/image-screen';
+  static const CameraScreen = '/camera-screen';
 }
