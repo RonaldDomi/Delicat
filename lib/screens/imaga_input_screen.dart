@@ -95,7 +95,6 @@ class _ImageScreenState extends State<ImageScreen> {
 
                       Navigator.of(context).pushNamed(
                         RouterNames.NewCategoriesScreen,
-                        // arguments: category,
                       );
                     },
                   ),

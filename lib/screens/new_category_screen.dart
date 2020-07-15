@@ -49,6 +49,8 @@ class _NewCatScreenState extends State<NewCatScreen> {
   final _nameController = TextEditingController();
   final _colorCodeController = TextEditingController();
 
+  String postedImage = "";
+
   Color currentColor = Color(0xff443a49);
   void changeColor(Color color) {
     setState(() => {
@@ -72,10 +74,24 @@ class _NewCatScreenState extends State<NewCatScreen> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
+    Category category = Provider.of<Categories>(context).getOngoingCategory();
+
+    _nameController.text = category.name;
+    _colorCodeController.text = category.colorCode;
+    pickerColor = category.colorCode != null
+        ? hexToColor(category.colorCode)
+        : Colors.red;
+
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
   // final _colorFocusNode = FocusNode();
 
   final _form = GlobalKey<FormState>();
-  var _isLoading = false;
 
   Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
@@ -101,9 +117,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
     }
 
     _form.currentState.save();
-    setState(() {
-      _isLoading = true;
-    });
     String newCode = _colorCodeController.text;
     var newCodeLight = TinyColor(
       hexToColor(newCode),
@@ -143,213 +156,211 @@ class _NewCatScreenState extends State<NewCatScreen> {
         ),
       );
     }
-
-    setState(() {
-      _isLoading = false;
-    });
-    // Navigator.of(context).pop();
   }
-
-  // @override
-  // void dispose() {
-  //   _colorFocusNode.dispose();
-  //   super.dispose();
-  // }
 
   @override
   Widget build(BuildContext context) {
     return ScreenScaffold(
-      child: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : Container(
-              color: Color(0xffF1EBE8),
-              height: MediaQuery.of(context).size.height,
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _form,
+      child: Container(
+        color: Color(0xffF1EBE8),
+        height: MediaQuery.of(context).size.height,
+        child: SingleChildScrollView(
+          child: Form(
+            key: _form,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  width: MediaQuery.of(context).size.width,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              "Your Menu",
-                              style: TextStyle(
-                                fontSize: 23,
-                              ),
-                            ),
-                            RaisedButton(
-                              disabledTextColor: Color(0xffD6D6D6),
-                              disabledColor: Colors.white,
-                              disabledElevation: 6,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                              child: Text(
-                                "add a new cat",
-                              ),
-                            )
-                          ],
+                      Text(
+                        "Your Menu",
+                        style: TextStyle(
+                          fontSize: 23,
                         ),
                       ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(29),
-                          color: Color(0xffF9F9F9),
+                      RaisedButton(
+                        disabledTextColor: Color(0xffD6D6D6),
+                        disabledColor: Colors.white,
+                        disabledElevation: 6,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
                         ),
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.all(10),
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              "New Categorie",
-                              style: TextStyle(
-                                fontSize: 23,
-                                color: Color(0xffBB9982),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                    // width: 80.0,
-                                    child: Text(
-                                      "Cat Name",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: Color(0xff927C6C),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 20),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.7,
-                                    child: TextFormField(
-                                      initialValue: _nameController.text,
-                                      decoration: InputDecoration(
-                                        filled: true,
-                                        fillColor: hexToColor("#F1EBE8"),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius:
-                                              BorderRadius.circular(25.7),
-                                        ),
-                                      ),
-                                      textInputAction: TextInputAction.next,
-                                      // onFieldSubmitted: (_) {
-                                      //   FocusScope.of(context).requestFocus(_colorFocusNode);
-                                      // },
-                                      validator: (value) {
-                                        if (value.isEmpty) {
-                                          return 'Please provide a value.';
-                                        }
-                                        return null;
-                                      },
-                                      onChanged: (value) {
-                                        print("value: $value");
-                                        _nameController.text = value;
-                                      },
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            SizedBox(width: 20),
-                            RaisedButton(
-                              onPressed: () {
-                                Navigator.of(context)
-                                    .pushNamed(RouterNames.ImageScreen);
-                              },
-                              color: hexToColor("#F6C2A4"),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(19.0),
-                              ),
-                              elevation: 6,
-                              child: Text(
-                                "Choose Photo",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: 150,
-                              child: BlockPicker(
-                                pickerColor: pickerColor,
-                                availableColors: _availableColors,
-                                onColorChanged: changeColor,
-                              ),
-                            ),
-                            SizedBox(height: 21),
-                            RaisedButton(
-                              onPressed: _saveForm,
-                              color: hexToColor("#F6C2A4"),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(19.0),
-                              ),
-                              elevation: 6,
-                              child: Text(
-                                (_isEditing)
-                                    ? "Update Category"
-                                    : "Submit form",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 21),
-                          ],
+                        child: Text(
+                          "add a new cat",
                         ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        // width: MediaQuery.of(context).size.width * 0.8,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(29),
-                          color: Color(0xffF9F9F9),
-                        ),
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.all(10),
-                        child: Column(
-                          children: <Widget>[
-                            Text("Please choose what we have made for you"),
-                            RaisedButton(
-                              onPressed: () {
-                                // var pass;
-                                Navigator.of(context).pushNamed(
-                                    RouterNames.CategoriesSelectionScreen);
-                              },
-                              color: hexToColor("#F6C2A4"),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(19.0),
-                              ),
-                              elevation: 6,
-                              child: Text(
-                                "Choose from ours",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                      )
                     ],
                   ),
                 ),
-              ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(29),
+                    color: Color(0xffF9F9F9),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        "New Categorie",
+                        style: TextStyle(
+                          fontSize: 23,
+                          color: Color(0xffBB9982),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              // width: 80.0,
+                              child: Text(
+                                "Cat Name",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Color(0xff927C6C),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2.7,
+                              child: TextFormField(
+                                initialValue: _nameController.text,
+                                decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: hexToColor("#F1EBE8"),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                    borderRadius: BorderRadius.circular(25.7),
+                                  ),
+                                ),
+                                textInputAction: TextInputAction.next,
+                                // onFieldSubmitted: (_) {
+                                //   FocusScope.of(context).requestFocus(_colorFocusNode);
+                                // },
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please provide a value.';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  print("value: $value");
+                                  _nameController.text = value;
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      if (postedImage != "")
+                        Container(
+                          width: 130,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.fill,
+                              image: NetworkImage(postedImage),
+                            ),
+                          ),
+                        ),
+                      RaisedButton(
+                        onPressed: () {
+                          Category category = Category(
+                              name: _nameController.text,
+                              colorCode: _colorCodeController.text);
+                          Provider.of<Categories>(context)
+                              .setOngoingCategory(category);
+
+                          Navigator.of(context)
+                              .pushNamed(RouterNames.ImageScreen);
+                        },
+                        color: hexToColor("#F6C2A4"),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(19.0),
+                        ),
+                        elevation: 6,
+                        child: Text(
+                          "Choose Photo",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 150,
+                        child: BlockPicker(
+                          pickerColor: pickerColor,
+                          availableColors: _availableColors,
+                          onColorChanged: changeColor,
+                        ),
+                      ),
+                      SizedBox(height: 21),
+                      RaisedButton(
+                        onPressed: _saveForm,
+                        color: hexToColor("#F6C2A4"),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(19.0),
+                        ),
+                        elevation: 6,
+                        child: Text(
+                          (_isEditing) ? "Update Category" : "Submit form",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 21),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  // width: MediaQuery.of(context).size.width * 0.8,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(29),
+                    color: Color(0xffF9F9F9),
+                  ),
+                  padding: EdgeInsets.all(10),
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    children: <Widget>[
+                      Text("Please choose what we have made for you"),
+                      RaisedButton(
+                        onPressed: () {
+                          // var pass;
+                          Navigator.of(context)
+                              .pushNamed(RouterNames.CategoriesSelectionScreen);
+                        },
+                        color: hexToColor("#F6C2A4"),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(19.0),
+                        ),
+                        elevation: 6,
+                        child: Text(
+                          "Choose from ours",
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
             ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -12,6 +12,7 @@ class Categories with ChangeNotifier {
   //This is the base url for making the api calls
   final baseUrl = 'aws';
 
+  Category ongoingCategory = Category();
   String _currentNewCategoryPhoto = "";
 
   List<Category> _categories = [
@@ -82,6 +83,26 @@ class Categories with ChangeNotifier {
 
   String setCurrentNewCategoryPhoto(String newPhoto) {
     _currentNewCategoryPhoto = newPhoto;
+  }
+
+  String getCurrentNewCategoryPhoto() {
+    return _currentNewCategoryPhoto;
+  }
+
+  void zeroCurrentPhoto() {
+    _currentNewCategoryPhoto = "";
+  }
+
+  void setOngoingCategory(Category category) {
+    ongoingCategory = category;
+  }
+
+  Category getOngoingCategory() {
+    return ongoingCategory;
+  }
+
+  void zeroOngoingCategory() {
+    ongoingCategory = Category();
   }
 
   List<Category> get predefinedItems {
