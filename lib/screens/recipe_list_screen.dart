@@ -61,11 +61,16 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             children: <Widget>[
                               RaisedButton(
                                 onPressed: () {
+                                  Provider.of<Recipes>(context, listen: false)
+                                      .setIsEdited(false);
+                                  Provider.of<Recipes>(context, listen: false)
+                                      .setIsNew(true);
                                   Navigator.of(context).pushNamed(
                                     RouterNames.NewRecipeScreen,
                                     arguments: [
                                       category.name,
                                       category.colorLightCode,
+                                      category.id,
                                     ],
                                   );
                                 },

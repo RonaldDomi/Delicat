@@ -18,7 +18,7 @@ class RecipeDetailsScreen extends StatefulWidget {
 }
 
 class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
-  final TextEditingController _nameController = new TextEditingController();
+  // final TextEditingController _nameController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,23 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     final isFavorite =
         Provider.of<Recipes>(context).isRecipeFavorite(widget.recipeId);
 
-    _nameController.text = recipe.name;
+    void onEdit() {
+      // Navigate to edit recipe
+      Provider.of<Recipes>(context, listen: false).setIsEdited(true);
+      Provider.of<Recipes>(context, listen: false).setOngoingRecipe(recipe);
+      Provider.of<Recipes>(context, listen: false).setIsNew(false);
+
+      Navigator.of(context).pushNamed(
+        RouterNames.NewRecipeScreen,
+        arguments: [
+          category.name,
+          category.colorLightCode,
+          category.id,
+        ],
+      );
+    }
+
+    // _nameController.text = recipe.name;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -45,16 +61,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                   value: 3,
                   child: RawMaterialButton(
                     onPressed: () {
-                      print("pressed dis shit");
-                      // Navigate to edit recipe
-                      Navigator.of(context).pushNamed(
-                        RouterNames.NewRecipeScreen,
-                        arguments: [
-                          category.name,
-                          category.colorLightCode,
-                          recipe,
-                        ],
-                      );
+                      onEdit();
                     },
                     elevation: 2.0,
                     fillColor: Color(0xffF6C2A4),

@@ -43,15 +43,17 @@ class NewCatScreen extends StatefulWidget {
 }
 
 class _NewCatScreenState extends State<NewCatScreen> {
+  final _form = GlobalKey<FormState>();
   Color pickerColor = Colors.red;
   bool _isEditing = false;
+  bool _isNew = false;
 
   final _nameController = TextEditingController();
   final _colorCodeController = TextEditingController();
+  Color currentColor = Color(0xff443a49);
 
   String postedImage = "";
 
-  Color currentColor = Color(0xff443a49);
   void changeColor(Color color) {
     setState(() => {
           currentColor = color,
@@ -69,6 +71,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
       _isEditing = true;
     } else {
       _colorCodeController.text = colorToHex(pickerColor);
+      _isNew = true;
     }
     // TODO: implement initState
     super.initState();
@@ -78,27 +81,24 @@ class _NewCatScreenState extends State<NewCatScreen> {
   void didChangeDependencies() {
     postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
     Category category = Provider.of<Categories>(context).getOngoingCategory();
-
-    _nameController.text = category.name;
-    _colorCodeController.text = category.colorCode;
-    pickerColor = category.colorCode != null
-        ? hexToColor(category.colorCode)
-        : Colors.red;
-
+    if (category.name != null && category.colorCode != null) {
+      _nameController.text = category.name;
+      _colorCodeController.text = category.colorCode;
+      pickerColor = category.colorCode != null
+          ? hexToColor(category.colorCode)
+          : Colors.red;
+      _isEditing = true;
+    }
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
-
-  // final _colorFocusNode = FocusNode();
-
-  final _form = GlobalKey<FormState>();
 
   Future<void> _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
     }
-    if (_isEditing) {
+    if (_isEditing && !_isNew) {
       var newCodeLight = TinyColor(
         hexToColor(_colorCodeController.text),
       ).brighten(14).color;
@@ -132,7 +132,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
     try {
       await Provider.of<Categories>(context, listen: false)
           .createCategory(_newCategory);
-      // Navigator.of(context).pop();
       Provider.of<Categories>(context).zeroCurrentPhoto();
       Provider.of<Categories>(context).zeroOngoingCategory();
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
@@ -251,7 +250,6 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                   return null;
                                 },
                                 onChanged: (value) {
-                                  print("value: $value");
                                   _nameController.text = value;
                                 },
                               ),
@@ -338,7 +336,7 @@ class _NewCatScreenState extends State<NewCatScreen> {
                         ),
                         elevation: 6,
                         child: Text(
-                          (_isEditing) ? "Update Category" : "Submit form",
+                          (!_isNew) ? "Update Category" : "Submit form",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,

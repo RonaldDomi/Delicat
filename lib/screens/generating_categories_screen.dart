@@ -15,7 +15,6 @@ class _GeneratingCategoriesScreenState
     extends State<GeneratingCategoriesScreen> {
   @override
   void initState() {
-    print("init state for Generating Screen");
     super.initState();
 
     Timer(Duration(seconds: 3), () {

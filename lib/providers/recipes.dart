@@ -56,6 +56,52 @@ class Recipes with ChangeNotifier {
     return [..._favoriteRecipes];
   }
 
+  String _currentNewRecipePhoto = "";
+  Recipe _ongoingRecipe = Recipe();
+  bool _isCurrentRecipeNew = true;
+  bool _isCurrentRecipeEdited = false;
+  void setIsNew(bool isNew) {
+    _isCurrentRecipeNew = isNew;
+  }
+
+  bool getIsNew() {
+    return _isCurrentRecipeNew;
+    // return true;
+  }
+
+  void setIsEdited(bool isEdited) {
+    _isCurrentRecipeEdited = isEdited;
+  }
+
+  bool getIsEdited() {
+    return _isCurrentRecipeEdited;
+    // return true;
+  }
+
+  String setCurrentNewRecipePhoto(String newPhoto) {
+    _currentNewRecipePhoto = newPhoto;
+  }
+
+  String getCurrentNewRecipePhoto() {
+    return _currentNewRecipePhoto;
+  }
+
+  void zeroCurrentPhoto() {
+    _currentNewRecipePhoto = "";
+  }
+
+  void setOngoingRecipe(Recipe recipe) {
+    _ongoingRecipe = recipe;
+  }
+
+  Recipe getOngoingRecipe() {
+    return _ongoingRecipe;
+  }
+
+  void zeroOngoingRecipe() {
+    _ongoingRecipe = Recipe();
+  }
+
   void toggleFavorite(String recipeId) {
     final existingIndex =
         _favoriteRecipes.indexWhere((recipe) => recipe.id == recipeId);
@@ -75,6 +121,7 @@ class Recipes with ChangeNotifier {
 
   void addRecipe(Recipe newRecipe) {
     Recipe addRecipe = Recipe(
+      id: newRecipe.id,
       name: newRecipe.name,
       photo: newRecipe.photo,
       description: newRecipe.description,

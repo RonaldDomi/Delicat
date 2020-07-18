@@ -1,27 +1,24 @@
+// import 'dart:io';
+
 import 'dart:io';
 
 import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:path/path.dart' as path;
+import 'package:image_picker/image_picker.dart';
 import 'dart:math';
 
 import '../routeNames.dart';
 import '../screen_scaffold.dart';
-import '../widgets/recipe_image_picker.dart';
-import '../widgets/bottom_navigation_bar.dart';
 import '../providers/recipes.dart';
 import '../models/recipe.dart';
-
-import './favorites_screen.dart';
-import './categories_screen.dart';
-import './search_screen.dart';
+import 'categories_screen.dart';
 
 class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
   final String categoryColorCode;
-  final Recipe recipe;
-  NewRecipeScreen({this.categoryName, this.categoryColorCode, this.recipe});
+  final String categoryId;
+  NewRecipeScreen({this.categoryName, this.categoryColorCode, this.categoryId});
 
   @override
   _NewRecipeScreenState createState() => _NewRecipeScreenState();
@@ -29,62 +26,122 @@ class NewRecipeScreen extends StatefulWidget {
 
 class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _form = GlobalKey<FormState>();
-  bool _isEditing = false;
+  var rng = new Random();
+  PickedFile _imageFile;
+  final ImagePicker _picker = ImagePicker();
 
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _descriptionNode = FocusNode();
 
+  String postedImage = "";
+  var recipe = Recipe();
+  bool isNew = true;
+  bool isEdited = false;
+
   @override
-  void initState() {
-    if (widget.recipe != null) {
-      // edit recipe
-      _nameController.text = widget.recipe.name;
-      _descriptionController.text = widget.recipe.description;
-      _isEditing = true;
+  void didChangeDependencies() async {
+    postedImage = Provider.of<Recipes>(context).getCurrentNewRecipePhoto();
+    isNew = Provider.of<Recipes>(context).getIsNew();
+    isEdited = Provider.of<Recipes>(context).getIsEdited();
+    if (isNew && !isEdited) {
+      recipe.id = rng.nextInt(1000).toString();
+      recipe.categoryId = widget.categoryId;
+      recipe.photo = " ";
+      print("onInit: recipe is brand new");
+      super.didChangeDependencies();
+      return;
+    } else if (isNew && isEdited) {
+      print("onInit: recipe is new but edited");
+      recipe = Provider.of<Recipes>(context).getOngoingRecipe();
+      if (recipe.name != null &&
+          recipe.description != null &&
+          recipe.categoryId != null &&
+          recipe.id != null &&
+          recipe.photo != null) {
+        _nameController.text = recipe.name;
+        _descriptionController.text = recipe.description;
+      } else {
+        print("newRecipe: error, the recipe is missing something onInit");
+      }
     } else {
-      // new recipe
+      // TODO: isNew false
+
+      recipe = Provider.of<Recipes>(context).getOngoingRecipe();
+      _nameController.text = recipe.name;
+      _descriptionController.text = recipe.description;
     }
 
-    // TODO: implement initState
-    super.initState();
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
   }
 
-  void _saveRecipe() {
+  void navigateToPhoto() {
+    recipe.name = _nameController.text;
+    recipe.description = _descriptionController.text;
+    Provider.of<Recipes>(context).setOngoingRecipe(recipe);
+    Provider.of<Recipes>(context).setIsEdited(true);
+
+    Navigator.of(context).pushNamed(
+      RouterNames.CameraScreen,
+      arguments: [
+        widget.categoryColorCode,
+        widget.categoryName,
+        widget.categoryId
+      ],
+    );
+  }
+
+  void _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
     }
-
-    if (_isEditing) {
-      Recipe editedRecipe = Recipe(
-        categoryId: "1",
-        id: widget.recipe.id,
-        name: _nameController.text,
-        description: _descriptionController.text,
-        photo: "assets/photos/sushi-circle.png",
-      );
-
-      Provider.of<Recipes>(context, listen: false).editRecipe(editedRecipe);
-      Navigator.of(context).pop();
-      return;
-    }
-    // print(
-    //     "----------------------------------------------------------------------");
-    // print("${path.basename(_pickedImage.path)}");
-    // final imageName = path.basename(_pickedImage.path);
-    var rng = new Random();
     Recipe newRecipe = Recipe(
-      categoryId: "1",
-      id: rng.nextInt(1000).toString(),
+      categoryId: recipe.categoryId,
+      id: recipe.id,
       name: _nameController.text,
       description: _descriptionController.text,
-      photo: "assets/photos/sushi-circle.png",
+      photo: recipe.photo,
     );
-    print("adding a new recipe $newRecipe");
-
-    Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe);
-    Navigator.of(context).pop();
+    if (!isNew) {
+      Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
+      Provider.of<Recipes>(context).zeroCurrentPhoto();
+      Provider.of<Recipes>(context).zeroOngoingRecipe();
+      Provider.of<Recipes>(context).setIsEdited(false);
+      Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
+          arguments: recipe.categoryId);
+      return;
+    }
+    try {
+      Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe);
+      Provider.of<Recipes>(context).zeroCurrentPhoto();
+      Provider.of<Recipes>(context).zeroOngoingRecipe();
+      Provider.of<Recipes>(context).setIsEdited(false);
+      Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
+          arguments: newRecipe.categoryId);
+    } catch (error) {
+      print("error: sent recipe $newRecipe");
+      await showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('An error occurred!'),
+          content: Text('Something went wrong.'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => CategoriesScreen(),
+                  ),
+                );
+              },
+            )
+          ],
+        ),
+      );
+    }
   }
 
   @override
@@ -227,19 +284,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                       SizedBox(height: 21),
                       RaisedButton(
                         onPressed: () {
-                          // Category category = Category(
-                          //     name: _nameController.text,
-                          //     colorCode: _colorCodeController.text);
-                          // Provider.of<Categories>(context)
-                          //     .setOngoingCategory(category);
-
-                          Navigator.of(context).pushNamed(
-                            RouterNames.CameraScreen,
-                            arguments: [
-                              widget.categoryColorCode,
-                              widget.categoryName
-                            ],
-                          );
+                          navigateToPhoto();
                         },
                         color: hexToColor("#F6C2A4"),
                         shape: RoundedRectangleBorder(
@@ -258,18 +303,19 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                       Divider(
                         thickness: 3,
                       ),
+                      Divider(
+                        thickness: 3,
+                      ),
                       SizedBox(height: 21),
                       RaisedButton(
-                        onPressed: _saveRecipe,
+                        onPressed: _saveForm,
                         color: hexToColor("#F6C2A4"),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(19.0),
                         ),
                         elevation: 6,
                         child: Text(
-                          (_isEditing == true)
-                              ? "Update recipe"
-                              : "Add a recipe",
+                          (!isNew) ? "Update recipe" : "Add a recipe",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -287,4 +333,135 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       ),
     );
   }
+
+  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+    await _displayPickImageDialog(context, () async {
+      try {
+        final pickedFile = await _picker.getImage(
+          source: source,
+        );
+        setState(() async {
+          _imageFile = pickedFile;
+        });
+      } catch (e) {
+        setState(() {
+          // _pickImageError = e;
+        });
+      }
+    });
+  }
+
+  Future<void> _displayPickImageDialog(BuildContext context, onPick) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Add optional parameters'),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('CANCEL'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                  child: const Text('PICK'),
+                  onPressed: () {
+                    onPick();
+                    Navigator.of(context).pop();
+                  }),
+            ],
+          );
+        });
+  }
 }
+
+// TODO: IMPLEMENT CHOOSE FROM GALERY
+
+// SizedBox(height: 21),
+// Row(
+//   children: <Widget>[
+//     RaisedButton(
+//       onPressed: () {
+//         // chooseFromGalery();
+//         _onImageButtonPressed(ImageSource.gallery,
+//             context: context);
+//       },
+//       color: hexToColor("#F6C2A4"),
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(19.0),
+//       ),
+//       elevation: 6,
+//       child: Text(
+//         "Choose From Galery",
+//         style: TextStyle(
+//           color: Colors.white,
+//           fontSize: 20,
+//         ),
+//       ),
+//     ),
+//     if (_imageFile != null)
+//       Container(
+//         height: 40,
+//         decoration: BoxDecoration(
+//           shape: BoxShape.circle,
+//           color: hexToColor("#E4E4E4"),
+//           border: Border.all(
+//             color: hexToColor("#EEDA76"),
+//             width: 5,
+//           ),
+//           // image: DecorationImage(
+//           //   fit: BoxFit.fill,
+//           //   image: Image.file(
+//           //     File(
+//           //       _imageFile.path,
+//           //     ),
+//           //   ),
+//           // ),
+//         ),
+//         child: Image.file(
+//           File(
+//             _imageFile.path,
+//           ),
+//         ),
+//       ),
+//   ],
+// ),
+// SizedBox(height: 21),
+// if (postedImage != "")
+//   Row(
+//     children: <Widget>[
+//       Container(
+//         width: 130,
+//         height: 130,
+//         decoration: BoxDecoration(
+//           shape: BoxShape.circle,
+//           image: DecorationImage(
+//             fit: BoxFit.fill,
+//             // image: NetworkImage(postedImage),
+//           ),
+//         ),
+//       ),
+//       RaisedButton(
+//         onPressed: () {
+//           setState(() {
+//             Provider.of<Recipes>(context)
+//                 .zeroCurrentPhoto();
+//             postedImage = "";
+//           });
+//         },
+//         color: hexToColor("#F6C2A4"),
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(19.0),
+//         ),
+//         elevation: 6,
+//         child: Text(
+//           "Remove photo",
+//           style: TextStyle(
+//             color: Colors.white,
+//             fontSize: 20,
+//           ),
+//         ),
+//       ),
+//     ],
+//   ),

@@ -122,8 +122,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               itemCount: snapshotCategories.data.length,
                               itemBuilder: (ctx, i) => InkWell(
                                 onTap: () {
-                                  print(
-                                      "categories: ${snapshotCategories.data}");
                                   // REROUTE TO RECIPELIST
                                   Navigator.of(context).pushNamed(
                                       RouterNames.RecipeListScreen,

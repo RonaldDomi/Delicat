@@ -18,6 +18,6 @@ class Category {
   @override
   String toString() {
     // TODO: implement toString
-    return "{id: ${this.id}, name: ${this.name}, color: ${this.colorCode}, colorLight: ${this.colorLightCode}}";
+    return "{id: ${this.id}, name: ${this.name}, color: ${this.colorCode}, photo: ${this.photo}}";
   }
 }

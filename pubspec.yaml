@@ -11,7 +11,6 @@ dependencies:
     sdk: flutter
   provider: ^3.0.0
   sqflite: ^1.3.0
-  image_picker: ^0.6.5
   path_provider: ^1.6.5
   shared_preferences: ^0.5.7
   http: ^0.12.1
@@ -20,6 +19,7 @@ dependencies:
   sliding_up_panel: ^1.0.2
   progress_indicators: ^0.1.5
   unsplash_client: ^0.2.0
+  image_picker: ^0.6.7+4
 
   tinycolor: ^1.0.2
   flutter_swiper: ^1.1.6
@@ -51,6 +51,8 @@ flutter:
     - assets/photos/sushi-circle.png
     - assets/photos/pasta-circle.png
     - assets/photos/vegetable-circle.png
+
+    - assets/photos/image1.png
   # fonts:
   #   - family: Schyler
   #     fonts:

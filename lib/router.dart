@@ -36,7 +36,9 @@ class Router {
         List<String> arguments = settings.arguments;
         String colorCode = arguments[0];
         String name = arguments[1];
-        return MaterialPageRoute(builder: (_) => CameraScreen(colorCode, name));
+        String catId = arguments[2];
+        return MaterialPageRoute(
+            builder: (_) => CameraScreen(colorCode, name, catId));
       case RouterNames.FavoritesScreen:
         return MaterialPageRoute(builder: (_) => FavoritesScreen());
       case RouterNames.GeneratingCategoriesScreen:
@@ -66,13 +68,12 @@ class Router {
         List arguments = settings.arguments;
         String categoryName = arguments[0];
         String categoryColorCode = arguments[1];
-        var recipe;
-        if (arguments.length > 2) recipe = arguments[2];
+        String categoryId = arguments[2];
         return MaterialPageRoute(
             builder: (_) => NewRecipeScreen(
                   categoryName: categoryName,
                   categoryColorCode: categoryColorCode,
-                  recipe: recipe,
+                  categoryId: categoryId,
                 ));
       case RouterNames.RecipeDetailsScreen:
         String recipeId = settings.arguments;

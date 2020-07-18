@@ -81,9 +81,14 @@ class _ImageScreenState extends State<ImageScreen> {
                   Container(
                     width: 200,
                     height: 200,
-                    child: Image.network(
-                      items[currentIndex].toString(),
-                      fit: BoxFit.cover,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                          items[currentIndex].toString(),
+                        ),
+                      ),
                     ),
                   ),
                   RaisedButton(

@@ -18,6 +18,6 @@ class Recipe {
   @override
   String toString() {
     // TODO: implement toString
-    return "{id: ${this.id}, name: ${this.name}}";
+    return "{id: ${this.id}, name: ${this.name}, photo: ${this.photo}, description: ${this.description}, categoryid: ${this.categoryId}}";
   }
 }
