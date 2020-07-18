@@ -10,13 +10,8 @@ import '../routeNames.dart';
 import '../screen_scaffold.dart';
 
 class FavoritesScreen extends StatelessWidget {
-  // final List<Recipe> favoriteRecipes;
-
-  // FavoritesScreen(this.favoriteRecipes);
-
   @override
   Widget build(BuildContext context) {
-    // List<Recipe> favoriteRecipes = [];
     List<Recipe> favoriteRecipes =
         Provider.of<Recipes>(context).favoriteRecipes;
     if (favoriteRecipes.isEmpty) {
@@ -53,7 +48,8 @@ class FavoritesScreen extends StatelessWidget {
                 child: Center(
                   child: const Text("you have no cats on your profile."),
                 ),
-                builder: (ctx, recipes, ch) => recipes.recipes.length <= 0
+                builder: (ctx, recipes, ch) => recipes.favoriteRecipes.length <=
+                        0
                     ? ch
                     : GridView.builder(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -63,14 +59,14 @@ class FavoritesScreen extends StatelessWidget {
                           mainAxisSpacing: 20,
                         ),
                         padding: const EdgeInsets.all(15),
-                        itemCount: recipes.recipes.length,
+                        itemCount: recipes.favoriteRecipes.length,
                         itemBuilder: (ctx, i) => InkWell(
                           onTap: () {
                             Navigator.of(context).pushNamed(
                                 RouterNames.RecipeDetailsScreen,
-                                arguments: recipes.recipes[i].id);
+                                arguments: recipes.favoriteRecipes[i].id);
                           },
-                          child: FavoriteItem(recipes.recipes[i]),
+                          child: FavoriteItem(recipes.favoriteRecipes[i]),
                         ),
                       ),
               ),
