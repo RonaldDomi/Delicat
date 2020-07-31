@@ -2,51 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../helperFunctions.dart';
+import '../helpers/db_helper.dart';
 
 import '../models/recipe.dart';
 // import '../models/category.dart';
 
 class Recipes with ChangeNotifier {
-  List<Recipe> _recipes = [
-    Recipe(
-      id: "1",
-      name: 'Blueberry Muffin',
-      description: "Delicious very easy to make amazing breakfast serve with",
-      photo: 'assets/photos/veggies.jpg',
-      categoryId: '1',
-    ),
-    Recipe(
-      id: "2",
-      name: 'Pancakes 2',
-      description: 'Fry the pancakes then eat.',
-      photo: 'assets/photos/veggies.jpg',
-      categoryId: '1',
-    ),
-    Recipe(
-      id: "3",
-      name: 'Pancakes 2 but better',
-      description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      photo: 'assets/photos/veggies.jpg',
-      categoryId: '1',
-    ),
-  ];
-  List<Recipe> _favoriteRecipes = [
-    Recipe(
-      id: "2",
-      name: 'Pancakes 2',
-      description: 'Fry the pancakes then eat.',
-      photo: 'assets/photos/veggies.jpg',
-      categoryId: '1',
-    ),
-    Recipe(
-      id: "3",
-      name: 'Pancakes 2 but better',
-      description: 'Fry the pancakes better then eat.',
-      photo: 'assets/photos/veggies.jpg',
-      categoryId: '1',
-    ),
-  ];
+  List<Recipe> _recipes = [];
+  List<Recipe> _favoriteRecipes = [];
 
   List<Recipe> get recipes {
     return [..._recipes];
@@ -107,28 +71,68 @@ class Recipes with ChangeNotifier {
         _favoriteRecipes.indexWhere((recipe) => recipe.id == recipeId);
     if (existingIndex >= 0) {
       _favoriteRecipes.removeAt(existingIndex);
+      getRecipeById(recipeId).isFavorite = false;
+      DBHelper.edit('recipe', recipeId, {
+        // "id": editedCategory.id,
+        // "name": editedCategory.name,
+        // "photo": editedCategory.photo.path,
+        // "photo": editedCategory.photo,
+        // "color_code": editedCategory.colorCode,
+        // "color_code_light": editedCategory.colorLightCode,
+        "is_favorite": 0,
+      });
     } else {
       _favoriteRecipes.add(
         _recipes.firstWhere((recipe) => recipe.id == recipeId),
       );
+      getRecipeById(recipeId).isFavorite = true;
+      DBHelper.edit('recipe', recipeId, {
+        // "id": editedCategory.id,
+        // "name": editedCategory.name,
+        // "photo": editedCategory.photo.path,
+        // "photo": editedCategory.photo,
+        // "color_code": editedCategory.colorCode,
+        // "color_code_light": editedCategory.colorLightCode,
+        "is_favorite": 1,
+      });
     }
     notifyListeners();
   }
 
-  bool isRecipeFavorite(String id) {
-    return _favoriteRecipes.any((recipe) => recipe.id == id);
+  bool isRecipeFavorite(String recipeId) {
+    Recipe recipe = getRecipeById(recipeId);
+    if (recipe.isFavorite == true) {
+      return true;
+    }
+    return false;
   }
 
-  void addRecipe(Recipe newRecipe) {
+  void addRecipe(Recipe newRecipe) async {
     Recipe addRecipe = Recipe(
       id: newRecipe.id,
       name: newRecipe.name,
       photo: newRecipe.photo,
+      isFavorite: newRecipe.isFavorite,
       description: newRecipe.description,
       categoryId: newRecipe.categoryId,
     );
+    var isFav;
+    if (newRecipe.isFavorite) {
+      isFav = 1;
+    } else {
+      isFav = 0;
+    }
 
     _recipes.add(addRecipe);
+    DBHelper.insert('recipe', {
+      "id": newRecipe.id,
+      "name": newRecipe.name,
+      "photo": newRecipe.photo,
+      "is_favorite": isFav,
+      "description": newRecipe.description,
+      "category_id": newRecipe.categoryId,
+    });
+    final dataList = await DBHelper.getData('recipe');
     notifyListeners();
   }
 
@@ -141,6 +145,21 @@ class Recipes with ChangeNotifier {
     final recipeIndex =
         _recipes.indexWhere((item) => item.id == editedRecipe.id);
     _recipes[recipeIndex] = editedRecipe;
+
+    var isFav;
+    if (editedRecipe.isFavorite) {
+      isFav = 1;
+    } else {
+      isFav = 0;
+    }
+    DBHelper.edit('recipe', editedRecipe.id, {
+      "id": editedRecipe.id,
+      "name": editedRecipe.name,
+      "photo": editedRecipe.photo,
+      "is_favorite": isFav,
+      "description": editedRecipe.description,
+      "category_id": editedRecipe.categoryId,
+    });
 
     notifyListeners();
   }
@@ -171,8 +190,23 @@ class Recipes with ChangeNotifier {
       //if we have erorr with our request
       // throw error;
 
-      await Future.delayed(const Duration(milliseconds: 250), () {});
-      return _recipes;
+      final dataList = await DBHelper.getData('recipe');
+      _recipes = dataList
+          .map(
+            (item) => Recipe(
+              id: item['id'],
+              categoryId: item['category_id'].toString(),
+              description: item['description'],
+              isFavorite: bitToBool(item['is_favorite']),
+              name: item['name'],
+              photo: item['photo'],
+            ),
+          )
+          .toList();
+
+      var catRecps =
+          _recipes.where((recipe) => recipe.categoryId == categoryId).toList();
+      return catRecps;
     }
     notifyListeners();
   }

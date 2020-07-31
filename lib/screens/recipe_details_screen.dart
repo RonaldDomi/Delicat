@@ -25,8 +25,8 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
     final category =
         Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
-    final isFavorite =
-        Provider.of<Recipes>(context).isRecipeFavorite(widget.recipeId);
+    // final isFavorite =
+    //     Provider.of<Recipes>(context).isRecipeFavorite(widget.recipeId);
 
     void onEdit() {
       // Navigate to edit recipe
@@ -81,7 +81,9 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                     elevation: 2.0,
                     fillColor: Color(0xffF6C2A4),
                     child: Icon(
-                      Icons.favorite_border,
+                      recipe.isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border,
                       size: 35.0,
                       color: Colors.white,
                     ),

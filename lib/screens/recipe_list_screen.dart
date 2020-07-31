@@ -88,7 +88,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                               ),
                               RaisedButton(
                                 onPressed: () {
-                                  print("push route with $category");
                                   Navigator.of(context).pushNamed(
                                     RouterNames.NewCategoriesScreen,
                                     arguments: category,

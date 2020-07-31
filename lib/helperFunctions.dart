@@ -88,3 +88,10 @@ String colorCodeToHex(String colorCode) {
 Color hexToColor(String hex) {
   return Color(hexToColorCode(hex));
 }
+
+bool bitToBool(int value) {
+  if (value == 1) {
+    return true;
+  }
+  return false;
+}

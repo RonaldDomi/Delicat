@@ -148,8 +148,7 @@ class Categories with ChangeNotifier {
     //Here we rely solely on the memory data. We take for granted that _categories is already loaded with the up-to-date
     //data from the server. For our app, this should work as intended.
 
-    final cat =
-        _categories.singleWhere((element) => element.id.toString() == catId);
+    final cat = _categories.singleWhere((element) => element.id == catId);
     //When we will have the option to share recipes online, we will have to implement this with api, but only for recipes. This version is MVP 1 consistent
     return cat;
   }
@@ -205,7 +204,6 @@ class Categories with ChangeNotifier {
         "color_code_light": newCategory.colorLightCode,
       });
       final dataList = await DBHelper.getData('category');
-      print("dataList: $dataList");
 
       notifyListeners();
 
@@ -283,7 +281,6 @@ class Categories with ChangeNotifier {
       });
     }
 
-    print(_categories);
     notifyListeners();
   }
 }

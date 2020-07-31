@@ -67,6 +67,7 @@ class RecipeListItem extends StatelessWidget {
                       flex: 1,
                       child: RawMaterialButton(
                         onPressed: () {
+                          // recipe.isFavorite = !recipe.isFavorite;
                           Provider.of<Recipes>(context, listen: false)
                               .toggleFavorite(recipe.id);
                         },

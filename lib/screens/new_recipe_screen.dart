@@ -48,11 +48,9 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       recipe.id = rng.nextInt(1000).toString();
       recipe.categoryId = widget.categoryId;
       recipe.photo = " ";
-      print("onInit: recipe is brand new");
       super.didChangeDependencies();
       return;
     } else if (isNew && isEdited) {
-      print("onInit: recipe is new but edited");
       recipe = Provider.of<Recipes>(context).getOngoingRecipe();
       if (recipe.name != null &&
           recipe.description != null &&
@@ -98,9 +96,10 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       return;
     }
     Recipe newRecipe = Recipe(
-      categoryId: recipe.categoryId,
+      categoryId: widget.categoryId,
       id: recipe.id,
       name: _nameController.text,
+      isFavorite: false,
       description: _descriptionController.text,
       photo: recipe.photo,
     );
