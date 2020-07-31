@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../providers/categories.dart';
 import '../routeNames.dart';
+import '../helpers/db_helper.dart';
 
 import '../widgets/categories_item.dart';
 import '../screen_scaffold.dart';
@@ -25,6 +26,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       Navigator.of(context)
           .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);
     }
+  }
+
+  void clearTableData() {
+    setState(() {
+      DBHelper.truncateTable("category"); //actually is truncateTable
+    });
   }
 
   flipFirstHitStatus() async {
@@ -131,6 +138,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               ),
                             ),
                           ),
+              ),
+              RaisedButton(
+                child: Text("Drop user_categories table"),
+                onPressed: clearTableData,
               ),
             ],
           ),

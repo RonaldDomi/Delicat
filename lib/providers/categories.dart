@@ -5,6 +5,7 @@ import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../helpers/db_helper.dart';
 import '../helperFunctions.dart';
 import '../models/category.dart';
 
@@ -15,25 +16,8 @@ class Categories with ChangeNotifier {
   Category ongoingCategory = Category();
   String _currentNewCategoryPhoto = "";
 
-  List<Category> _categories = [
-    Category(
-      id: "1",
-      name: 'Pasta',
-      photo: "assets/photos/pasta-circle.png",
-      colorCode: '#EEDA76',
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#EEDA76"),
-      ).brighten(14).color),
-    ),
-    Category(
-        id: "41",
-        name: 'Sushi',
-        colorCode: '#D44C22',
-        colorLightCode: colorToHex(TinyColor(
-          hexToColor("#D44C22"),
-        ).brighten(14).color),
-        photo: "assets/photos/sushi-circle.png"),
-  ];
+  List<Category> _categories = [];
+
   List<Category> _predefinedCategories = [
     Category(
       id: "42",
@@ -143,61 +127,22 @@ class Categories with ChangeNotifier {
       // throw error;
       await Future.delayed(const Duration(milliseconds: 250), () {});
 
+      final dataList = await DBHelper.getData('category');
+      _categories = dataList
+          .map(
+            (item) => Category(
+              id: item['id'],
+              colorCode: item['color_code'],
+              colorLightCode: item['color_code_light'],
+              name: item['name'],
+              photo: item['photo'],
+            ),
+          )
+          .toList();
+      print("categories: $_categories");
       return _categories;
     }
   }
-
-  // Future<List<Category>> getAllPredefinedCategories() async {
-  //   // AWS should try and give us something of the shape:
-  //   // [
-  //   //   { 'uid' : 'x',
-  //   //   'name' : 'x',
-  //   //   'photo' : 'x',
-  //   //   'colorCode' : 'x',
-  //   //   'recipes' : [{}{}]
-  //   //   },
-  //   //  { another cateogry object ... }
-  //   // ]
-  //   const url = '/category/predefined';
-
-  //   try {
-  //     final response = await http.get(url);
-
-  //     for (var category in json.decode(response.body)) {
-  //       //purge existing categories
-  //       _predefinedCategories = [];
-  //       //then load again with data coming from server
-
-  //       //now we create a Category model object from the json data
-  //       var predefinedCategoryToAdd =
-  //           Category(name: category.name, colorCode: category.colorCode);
-
-  //       //finally we add each parsed category object to our master list
-  //       _predefinedCategories.add(predefinedCategoryToAdd);
-  //     }
-  //     notifyListeners();
-  //   } catch (error) {
-  //     //if we have erorr with our request
-  //     // throw error;
-  //     _predefinedCategories = [];
-  //     _predefinedCategories
-  //         .add(Category(id: 41, name: 'PredfCat 1', colorCode: '0xffb30d04'));
-  //     _predefinedCategories
-  //         .add(Category(id: 42, name: 'PredfCat 2', colorCode: '0xffD1B3C4'));
-  //     _predefinedCategories
-  //         .add(Category(id: 43, name: 'PredfCat 3', colorCode: '0xffc03f20'));
-  //     _predefinedCategories
-  //         .add(Category(id: 44, name: 'PredfCat 4', colorCode: '0xff735D78'));
-  //     _predefinedCategories
-  //         .add(Category(id: 45, name: 'PredfCat 5', colorCode: '0xffEDFF86'));
-  //     _predefinedCategories
-  //         .add(Category(id: 46, name: 'PredfCat 6', colorCode: '0xffF3C969'));
-
-  // await Future.delayed(const Duration(milliseconds: 500), () {});
-
-  //     return _predefinedCategories;
-  //   }
-  // }
 
   Category getCategoryById(String catId) {
     //Here we rely solely on the memory data. We take for granted that _categories is already loaded with the up-to-date
@@ -251,6 +196,17 @@ class Categories with ChangeNotifier {
         colorLightCode: category.colorLightCode,
       );
       _categories.add(newCategory);
+      DBHelper.insert('category', {
+        "id": newCategory.id,
+        "name": newCategory.name,
+        // "photo": newCategory.photo.path,
+        "photo": newCategory.photo,
+        "color_code": newCategory.colorCode,
+        "color_code_light": newCategory.colorLightCode,
+      });
+      final dataList = await DBHelper.getData('category');
+      print("dataList: $dataList");
+
       notifyListeners();
 
       // throw error; //throws the error to the frontend so it can be handled there
@@ -317,6 +273,14 @@ class Categories with ChangeNotifier {
       final existingCategoryIndex =
           _categories.indexWhere((element) => element.id == editedCategory.id);
       _categories[existingCategoryIndex] = editedCategory;
+      DBHelper.edit('category', editedCategory.id, {
+        "id": editedCategory.id,
+        "name": editedCategory.name,
+        // "photo": editedCategory.photo.path,
+        "photo": editedCategory.photo,
+        "color_code": editedCategory.colorCode,
+        "color_code_light": editedCategory.colorLightCode,
+      });
     }
 
     print(_categories);

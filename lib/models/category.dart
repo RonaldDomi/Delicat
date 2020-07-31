@@ -3,7 +3,6 @@ class Category {
   final String name;
   final String photo;
   final String colorCode;
-  final String colorDarkCode;
   final String colorLightCode;
 
   const Category({
@@ -11,7 +10,6 @@ class Category {
     this.name,
     this.photo,
     this.colorCode,
-    this.colorDarkCode,
     this.colorLightCode,
   });
 
