@@ -30,120 +30,113 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   Widget build(BuildContext context) {
     final category =
         Provider.of<Categories>(context).getCategoryById(widget.categoryId);
+    final recipes =
+        Provider.of<Recipes>(context).getRecipesByCategoryId(widget.categoryId);
     _nameController.text = category.name;
+    // Provider.of<Recipes>(context).getFavoriteRecipes();
 
     return ScreenScaffold(
-      child: FutureBuilder(
-        future: Provider.of<Recipes>(context, listen: false)
-            .getRecipesByCategoryId(category.id),
-        builder: (ctx, snapshotRecipes) => snapshotRecipes.connectionState ==
-                ConnectionState.waiting
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : Container(
-                color: hexToColor(category.colorLightCode),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            "${category.name} Catalogue",
-                            style: TextStyle(
-                              fontSize: 23,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              RaisedButton(
-                                onPressed: () {
-                                  Provider.of<Recipes>(context, listen: false)
-                                      .setIsEdited(false);
-                                  Provider.of<Recipes>(context, listen: false)
-                                      .setIsNew(true);
-                                  Navigator.of(context).pushNamed(
-                                    RouterNames.NewRecipeScreen,
-                                    arguments: [
-                                      category.name,
-                                      category.colorLightCode,
-                                      category.id,
-                                    ],
-                                  );
-                                },
-                                color: Colors.white,
-                                elevation: 6,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                ),
-                                child: Text(
-                                  "add a new dish",
-                                  style: TextStyle(
-                                    color: Color(0xffF6C2A4),
-                                  ),
-                                ),
-                              ),
-                              RaisedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pushNamed(
-                                    RouterNames.NewCategoriesScreen,
-                                    arguments: category,
-                                  );
-                                },
-                                color: Colors.white,
-                                elevation: 6,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                ),
-                                child: Text(
-                                  "Edit Category",
-                                  style: TextStyle(
-                                    color: Color(0xffF6C2A4),
-                                  ),
-                                ),
-                              ),
+      child: Container(
+        color: hexToColor(category.colorLightCode),
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "${category.name} Catalogue",
+                    style: TextStyle(
+                      fontSize: 23,
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: () {
+                          Provider.of<Recipes>(context, listen: false)
+                              .setIsEdited(false);
+                          Provider.of<Recipes>(context, listen: false)
+                              .setIsNew(true);
+                          Navigator.of(context).pushNamed(
+                            RouterNames.NewRecipeScreen,
+                            arguments: [
+                              category.name,
+                              category.colorLightCode,
+                              category.id,
                             ],
-                          )
-                        ],
-                      ),
-                    ),
-                    (snapshotRecipes.data.length <= 0)
-                        ? Center(
-                            child: Text(
-                                "you have no recipes in this category. ${snapshotRecipes.data}"),
-                          )
-                        : _swiperBuilder(
-                            context, category, snapshotRecipes.data),
-                    SizedBox(
-                      height: 50,
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        var pass;
-                      },
-                      padding: EdgeInsets.symmetric(vertical: 6),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                      ),
-                      color: hexToColor(category.colorCode),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.6,
+                          );
+                        },
+                        color: Colors.white,
+                        elevation: 6,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
                         child: Text(
-                          "Read More",
-                          textAlign: TextAlign.center,
+                          "add a new dish",
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
+                            color: Color(0xffF6C2A4),
                           ),
                         ),
                       ),
-                    )
-                  ],
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(
+                            RouterNames.NewCategoriesScreen,
+                            arguments: category,
+                          );
+                        },
+                        color: Colors.white,
+                        elevation: 6,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        child: Text(
+                          "Edit Category",
+                          style: TextStyle(
+                            color: Color(0xffF6C2A4),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            (recipes.length <= 0)
+                ? Center(
+                    child: Text(
+                        "you have no recipes in this category. ${recipes}"),
+                  )
+                : _swiperBuilder(context, category, recipes),
+            SizedBox(
+              height: 50,
+            ),
+            RaisedButton(
+              onPressed: () {
+                var pass;
+              },
+              padding: EdgeInsets.symmetric(vertical: 6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+              ),
+              color: hexToColor(category.colorCode),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.6,
+                child: Text(
+                  "Read More",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
                 ),
               ),
+            )
+          ],
+        ),
       ),
     );
   }

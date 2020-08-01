@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/category.dart';
 import '../providers/categories.dart';
 import '../routeNames.dart';
 import '../helpers/db_helper.dart';
@@ -15,29 +15,9 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  checkFirstHitStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool firstTime = prefs.getBool('first_time');
-    if (firstTime != null && !firstTime) {
-      // It isn't the first time, so on rebuild just stay here
-
-    } else if (firstTime == null) {
-      prefs.setBool('first_time', false);
-      Navigator.of(context)
-          .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);
-    }
-  }
-
   void clearTableData() {
     setState(() {
       DBHelper.truncateTable("category"); //actually is truncateTable
-    });
-  }
-
-  flipFirstHitStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      prefs.setBool('first_time', null);
     });
   }
 
@@ -65,8 +45,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    checkFirstHitStatus();
-
+    List<Category> allCategories = Provider.of<Categories>(context).categories;
     return ScreenScaffold(
       child: WillPopScope(
         onWillPop: _onBackPressed,
@@ -105,40 +84,29 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                   ],
                 ),
               ),
-              FutureBuilder(
-                future: Provider.of<Categories>(context, listen: false)
-                    .getAllCategories(),
-                builder: (ctx, snapshotCategories) => snapshotCategories
-                            .connectionState ==
-                        ConnectionState.waiting
-                    ? Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : (snapshotCategories.data.length <= 0)
-                        ? Text("you have no cats on your profile.")
-                        : Expanded(
-                            child: GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 200,
-                                childAspectRatio: 2 / 2.5,
-                                crossAxisSpacing: 20,
-                                mainAxisSpacing: 20,
-                              ),
-                              padding: const EdgeInsets.all(15),
-                              itemCount: snapshotCategories.data.length,
-                              itemBuilder: (ctx, i) => InkWell(
-                                onTap: () {
-                                  // REROUTE TO RECIPELIST
-                                  Navigator.of(context).pushNamed(
-                                      RouterNames.RecipeListScreen,
-                                      arguments: snapshotCategories.data[i].id);
-                                },
-                                child: CategoryItem(snapshotCategories.data[i]),
-                              ),
-                            ),
-                          ),
-              ),
+              (allCategories.length <= 0)
+                  ? Text("you have no cats on your profile.")
+                  : Expanded(
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200,
+                          childAspectRatio: 2 / 2.5,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                        ),
+                        padding: const EdgeInsets.all(15),
+                        itemCount: allCategories.length,
+                        itemBuilder: (ctx, i) => InkWell(
+                          onTap: () {
+                            // REROUTE TO RECIPELIST
+                            Navigator.of(context).pushNamed(
+                                RouterNames.RecipeListScreen,
+                                arguments: allCategories[i].id);
+                          },
+                          child: CategoryItem(allCategories[i]),
+                        ),
+                      ),
+                    ),
               RaisedButton(
                 child: Text("Drop user_categories table"),
                 onPressed: clearTableData,

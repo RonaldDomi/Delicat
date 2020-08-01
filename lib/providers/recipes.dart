@@ -132,12 +132,12 @@ class Recipes with ChangeNotifier {
       "description": newRecipe.description,
       "category_id": newRecipe.categoryId,
     });
-    final dataList = await DBHelper.getData('recipe');
     notifyListeners();
   }
 
   void removeRecipe(String id) {
     _recipes.removeWhere((item) => item.id == id);
+    DBHelper.delete('recipe', id);
     notifyListeners();
   }
 
@@ -164,51 +164,34 @@ class Recipes with ChangeNotifier {
     notifyListeners();
   }
 
-  //We can do an eager load of the recipes at home screen
-  //Alternatively we load recipes only when selecting the category, which is the default behavior
-  Future<void> getRecipesByCategoryId(String categoryId) async {
-    //Assuming this function is called when wanting to list recipes of a certain category, then the _recipe "store" variable
-    //only holds the currenct category recipes
+  void fetchAndSetAllRecipes() async {
+    final dataList = await DBHelper.getData('recipe');
+    _recipes = dataList
+        .map(
+          (item) => Recipe(
+            id: item['id'],
+            categoryId: item['category_id'].toString(),
+            description: item['description'],
+            isFavorite: bitToBool(item['is_favorite']),
+            name: item['name'],
+            photo: item['photo'],
+          ),
+        )
+        .toList();
+  }
 
-    const url =
-        'category/{categoryId}/recipe/all'; //find string interpolation syntax for dart
+  List<Recipe> getRecipesByCategoryId(String categoryId) {
+    var catRecps =
+        _recipes.where((recipe) => recipe.categoryId == categoryId).toList();
+    return catRecps;
+  }
 
-    try {
-      final response = await http.get(url);
+  notifyListeners();
 
-      for (var bodyRecipe in json.decode(response.body)) {
-        var recipe = Recipe(
-            name: bodyRecipe.name,
-            description: bodyRecipe.description,
-            photo: bodyRecipe.photo,
-            categoryId: bodyRecipe.category.uid);
-
-        _recipes.add(recipe);
-      }
-      notifyListeners();
-    } catch (error) {
-      //if we have erorr with our request
-      // throw error;
-
-      final dataList = await DBHelper.getData('recipe');
-      _recipes = dataList
-          .map(
-            (item) => Recipe(
-              id: item['id'],
-              categoryId: item['category_id'].toString(),
-              description: item['description'],
-              isFavorite: bitToBool(item['is_favorite']),
-              name: item['name'],
-              photo: item['photo'],
-            ),
-          )
-          .toList();
-
-      var catRecps =
-          _recipes.where((recipe) => recipe.categoryId == categoryId).toList();
-      return catRecps;
-    }
-    notifyListeners();
+  void fetchAndSetFavoriteRecipes() async {
+    _favoriteRecipes =
+        _recipes.where((recipe) => recipe.isFavorite == true).toList();
+    print("_favoriteRecipes: $_favoriteRecipes");
   }
 
   Recipe getRecipeById(String recipeId) {

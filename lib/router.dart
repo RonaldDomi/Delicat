@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'screens/category_selection_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/generating_categories_screen.dart';
-import 'screens/meal_details_screen.dart';
 import 'screens/new_category_screen.dart';
 import 'screens/new_recipe_screen.dart';
 import 'screens/recipe_list_screen.dart';
@@ -15,14 +14,15 @@ import 'screens/imaga_input_screen.dart';
 import 'screens/camera_screen.dart';
 
 import './routeNames.dart';
+import 'screens/splash_screen.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/":
         return MaterialPageRoute(
-          builder: (_) => CategoriesScreen(),
-          settings: RouteSettings(name: RouterNames.CategoriesScreen),
+          builder: (_) => SplashScreen(),
+          settings: RouteSettings(name: RouterNames.SplashScreen),
         );
       case RouterNames.CategoriesScreen:
         return MaterialPageRoute(
@@ -54,8 +54,6 @@ class Router {
           builder: (_) => NewCatScreen(category: category),
         );
         break;
-      case RouterNames.MealDetailsScreen:
-        return MaterialPageRoute(builder: (_) => MealDetailsScreen());
       case RouterNames.CategoriesSelectionScreen:
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
 

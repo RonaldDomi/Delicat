@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:core';
 
-import './categories_screen.dart';
+import '../providers/categories.dart';
+import '../providers/recipes.dart';
+import '../routeNames.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -10,15 +14,25 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-    Future.delayed(Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (BuildContext context) => CategoriesScreen(),
-        ),
-      );
+    // Provider.of<Recipes>(context).
+    Provider.of<Recipes>(context).fetchAndSetAllRecipes();
+    Provider.of<Recipes>(context).fetchAndSetFavoriteRecipes();
+    Provider.of<Categories>(context).fetchAndSetCategories();
+
+    Future.delayed(Duration(seconds: 3), () async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool firstTime = prefs.getBool('first_time');
+      if (firstTime != null && !firstTime) {
+        Navigator.of(context)
+            .pushReplacementNamed(RouterNames.CategoriesScreen);
+      } else if (firstTime == null) {
+        prefs.setBool('first_time', false);
+        Navigator.of(context)
+            .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);
+      }
     });
   }
 
