@@ -46,6 +46,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     List<Category> allCategories = Provider.of<Categories>(context).categories;
+    print("categories: $allCategories");
     return ScreenScaffold(
       child: WillPopScope(
         onWillPop: _onBackPressed,
