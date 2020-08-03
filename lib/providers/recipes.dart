@@ -1,7 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'dart:math';
+
 import '../helperFunctions.dart';
 import '../helpers/db_helper.dart';
 
@@ -12,6 +11,10 @@ class Recipes with ChangeNotifier {
   List<Recipe> _recipes = [];
   List<Recipe> _favoriteRecipes = [];
 
+  bool _isOngoingRecipeNew;
+  String _currentNewRecipePhoto = "";
+  Recipe _ongoingRecipe = Recipe();
+
   List<Recipe> get recipes {
     return [..._recipes];
   }
@@ -20,25 +23,12 @@ class Recipes with ChangeNotifier {
     return [..._favoriteRecipes];
   }
 
-  String _currentNewRecipePhoto = "";
-  Recipe _ongoingRecipe = Recipe();
-  bool _isCurrentRecipeNew = true;
-  bool _isCurrentRecipeEdited = false;
   void setIsNew(bool isNew) {
-    _isCurrentRecipeNew = isNew;
+    _isOngoingRecipeNew = isNew;
   }
 
   bool getIsNew() {
-    return _isCurrentRecipeNew;
-    // return true;
-  }
-
-  void setIsEdited(bool isEdited) {
-    _isCurrentRecipeEdited = isEdited;
-  }
-
-  bool getIsEdited() {
-    return _isCurrentRecipeEdited;
+    return _isOngoingRecipeNew;
     // return true;
   }
 
@@ -108,8 +98,10 @@ class Recipes with ChangeNotifier {
   }
 
   void addRecipe(Recipe newRecipe) async {
+    var rng = new Random();
+    var recId = rng.nextInt(1000).toString();
     Recipe addRecipe = Recipe(
-      id: newRecipe.id,
+      id: recId,
       name: newRecipe.name,
       photo: newRecipe.photo,
       isFavorite: newRecipe.isFavorite,
@@ -122,10 +114,9 @@ class Recipes with ChangeNotifier {
     } else {
       isFav = 0;
     }
-
     _recipes.add(addRecipe);
     DBHelper.insert('recipe', {
-      "id": newRecipe.id,
+      "id": recId,
       "name": newRecipe.name,
       "photo": newRecipe.photo,
       "is_favorite": isFav,
@@ -191,7 +182,6 @@ class Recipes with ChangeNotifier {
   void fetchAndSetFavoriteRecipes() async {
     _favoriteRecipes =
         _recipes.where((recipe) => recipe.isFavorite == true).toList();
-    print("_favoriteRecipes: $_favoriteRecipes");
   }
 
   Recipe getRecipeById(String recipeId) {

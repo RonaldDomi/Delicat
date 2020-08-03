@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../helperFunctions.dart';
 import '../models/category.dart';
+import 'dart:io';
 
 class CategoryItem extends StatelessWidget {
   final Category category;
@@ -29,9 +30,10 @@ class CategoryItem extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(category.photo),
-              ),
+                  fit: BoxFit.cover,
+                  image: (category.photo.substring(0, 1) == "a")
+                      ? AssetImage(category.photo)
+                      : FileImage(File(category.photo))),
             ),
           ),
           Text(

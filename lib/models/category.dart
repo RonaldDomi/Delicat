@@ -1,11 +1,11 @@
 class Category {
   final String id;
   final String name;
-  final String photo;
+  String photo;
   final String colorCode;
   final String colorLightCode;
 
-  const Category({
+  Category({
     this.id,
     this.name,
     this.photo,

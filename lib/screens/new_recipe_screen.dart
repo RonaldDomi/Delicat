@@ -1,18 +1,13 @@
-// import 'dart:io';
-
-import 'dart:io';
-
 import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:math';
+import 'dart:io';
 
 import '../routeNames.dart';
 import '../screen_scaffold.dart';
 import '../providers/recipes.dart';
 import '../models/recipe.dart';
-import 'categories_screen.dart';
 
 class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
@@ -27,58 +22,49 @@ class NewRecipeScreen extends StatefulWidget {
 class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _form = GlobalKey<FormState>();
   var rng = new Random();
-  PickedFile _imageFile;
-  final ImagePicker _picker = ImagePicker();
 
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _descriptionNode = FocusNode();
 
-  String postedImage = "";
-  var recipe = Recipe();
+  String imageFilePath;
+  Recipe recipe;
   bool isNew = true;
-  bool isEdited = false;
 
   @override
   void didChangeDependencies() async {
-    postedImage = Provider.of<Recipes>(context).getCurrentNewRecipePhoto();
+    imageFilePath = Provider.of<Recipes>(context).getCurrentNewRecipePhoto();
     isNew = Provider.of<Recipes>(context).getIsNew();
-    isEdited = Provider.of<Recipes>(context).getIsEdited();
-    if (isNew && !isEdited) {
-      recipe.id = rng.nextInt(1000).toString();
-      recipe.categoryId = widget.categoryId;
-      recipe.photo = " ";
-      super.didChangeDependencies();
-      return;
-    } else if (isNew && isEdited) {
-      recipe = Provider.of<Recipes>(context).getOngoingRecipe();
-      if (recipe.name != null &&
-          recipe.description != null &&
-          recipe.categoryId != null &&
-          recipe.id != null &&
-          recipe.photo != null) {
-        _nameController.text = recipe.name;
-        _descriptionController.text = recipe.description;
-      } else {
-        print("newRecipe: error, the recipe is missing something onInit");
+    recipe = Provider.of<Recipes>(context).getOngoingRecipe();
+    if (isNew == false) {
+      if (imageFilePath == null) {
+        imageFilePath = '';
       }
-    } else {
-      // TODO: isNew false
-
-      recipe = Provider.of<Recipes>(context).getOngoingRecipe();
-      _nameController.text = recipe.name;
-      _descriptionController.text = recipe.description;
+      if (recipe.name != null) {
+        _nameController.text = recipe.name;
+      }
+      if (recipe.description != null) {
+        _descriptionController.text = recipe.description;
+      }
+      if (recipe.photo != null) {
+        imageFilePath = recipe.photo;
+      }
     }
-
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   void navigateToPhoto() {
-    recipe.name = _nameController.text;
-    recipe.description = _descriptionController.text;
-    Provider.of<Recipes>(context).setOngoingRecipe(recipe);
-    Provider.of<Recipes>(context).setIsEdited(true);
+    Recipe ongoingRecipe = Recipe(
+      name: _nameController.text,
+      description: _descriptionController.text,
+      isFavorite: false,
+      categoryId: widget.categoryId,
+    );
+    if (isNew == false) {
+      ongoingRecipe.id = recipe.id;
+    }
+    Provider.of<Recipes>(context).setOngoingRecipe(ongoingRecipe);
 
     Navigator.of(context).pushNamed(
       RouterNames.CameraScreen,
@@ -95,52 +81,35 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     if (!isValid) {
       return;
     }
-    Recipe newRecipe = Recipe(
-      categoryId: widget.categoryId,
-      id: recipe.id,
-      name: _nameController.text,
-      isFavorite: false,
-      description: _descriptionController.text,
-      photo: recipe.photo,
-    );
-    if (!isNew) {
-      Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
-      Provider.of<Recipes>(context).zeroCurrentPhoto();
-      Provider.of<Recipes>(context).zeroOngoingRecipe();
-      Provider.of<Recipes>(context).setIsEdited(false);
-      Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
-          arguments: recipe.categoryId);
+    if (imageFilePath == "") {
       return;
     }
-    try {
-      Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe);
-      Provider.of<Recipes>(context).zeroCurrentPhoto();
-      Provider.of<Recipes>(context).zeroOngoingRecipe();
-      Provider.of<Recipes>(context).setIsEdited(false);
-      Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
-          arguments: newRecipe.categoryId);
-    } catch (error) {
-      print("error: sent recipe $newRecipe");
-      await showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('An error occurred!'),
-          content: Text('Something went wrong.'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Okay'),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => CategoriesScreen(),
-                  ),
-                );
-              },
-            )
-          ],
-        ),
-      );
+    var recipeFavorite = false;
+    if (recipe.isFavorite) {
+      recipeFavorite = true;
     }
+    Recipe newRecipe = Recipe(
+      name: _nameController.text,
+      description: _descriptionController.text,
+      isFavorite: recipeFavorite,
+      photo: imageFilePath,
+      categoryId: widget.categoryId,
+    );
+    if (!isNew) {
+      newRecipe.id = recipe.id;
+      Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
+    } else if (isNew) {
+      Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe);
+    }
+    Provider.of<Recipes>(context).zeroCurrentPhoto();
+    Provider.of<Recipes>(context).zeroOngoingRecipe();
+    imageFilePath = '';
+    _nameController.text = "";
+    _descriptionController.text = "";
+
+    Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
+        arguments: newRecipe.categoryId);
+    return;
   }
 
   @override
@@ -281,6 +250,45 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         thickness: 3,
                       ),
                       SizedBox(height: 21),
+                      if (imageFilePath == "")
+                        Center(
+                          child: Text("Please select one of the photos"),
+                        ),
+                      if (imageFilePath != "")
+                        Row(
+                          children: <Widget>[
+                            Container(
+                              width: 130,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(File(imageFilePath)),
+                                ),
+                              ),
+                            ),
+                            RaisedButton(
+                              onPressed: () {
+                                setState(() {
+                                  imageFilePath = "";
+                                });
+                              },
+                              color: hexToColor("#F6C2A4"),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(19.0),
+                              ),
+                              elevation: 6,
+                              child: Text(
+                                "Remove photo",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       RaisedButton(
                         onPressed: () {
                           navigateToPhoto();
@@ -332,135 +340,4 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       ),
     );
   }
-
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
-    await _displayPickImageDialog(context, () async {
-      try {
-        final pickedFile = await _picker.getImage(
-          source: source,
-        );
-        setState(() async {
-          _imageFile = pickedFile;
-        });
-      } catch (e) {
-        setState(() {
-          // _pickImageError = e;
-        });
-      }
-    });
-  }
-
-  Future<void> _displayPickImageDialog(BuildContext context, onPick) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Add optional parameters'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                  child: const Text('PICK'),
-                  onPressed: () {
-                    onPick();
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          );
-        });
-  }
 }
-
-// TODO: IMPLEMENT CHOOSE FROM GALERY
-
-// SizedBox(height: 21),
-// Row(
-//   children: <Widget>[
-//     RaisedButton(
-//       onPressed: () {
-//         // chooseFromGalery();
-//         _onImageButtonPressed(ImageSource.gallery,
-//             context: context);
-//       },
-//       color: hexToColor("#F6C2A4"),
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(19.0),
-//       ),
-//       elevation: 6,
-//       child: Text(
-//         "Choose From Galery",
-//         style: TextStyle(
-//           color: Colors.white,
-//           fontSize: 20,
-//         ),
-//       ),
-//     ),
-//     if (_imageFile != null)
-//       Container(
-//         height: 40,
-//         decoration: BoxDecoration(
-//           shape: BoxShape.circle,
-//           color: hexToColor("#E4E4E4"),
-//           border: Border.all(
-//             color: hexToColor("#EEDA76"),
-//             width: 5,
-//           ),
-//           // image: DecorationImage(
-//           //   fit: BoxFit.fill,
-//           //   image: Image.file(
-//           //     File(
-//           //       _imageFile.path,
-//           //     ),
-//           //   ),
-//           // ),
-//         ),
-//         child: Image.file(
-//           File(
-//             _imageFile.path,
-//           ),
-//         ),
-//       ),
-//   ],
-// ),
-// SizedBox(height: 21),
-// if (postedImage != "")
-//   Row(
-//     children: <Widget>[
-//       Container(
-//         width: 130,
-//         height: 130,
-//         decoration: BoxDecoration(
-//           shape: BoxShape.circle,
-//           image: DecorationImage(
-//             fit: BoxFit.fill,
-//             // image: NetworkImage(postedImage),
-//           ),
-//         ),
-//       ),
-//       RaisedButton(
-//         onPressed: () {
-//           setState(() {
-//             Provider.of<Recipes>(context)
-//                 .zeroCurrentPhoto();
-//             postedImage = "";
-//           });
-//         },
-//         color: hexToColor("#F6C2A4"),
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(19.0),
-//         ),
-//         elevation: 6,
-//         child: Text(
-//           "Remove photo",
-//           style: TextStyle(
-//             color: Colors.white,
-//             fontSize: 20,
-//           ),
-//         ),
-//       ),
-//     ],
-//   ),

@@ -97,9 +97,8 @@ class _ImageScreenState extends State<ImageScreen> {
                       String newPhoto = items[currentIndex].toString();
                       Provider.of<Categories>(context)
                           .setCurrentNewCategoryPhoto(newPhoto);
-
                       Navigator.of(context).pushNamed(
-                        RouterNames.NewCategoriesScreen,
+                        RouterNames.NewCategoryScreen,
                       );
                     },
                   ),

@@ -1,5 +1,4 @@
 import 'package:delicat/helperFunctions.dart';
-import 'package:delicat/screens/categories_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +8,7 @@ import 'package:tinycolor/tinycolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'dart:io';
+// import 'package:delicat/screens/categories_screen.dart';
 // import 'package:path_provider/path_provider.dart';
 
 import '../routeNames.dart';
@@ -39,20 +39,17 @@ const List<Color> _availableColors = [
   Colors.black,
 ];
 
-class NewCatScreen extends StatefulWidget {
-  Category category;
-
-  NewCatScreen({this.category});
-
+class NewCategoryScreen extends StatefulWidget {
   @override
-  _NewCatScreenState createState() => _NewCatScreenState();
+  _NewCategoryScreenState createState() => _NewCategoryScreenState();
 }
 
-class _NewCatScreenState extends State<NewCatScreen> {
+class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _form = GlobalKey<FormState>();
   Color pickerColor = Colors.red;
-  bool _isEditing = false;
-  bool _isNew = false;
+  bool _isNew;
+  Category category;
+  // bool _isEdited = false;
 
   final _nameController = TextEditingController();
   final _colorCodeController = TextEditingController();
@@ -60,9 +57,8 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
   String postedImage = "";
 
-  PickedFile _imageFile;
+  String _imageFilePath;
   final ImagePicker _picker = ImagePicker();
-  dynamic _pickImageError;
 
   void changeColor(Color color) {
     setState(() => {
@@ -74,21 +70,12 @@ class _NewCatScreenState extends State<NewCatScreen> {
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     await _displayPickImageDialog(context, () async {
-      try {
-        final pickedFile = await _picker.getImage(
-          source: source,
-        );
-        setState(() async {
-          _imageFile = pickedFile;
-          print(" ------------------ ");
-          print("photo selected: ${_imageFile.path}");
-          print(" ------------------ ");
-        });
-      } catch (e) {
-        setState(() {
-          _pickImageError = e;
-        });
-      }
+      final pickedFile = await _picker.getImage(
+        source: source,
+      );
+      setState(() {
+        _imageFilePath = pickedFile.path;
+      });
     });
   }
 
@@ -117,31 +104,23 @@ class _NewCatScreenState extends State<NewCatScreen> {
   }
 
   @override
-  void initState() {
-    if (widget.category != null) {
-      _nameController.text = widget.category.name;
-      _colorCodeController.text = widget.category.colorCode;
-      pickerColor = hexToColor(widget.category.colorCode);
-      _isEditing = true;
-    } else {
-      _colorCodeController.text = colorToHex(pickerColor);
-      _isNew = true;
-    }
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
-    Category category = Provider.of<Categories>(context).getOngoingCategory();
-    if (category.name != null && category.colorCode != null) {
+    category = Provider.of<Categories>(context).getOngoingCategory();
+    _imageFilePath = category.photo;
+    _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
+    if (_imageFilePath == null) {
+      _imageFilePath = '';
+    }
+    if (category.name != null) {
       _nameController.text = category.name;
+    }
+    if (category.colorCode != null) {
       _colorCodeController.text = category.colorCode;
       pickerColor = category.colorCode != null
           ? hexToColor(category.colorCode)
           : Colors.red;
-      _isEditing = true;
+      // pickerColor = Colors.red;
     }
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
@@ -152,96 +131,101 @@ class _NewCatScreenState extends State<NewCatScreen> {
     if (!isValid) {
       return;
     }
-    if (_imageFile != null && postedImage != "") {
+    if (_imageFilePath != "" && postedImage != "") {
       return;
     }
-    if (_isEditing && !_isNew) {
-      var newCodeLight = TinyColor(
-        hexToColor(_colorCodeController.text),
-      ).brighten(14).color;
+    if (_imageFilePath == "" && postedImage == "" && _isNew == true) {
+      return;
+    }
+    _form.currentState.save();
+
+    // colorCode
+    var newCodeLight = TinyColor(
+      hexToColor(_colorCodeController.text),
+    ).brighten(14).color;
+    if (_isNew == false) {
+      var img;
+      if (_imageFilePath != "") {
+        img = _imageFilePath;
+      } else if (postedImage != "") {
+        img = postedImage;
+        try {
+          var imageId = await ImageDownloader.downloadImage(img);
+          if (imageId == null) {
+            return;
+          }
+
+          var path = await ImageDownloader.findPath(imageId);
+          // print("path: $path");
+          img = path;
+        } on PlatformException catch (error) {
+          print(error);
+        }
+      } else {
+        img = category.photo;
+      }
+
       Category editedCategory = Category(
-        id: widget.category.id,
+        id: category.id,
         name: _nameController.text,
         colorCode: _colorCodeController.text,
         colorLightCode: colorToHex(newCodeLight),
-        photo: "assets/photos/sushi-circle.png",
+        photo: img,
       );
 
-      Provider.of<Categories>(context, listen: false)
-          .editCategory(editedCategory);
-      Navigator.of(context).pop();
-      return;
-    }
-
-    _form.currentState.save();
-    String newCode = _colorCodeController.text;
-    var newCodeLight = TinyColor(
-      hexToColor(newCode),
-    ).brighten(14).color;
-    var img;
-    if (_imageFile != null) {
-      img = _imageFile.path;
-    } else {
-      img = postedImage;
-      try {
-        // Saved with this method.
-        var imageId = await ImageDownloader.downloadImage(img);
-        if (imageId == null) {
-          return;
-        }
-
-        // Below is a method of obtaining saved image information.
-        // var fileName = await ImageDownloader.findName(imageId);
-        var path = await ImageDownloader.findPath(imageId);
-        print("path: $path");
-        img = path;
-        // var size = await ImageDownloader.findByteSize(imageId);
-        // var mimeType = await ImageDownloader.findMimeType(imageId);
-      } on PlatformException catch (error) {
-        print(error);
-      }
-    }
-    Category _newCategory = Category(
-      name: _nameController.text,
-      photo: img,
-      colorCode: newCode,
-      colorLightCode: colorToHex(newCodeLight),
-    );
-
-    try {
       await Provider.of<Categories>(context, listen: false)
-          .createCategory(_newCategory);
-      _imageFile = null;
+          .editCategory(editedCategory);
+
+      _imageFilePath = "";
       postedImage = "";
       Provider.of<Categories>(context).zeroCurrentPhoto();
       Provider.of<Categories>(context).zeroOngoingCategory();
+      _nameController.text = "";
+
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
-    } catch (error) {
-      print("error: sent category $_newCategory");
-      await showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('An error occurred!'),
-          content: Text('Something went wrong.'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Okay'),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => CategoriesScreen(),
-                  ),
-                );
-              },
-            )
-          ],
-        ),
+      return;
+    } else if (_isNew == true) {
+      var img;
+      if (_imageFilePath != "") {
+        img = _imageFilePath;
+      } else {
+        img = postedImage;
+        try {
+          var imageId = await ImageDownloader.downloadImage(img);
+          if (imageId == null) {
+            return;
+          }
+
+          var path = await ImageDownloader.findPath(imageId);
+          img = path;
+        } on PlatformException catch (error) {
+          print(error);
+        }
+      }
+      Category _newCategory = Category(
+        name: _nameController.text,
+        photo: img,
+        colorCode: _colorCodeController.text,
+        colorLightCode: colorToHex(newCodeLight),
       );
+
+      await Provider.of<Categories>(context, listen: false)
+          .createCategory(_newCategory);
+
+      _imageFilePath = "";
+      postedImage = "";
+      Provider.of<Categories>(context).zeroCurrentPhoto();
+      Provider.of<Categories>(context).zeroOngoingCategory();
+      _nameController.text = "";
+
+      Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
+      return;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    print("building Scaffold");
     return ScreenScaffold(
       child: Container(
         color: Color(0xffF1EBE8),
@@ -376,12 +360,16 @@ class _NewCatScreenState extends State<NewCatScreen> {
                             ),
                           ],
                         ),
-                      if (_imageFile != null && postedImage != "")
+                      if (_imageFilePath != "" && postedImage != "")
                         Center(
                           child: Text(
                               "You cannot create this category, please remove one of the photos"),
                         ),
-                      if (_imageFile != null)
+                      if (_imageFilePath == "" && postedImage == "")
+                        Center(
+                          child: Text("Please select one of the photos"),
+                        ),
+                      if (_imageFilePath != "")
                         Row(
                           children: <Widget>[
                             Container(
@@ -391,14 +379,17 @@ class _NewCatScreenState extends State<NewCatScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage(_imageFile.path),
+                                  image: (_imageFilePath.substring(0, 6) ==
+                                          "assets")
+                                      ? AssetImage(_imageFilePath)
+                                      : File(_imageFilePath),
                                 ),
                               ),
                             ),
                             RaisedButton(
                               onPressed: () {
                                 setState(() {
-                                  _imageFile = null;
+                                  _imageFilePath = "";
                                 });
                               },
                               color: hexToColor("#F6C2A4"),
@@ -418,11 +409,12 @@ class _NewCatScreenState extends State<NewCatScreen> {
                         ),
                       RaisedButton(
                         onPressed: () {
-                          Category category = Category(
+                          Category ongoingCategory = Category(
                               name: _nameController.text,
-                              colorCode: _colorCodeController.text);
+                              colorCode: _colorCodeController.text,
+                              id: category.id);
                           Provider.of<Categories>(context)
-                              .setOngoingCategory(category);
+                              .setOngoingCategory(ongoingCategory);
 
                           Navigator.of(context)
                               .pushNamed(RouterNames.ImageScreen);

@@ -20,8 +20,6 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
-  final TextEditingController _nameController = new TextEditingController();
-
   void selfRestartState() {
     setState(() {});
   }
@@ -32,9 +30,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         Provider.of<Categories>(context).getCategoryById(widget.categoryId);
     final recipes =
         Provider.of<Recipes>(context).getRecipesByCategoryId(widget.categoryId);
-    _nameController.text = category.name;
-    // Provider.of<Recipes>(context).getFavoriteRecipes();
-
     return ScreenScaffold(
       child: Container(
         color: hexToColor(category.colorLightCode),
@@ -56,8 +51,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
-                          Provider.of<Recipes>(context, listen: false)
-                              .setIsEdited(false);
                           Provider.of<Recipes>(context, listen: false)
                               .setIsNew(true);
                           Navigator.of(context).pushNamed(
@@ -83,9 +76,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       ),
                       RaisedButton(
                         onPressed: () {
+                          Provider.of<Categories>(context)
+                              .setIsOngoingCategoryNew(false);
+                          Provider.of<Categories>(context)
+                              .setOngoingCategory(category);
                           Navigator.of(context).pushNamed(
-                            RouterNames.NewCategoriesScreen,
-                            arguments: category,
+                            RouterNames.NewCategoryScreen,
                           );
                         },
                         color: Colors.white,
@@ -156,7 +152,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             recipes[index],
             category.colorCode,
             selfRestartState,
-            category.photo,
           );
         },
         itemCount: recipes.length,
@@ -166,22 +161,3 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     );
   }
 }
-// Padding(
-//   padding: const EdgeInsets.all(16.0),
-//   child: TextField(
-//     controller: _nameController,
-//     decoration: InputDecoration(labelText: "Rename"),
-//     onSubmitted: (String value) {
-//       Provider.of<Categories>(context, listen: false)
-//           .editCategory(
-//         Category(
-//           id: category.id,
-//           name: value,
-//           photo: category.photo,
-//           colorCode: category.colorCode,
-//           colorLightCode: category.colorLightCode,
-//         ),
-//       );
-//     },
-//   ),
-// ),

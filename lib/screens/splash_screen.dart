@@ -17,7 +17,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // Provider.of<Recipes>(context).
     Provider.of<Recipes>(context).fetchAndSetAllRecipes();
     Provider.of<Recipes>(context).fetchAndSetFavoriteRecipes();
     Provider.of<Categories>(context).fetchAndSetCategories();

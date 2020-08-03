@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:io';
 import '../helperFunctions.dart';
 import '../models/recipe.dart';
 import '../providers/recipes.dart';
 
 class RecipeListItem extends StatelessWidget {
-  Function restartParent;
   Recipe recipe;
   String categoryColorCode;
-  String categoryPhoto;
+  Function restartParent;
 
   RecipeListItem(@required this.recipe, @required this.categoryColorCode,
-      this.restartParent, this.categoryPhoto);
+      this.restartParent);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +33,12 @@ class RecipeListItem extends StatelessWidget {
               shape: BoxShape.circle,
               image: DecorationImage(
                 fit: BoxFit.fill,
-                image: AssetImage(categoryPhoto),
+                image: FileImage(
+                  File(recipe.photo),
+                ),
+                // image: AssetImage(
+                //   recipe.photo,
+                // ),
               ),
             ),
           ),

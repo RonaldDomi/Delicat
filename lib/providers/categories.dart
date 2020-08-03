@@ -10,6 +10,7 @@ import '../models/category.dart';
 class Categories with ChangeNotifier {
   Category ongoingCategory = Category();
   String _currentNewCategoryPhoto = "";
+  bool _isOngoingCategoryNew;
 
   List<Category> _categories = [];
 
@@ -60,12 +61,20 @@ class Categories with ChangeNotifier {
     return _currentNewCategoryPhoto;
   }
 
-  String setCurrentNewCategoryPhoto(String newPhoto) {
+  void setCurrentNewCategoryPhoto(String newPhoto) {
     _currentNewCategoryPhoto = newPhoto;
   }
 
   String getCurrentNewCategoryPhoto() {
     return _currentNewCategoryPhoto;
+  }
+
+  void setIsOngoingCategoryNew(bool isNew) {
+    _isOngoingCategoryNew = isNew;
+  }
+
+  bool getIsOngoingCategoryNew() {
+    return _isOngoingCategoryNew;
   }
 
   void zeroCurrentPhoto() {

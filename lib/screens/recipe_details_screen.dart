@@ -2,6 +2,7 @@ import 'package:delicat/helperFunctions.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 import '../providers/recipes.dart';
 import '../providers/categories.dart';
@@ -18,19 +19,13 @@ class RecipeDetailsScreen extends StatefulWidget {
 }
 
 class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
-  // final TextEditingController _nameController = new TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
     final category =
         Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
-    // final isFavorite =
-    //     Provider.of<Recipes>(context).isRecipeFavorite(widget.recipeId);
 
     void onEdit() {
-      // Navigate to edit recipe
-      Provider.of<Recipes>(context, listen: false).setIsEdited(true);
       Provider.of<Recipes>(context, listen: false).setOngoingRecipe(recipe);
       Provider.of<Recipes>(context, listen: false).setIsNew(false);
 
@@ -43,8 +38,6 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         ],
       );
     }
-
-    // _nameController.text = recipe.name;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -150,7 +143,10 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.cover,
-                image: AssetImage("assets/photos/veggies.jpg"),
+                // image: AssetImage("assets/photos/veggies.jpg"),
+                image: FileImage(
+                  File(recipe.photo),
+                ),
               ),
             ),
           ),

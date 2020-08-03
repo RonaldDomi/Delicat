@@ -46,7 +46,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   @override
   Widget build(BuildContext context) {
     List<Category> allCategories = Provider.of<Categories>(context).categories;
-    print("categories: $allCategories");
     return ScreenScaffold(
       child: WillPopScope(
         onWillPop: _onBackPressed,
@@ -67,8 +66,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     ),
                     RaisedButton(
                       onPressed: () {
+                        Provider.of<Categories>(context)
+                            .setIsOngoingCategoryNew(true);
                         Navigator.of(context)
-                            .pushNamed(RouterNames.NewCategoriesScreen);
+                            .pushNamed(RouterNames.NewCategoryScreen);
                       },
                       color: Colors.white,
                       elevation: 6,
@@ -91,7 +92,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       child: GridView.builder(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200,
-                          childAspectRatio: 2 / 2.5,
+                          childAspectRatio: 2 / 2.6,
                           crossAxisSpacing: 20,
                           mainAxisSpacing: 20,
                         ),

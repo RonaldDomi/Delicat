@@ -1,8 +1,10 @@
 import 'dart:io';
+import 'package:delicat/providers/recipes.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 // import 'package:delicat/providers/recipes.dart';
 // import 'package:delicat/models/recipe.dart';
 // import 'package:provider/provider.dart';
@@ -52,6 +54,11 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   void submit() async {
+    if (_imageFile == null || _imageFile.path == null) {
+      return;
+    }
+    String newPhoto = _imageFile.path;
+    Provider.of<Recipes>(context).setCurrentNewRecipePhoto(newPhoto);
     Navigator.of(context).pushNamed(
       RouterNames.NewRecipeScreen,
       arguments: [widget.name, widget.colorCode, widget.catId],

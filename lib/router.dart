@@ -48,10 +48,9 @@ class Router {
       case RouterNames.SearchScreen:
         return MaterialPageRoute(builder: (_) => SearchScreen());
 
-      case RouterNames.NewCategoriesScreen:
-        var category = settings.arguments ?? null;
+      case RouterNames.NewCategoryScreen:
         return MaterialPageRoute(
-          builder: (_) => NewCatScreen(category: category),
+          builder: (_) => NewCategoryScreen(),
         );
         break;
       case RouterNames.CategoriesSelectionScreen:
