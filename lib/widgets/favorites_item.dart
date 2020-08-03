@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../helperFunctions.dart';
 import '../models/recipe.dart';
 import '../providers/categories.dart';
+import 'dart:io';
 
 class FavoriteItem extends StatelessWidget {
   final Recipe recipe;
@@ -34,9 +35,11 @@ class FavoriteItem extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage(recipe.photo),
-              ),
+                  fit: BoxFit.cover,
+                  // image: AssetImage(recipe.photo),
+                  image: (recipe.photo.substring(0, 1) == "a")
+                      ? AssetImage(recipe.photo)
+                      : FileImage(File(recipe.photo))),
             ),
           ),
           Text(

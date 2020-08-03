@@ -36,7 +36,8 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     imageFilePath = Provider.of<Recipes>(context).getCurrentNewRecipePhoto();
     isNew = Provider.of<Recipes>(context).getIsNew();
     recipe = Provider.of<Recipes>(context).getOngoingRecipe();
-    if (isNew == false) {
+    if (isNew == false || recipe != Recipe()) {
+      print("recipe on edit: $recipe");
       if (imageFilePath == null) {
         imageFilePath = '';
       }

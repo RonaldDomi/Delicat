@@ -14,11 +14,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    Provider.of<Recipes>(context).fetchAndSetAllRecipes();
-    Provider.of<Recipes>(context).fetchAndSetFavoriteRecipes();
+    await Provider.of<Recipes>(context).fetchAndSetAllRecipes();
+    await Provider.of<Recipes>(context).fetchAndSetFavoriteRecipes();
     Provider.of<Categories>(context).fetchAndSetCategories();
 
     Future.delayed(Duration(seconds: 3), () async {

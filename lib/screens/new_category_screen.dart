@@ -49,6 +49,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   Color pickerColor = Colors.red;
   bool _isNew;
   Category category;
+  bool onlyFirstTime = true;
   // bool _isEdited = false;
 
   final _nameController = TextEditingController();
@@ -105,10 +106,21 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   void didChangeDependencies() {
+    print(
+        "------------------------------------------------------------------------------------------------------------------------------------------");
+    print("DIDCHANGEDEPENDENCIES");
+    print(
+        "------------------------------------------------------------------------------------------------------------------------------------------");
     postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
     category = Provider.of<Categories>(context).getOngoingCategory();
-    _imageFilePath = category.photo;
+    if (onlyFirstTime) {
+      _imageFilePath = category.photo;
+      onlyFirstTime = false;
+    }
     _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
+    print("file: $_imageFilePath");
+    print("category; $category");
+    _colorCodeController.text = colorToHex(Colors.red);
     if (_imageFilePath == null) {
       _imageFilePath = '';
     }
@@ -225,7 +237,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("building Scaffold");
+    print("here");
+    if (_imageFilePath != "") {
+      print("imageFilePath = $_imageFilePath");
+    }
     return ScreenScaffold(
       child: Container(
         color: Color(0xffF1EBE8),
@@ -382,7 +397,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                                   image: (_imageFilePath.substring(0, 6) ==
                                           "assets")
                                       ? AssetImage(_imageFilePath)
-                                      : File(_imageFilePath),
+                                      : FileImage(File(_imageFilePath)),
                                 ),
                               ),
                             ),
