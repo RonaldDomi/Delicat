@@ -241,9 +241,10 @@ class _CameraScreenState extends State<CameraScreen> {
                   Center(
                     child: InkWell(
                       onTap: () {
-                        _onImageButtonPressed(ImageSource.camera,
+                        // _onImageButtonPressed(ImageSource.camera,
+                        //     context: context);
+                        _onImageButtonPressed(ImageSource.gallery,
                             context: context);
-                        // _onImageButtonPressed(ImageSource.gallery, context: context);
                       },
                       child: Container(
                         height: 70,

@@ -449,10 +449,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          // _onImageButtonPressed(ImageSource.gallery,
-                          //     context: context);
-                          _onImageButtonPressed(ImageSource.camera,
+                          _onImageButtonPressed(ImageSource.gallery,
                               context: context);
+                          // _onImageButtonPressed(ImageSource.camera,
+                          //     context: context);
                         },
                         color: hexToColor("#F6C2A4"),
                         shape: RoundedRectangleBorder(
