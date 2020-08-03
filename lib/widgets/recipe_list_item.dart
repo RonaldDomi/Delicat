@@ -32,7 +32,7 @@ class RecipeListItem extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 image: FileImage(
                   File(recipe.photo),
                 ),
