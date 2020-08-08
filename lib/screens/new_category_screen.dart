@@ -106,11 +106,11 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   void didChangeDependencies() {
-    print(
-        "------------------------------------------------------------------------------------------------------------------------------------------");
-    print("DIDCHANGEDEPENDENCIES");
-    print(
-        "------------------------------------------------------------------------------------------------------------------------------------------");
+    // print(
+    //     "------------------------------------------------------------------------------------------------------------------------------------------");
+    // print("DIDCHANGEDEPENDENCIES");
+    // print(
+    //     "------------------------------------------------------------------------------------------------------------------------------------------");
     postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
     category = Provider.of<Categories>(context).getOngoingCategory();
     if (onlyFirstTime) {
@@ -118,8 +118,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       onlyFirstTime = false;
     }
     _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
-    print("file: $_imageFilePath");
-    print("category; $category");
+    // print("file: $_imageFilePath");
+    // print("category; $category");
     _colorCodeController.text = colorToHex(Colors.red);
     if (_imageFilePath == null) {
       _imageFilePath = '';
@@ -237,10 +237,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("here");
-    if (_imageFilePath != "") {
-      print("imageFilePath = $_imageFilePath");
-    }
+    // if (_imageFilePath != "") {
+    // print("imageFilePath = $_imageFilePath");
+    // }
     return ScreenScaffold(
       child: Container(
         color: Color(0xffF1EBE8),

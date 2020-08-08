@@ -17,7 +17,7 @@ class Categories with ChangeNotifier {
 
   List<Category> _predefinedCategories = [
     Category(
-      id: "42",
+      id: "1",
       name: 'Dessert',
       colorCode: '#E5C1CB',
       photo: "assets/photos/dessert-circle.png",
@@ -26,7 +26,7 @@ class Categories with ChangeNotifier {
       ).brighten(14).color),
     ),
     Category(
-      id: "43",
+      id: "2",
       name: 'Vegetable',
       colorCode: '#DDE5B0',
       colorLightCode: colorToHex(TinyColor(
@@ -35,7 +35,7 @@ class Categories with ChangeNotifier {
       photo: "assets/photos/vegetable-circle.png",
     ),
     Category(
-      id: "44",
+      id: "3",
       name: 'Breakfast',
       colorCode: '#ABBFB5',
       colorLightCode: colorToHex(TinyColor(
@@ -44,7 +44,7 @@ class Categories with ChangeNotifier {
       photo: "assets/photos/breakfast-circle.png",
     ),
     Category(
-      id: "45",
+      id: "4",
       name: 'Burger',
       colorCode: '#1B2E46',
       colorLightCode: colorToHex(TinyColor(
@@ -183,7 +183,7 @@ class Categories with ChangeNotifier {
     return cat;
   }
 
-  Future<void> createCategory(Category category) {
+  void createCategory(Category category) {
     var rng = new Random();
     final newCategory = Category(
       id: rng.nextInt(1000).toString(),
@@ -202,6 +202,18 @@ class Categories with ChangeNotifier {
       "color_code_light": newCategory.colorLightCode,
     });
 
+    notifyListeners();
+  }
+
+  void addCategory(Category category) {
+    _categories.add(category);
+    DBHelper.insert('category', {
+      "id": category.id,
+      "name": category.name,
+      "photo": category.photo,
+      "color_code": category.colorCode,
+      "color_code_light": category.colorLightCode,
+    });
     notifyListeners();
   }
 

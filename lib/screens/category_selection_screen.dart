@@ -43,8 +43,11 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   }
 
   void submitCategories(context) {
+    var allCats = Provider.of<Categories>(context).categories;
     for (Category cat in selectedCategories) {
-      Provider.of<Categories>(context).createCategory(cat);
+      if (!allCats.contains(cat)) {
+        Provider.of<Categories>(context).addCategory(cat);
+      }
     }
     if (isFirstTime) {
       Provider.of<Categories>(context).setFirstTime(false);
