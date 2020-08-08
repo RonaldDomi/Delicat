@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:uuid/uuid.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter/material.dart';
 
@@ -12,12 +11,13 @@ class Categories with ChangeNotifier {
   String _currentNewCategoryPhoto = "";
   bool _isOngoingCategoryNew;
   bool _firstTime;
+  // var uuid = Uuid();
 
   List<Category> _categories = [];
 
   List<Category> _predefinedCategories = [
     Category(
-      id: "1",
+      id: Uuid().v4(),
       name: 'Dessert',
       colorCode: '#E5C1CB',
       photo: "assets/photos/dessert-circle.png",
@@ -184,9 +184,8 @@ class Categories with ChangeNotifier {
   }
 
   void createCategory(Category category) {
-    var rng = new Random();
     final newCategory = Category(
-      id: rng.nextInt(1000).toString(),
+      id: Uuid().v4(),
       name: category.name,
       photo: category.photo,
       colorCode: category.colorCode,
