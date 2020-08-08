@@ -17,6 +17,9 @@ class CatSelectionScreen extends StatefulWidget {
 class _CatSelectionScreenState extends State<CatSelectionScreen> {
   List<Category> selectedCategories = [];
 
+  bool isFirstTime;
+  bool showButton = false;
+
   void addCategoryToSelection(Category category) {
     var existingItem = selectedCategories.firstWhere(
         (itemToCheck) => itemToCheck.id == category.id,
@@ -26,15 +29,36 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     } else {
       selectedCategories.removeWhere((item) => item.id == category.id);
     }
-    // setState(() {});
+    if (isFirstTime) {
+      if (selectedCategories.length == 0) {
+        setState(() {
+          showButton = false;
+        });
+      } else {
+        setState(() {
+          showButton = true;
+        });
+      }
+    }
   }
 
   void submitCategories(context) {
     for (Category cat in selectedCategories) {
       Provider.of<Categories>(context).createCategory(cat);
     }
+    if (isFirstTime) {
+      Provider.of<Categories>(context).setFirstTime(false);
+      isFirstTime = false;
+    }
     Navigator.of(context)
         .pushReplacementNamed(RouterNames.GeneratingCategoriesScreen);
+  }
+
+  void didChangeDependencies() async {
+    isFirstTime = Provider.of<Categories>(context).getFirstTime();
+    if (!isFirstTime) {
+      showButton = true;
+    }
   }
 
   @override
@@ -67,42 +91,59 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
                 ),
                 Expanded(
                   flex: 2,
-                  child: Container(
-                    child: Row(
-                      children: <Widget>[
-                        CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          child: Container(
-                            child: Image(
-                              image: AssetImage("assets/logo/logo.png"),
-                            ),
-                          ),
-                          radius: 100.0,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        child: Row(
                           children: <Widget>[
-                            Text(
-                              "deli",
-                              style: TextStyle(
-                                fontSize: 28,
+                            CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: Container(
+                                child: Image(
+                                  image: AssetImage("assets/logo/logo.png"),
+                                ),
                               ),
+                              radius: 100.0,
                             ),
-                            Text(
-                              "cat",
-                              style: TextStyle(
-                                fontSize: 28,
-                              ),
-                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "deli",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                  ),
+                                ),
+                                Text(
+                                  "cat",
+                                  style: TextStyle(
+                                    fontSize: 28,
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    ),
+                        ),
+                      ),
+                      if (showButton)
+                        RawMaterialButton(
+                          onPressed: () {
+                            submitCategories(context);
+                          },
+                          elevation: 2.0,
+                          fillColor: Color(0xffE4D9A2),
+                          child: Icon(
+                            Icons.chevron_right,
+                            size: 60.0,
+                            color: Color(0xffBB9982),
+                          ),
+                          // padding: EdgeInsets.all(15.0),
+                          shape: CircleBorder(),
+                        ),
+                    ],
                   ),
                 ),
-                if (selectedCategories.length >= 1)
-                  Expanded(flex: 1, child: Text("hello")),
                 Expanded(
                   flex: 2,
                   child: Center(
@@ -140,7 +181,6 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
                   ),
                   Container(
                     margin: EdgeInsets.all(10),
-                    decoration: BoxDecoration(border: Border.all(width: 1)),
                     constraints: BoxConstraints.expand(height: 150),
                     child: Consumer<Categories>(
                       builder: (ctx, categories, _) => GridView.builder(
@@ -155,16 +195,12 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
                         itemBuilder: (ctx, i) => PredefinedCategoryItem(
                           categories.predefinedItems[i],
                           addCategoryToSelection,
+                          selectedCategories
+                              .contains(categories.predefinedItems[i]),
                         ),
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    onPressed: () => {
-                      submitCategories(context),
-                    },
-                    child: Text("Submit"),
-                  )
                 ],
               ),
             ),

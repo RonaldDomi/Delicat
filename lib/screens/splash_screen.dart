@@ -25,10 +25,12 @@ class _SplashScreenState extends State<SplashScreen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool firstTime = prefs.getBool('first_time');
       if (firstTime != null && !firstTime) {
+        Provider.of<Categories>(context).setFirstTime(false);
         Navigator.of(context)
             .pushReplacementNamed(RouterNames.CategoriesScreen);
       } else if (firstTime == null) {
         prefs.setBool('first_time', false);
+        Provider.of<Categories>(context).setFirstTime(true);
         Navigator.of(context)
             .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);
       }

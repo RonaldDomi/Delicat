@@ -8,9 +8,8 @@ class PredefinedCategoryItem extends StatefulWidget {
   final Function addCategoryToSelection;
   bool isSelected;
 
-  PredefinedCategoryItem(this.category, this.addCategoryToSelection) {
-    isSelected = false;
-  }
+  PredefinedCategoryItem(
+      this.category, this.addCategoryToSelection, this.isSelected) {}
 
   @override
   _PredefinedCategoryItemState createState() => _PredefinedCategoryItemState();

@@ -11,6 +11,7 @@ class Categories with ChangeNotifier {
   Category ongoingCategory = Category();
   String _currentNewCategoryPhoto = "";
   bool _isOngoingCategoryNew;
+  bool _firstTime;
 
   List<Category> _categories = [];
 
@@ -71,6 +72,14 @@ class Categories with ChangeNotifier {
 
   void setIsOngoingCategoryNew(bool isNew) {
     _isOngoingCategoryNew = isNew;
+  }
+
+  void setFirstTime(bool firstTime) {
+    _firstTime = firstTime;
+  }
+
+  bool getFirstTime() {
+    return _firstTime;
   }
 
   bool getIsOngoingCategoryNew() {
