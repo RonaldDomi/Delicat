@@ -57,6 +57,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 height: MediaQuery.of(context).size.height * 0.15,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Text(
                       "Your Menu",

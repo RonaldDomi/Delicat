@@ -22,6 +22,7 @@ dependencies:
   image_picker: ^0.6.7+4
   image_downloader: ^0.20.0
   uuid: ^2.2.0
+  auto_size_text: ^2.1.0
 
   tinycolor: ^1.0.2
   flutter_swiper: ^1.1.6

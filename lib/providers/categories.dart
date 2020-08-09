@@ -24,7 +24,7 @@ class Categories with ChangeNotifier {
       ).brighten(14).color),
     ),
     Category(
-      id: "2",
+      id: Uuid().v4(),
       name: 'Vegetable',
       colorCode: '#DDE5B0',
       colorLightCode: colorToHex(TinyColor(
@@ -33,7 +33,7 @@ class Categories with ChangeNotifier {
       photo: "assets/photos/vegetable-circle.png",
     ),
     Category(
-      id: "3",
+      id: Uuid().v4(),
       name: 'Breakfast',
       colorCode: '#ABBFB5',
       colorLightCode: colorToHex(TinyColor(
@@ -54,7 +54,7 @@ class Categories with ChangeNotifier {
       ).brighten(14).color),
     ),
     Category(
-      id: "2",
+      id: Uuid().v4(),
       name: 'Vegetable',
       colorCode: '#DDE5B0',
       colorLightCode: colorToHex(TinyColor(
@@ -63,7 +63,7 @@ class Categories with ChangeNotifier {
       photo: "assets/photos/vegetable-circle.png",
     ),
     Category(
-      id: "3",
+      id: Uuid().v4(),
       name: 'Breakfast',
       colorCode: '#ABBFB5',
       colorLightCode: colorToHex(TinyColor(
@@ -72,7 +72,7 @@ class Categories with ChangeNotifier {
       photo: "assets/photos/breakfast-circle.png",
     ),
     Category(
-      id: "4",
+      id: Uuid().v4(),
       name: 'Burger',
       colorCode: '#1B2E46',
       colorLightCode: colorToHex(TinyColor(

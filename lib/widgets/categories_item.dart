@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
 import '../helperFunctions.dart';
 import '../models/category.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:io';
 
 class CategoryItem extends StatelessWidget {
@@ -23,8 +24,9 @@ class CategoryItem extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Container(
-                width: 150,
-                height: 150,
+                margin: EdgeInsets.only(top: 6.0),
+                width: 135,
+                height: 135,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
@@ -53,7 +55,7 @@ class CategoryItem extends StatelessWidget {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 20.0),
-                child: Text(
+                child: AutoSizeText(
                   category.name,
                   style: TextStyle(
                     color: Colors.white,
