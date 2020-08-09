@@ -13,7 +13,35 @@ class Categories with ChangeNotifier {
   bool _firstTime;
   // var uuid = Uuid();
 
-  List<Category> _categories = [];
+  List<Category> _categories = [
+    Category(
+      id: Uuid().v4(),
+      name: 'Dessert',
+      colorCode: '#E5C1CB',
+      photo: "assets/photos/dessert-circle.png",
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#E5C1CB"),
+      ).brighten(14).color),
+    ),
+    Category(
+      id: "2",
+      name: 'Vegetable',
+      colorCode: '#DDE5B0',
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#DDE5B0"),
+      ).brighten(14).color),
+      photo: "assets/photos/vegetable-circle.png",
+    ),
+    Category(
+      id: "3",
+      name: 'Breakfast',
+      colorCode: '#ABBFB5',
+      colorLightCode: colorToHex(TinyColor(
+        hexToColor("#ABBFB5"),
+      ).brighten(14).color),
+      photo: "assets/photos/breakfast-circle.png",
+    ),
+  ];
 
   List<Category> _predefinedCategories = [
     Category(

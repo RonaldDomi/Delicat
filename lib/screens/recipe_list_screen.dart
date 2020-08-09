@@ -103,8 +103,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
             ),
             (recipes.length <= 0)
                 ? Center(
-                    child: Text(
-                        "you have no recipes in this category. ${recipes}"),
+                    child: Text("you have no recipes in this category."),
                   )
                 : _swiperBuilder(context, category, recipes),
             SizedBox(

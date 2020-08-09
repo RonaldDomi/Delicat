@@ -54,9 +54,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           child: Column(
             children: <Widget>[
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                height: MediaQuery.of(context).size.height * 0.15,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(
                       "Your Menu",
@@ -87,16 +87,21 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                 ),
               ),
               (allCategories.length <= 0)
-                  ? Text("you have no cats on your profile.")
+                  ? Container(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(
+                        child: Text("you have no cats on your profile."),
+                      ),
+                    )
                   : Expanded(
                       child: GridView.builder(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200,
+                          maxCrossAxisExtent: 180,
                           childAspectRatio: 2 / 2.6,
-                          crossAxisSpacing: 20,
-                          mainAxisSpacing: 20,
+                          crossAxisSpacing: 30,
+                          mainAxisSpacing: 30,
                         ),
-                        padding: const EdgeInsets.all(15),
+                        padding: const EdgeInsets.all(30),
                         itemCount: allCategories.length,
                         itemBuilder: (ctx, i) => InkWell(
                           onTap: () {
@@ -109,10 +114,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         ),
                       ),
                     ),
-              RaisedButton(
-                child: Text("Drop user_categories table"),
-                onPressed: clearTableData,
-              ),
+              // RaisedButton(
+              //   child: Text("Drop user_categories table"),
+              //   onPressed: clearTableData,
+              // ),
             ],
           ),
         ),

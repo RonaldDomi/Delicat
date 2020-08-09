@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tinycolor/tinycolor.dart';
 import '../helperFunctions.dart';
 import '../models/category.dart';
 import 'dart:io';
@@ -10,42 +11,78 @@ class CategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            hexToColor(category.colorCode).withOpacity(0.7),
-            hexToColor(category.colorCode),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+            color: hexToColor(category.colorCode),
+            borderRadius: BorderRadius.circular(24),
+          ),
+          width: double.infinity,
+          child: Column(
+            children: <Widget>[
+              Container(
+                width: 150,
+                height: 150,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: (category.photo.substring(0, 1) == "a")
+                          ? AssetImage(category.photo)
+                          : FileImage(File(category.photo))),
+                ),
+              ),
+            ],
+          ),
         ),
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        children: <Widget>[
-          Container(
-            width: 150,
-            height: 150,
+        ClipPath(
+          clipper: TitleClipper(),
+          child: Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: (category.photo.substring(0, 1) == "a")
-                      ? AssetImage(category.photo)
-                      : FileImage(File(category.photo))),
+              color: TinyColor(hexToColor(category.colorCode)).darken(14).color,
+              // color: Colors.red,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
+              ),
+            ),
+            height: 90,
+            width: double.infinity,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Text(
+                  category.name,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
-          Text(
-            category.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: hexToColor(category.colorLightCode),
-              fontSize: 30,
-            ),
-          ),
-        ],
-      ),
+        )
+      ],
     );
+  }
+}
+
+class TitleClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.moveTo(0, size.height / 3 * 2);
+    path.cubicTo(0, 0, size.width, size.height / 3 * 2, size.width, 0);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+
+    return path;
+  }
+
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
   }
 }
