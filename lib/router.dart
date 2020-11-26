@@ -1,13 +1,13 @@
-import 'package:delicat/screens/categories_screen.dart';
+import 'package:delicat/screens/Category/categories_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'screens/category_selection_screen.dart';
+import 'screens/Category/category_selection_screen.dart';
 import 'screens/splash_screen.dart';
-import 'screens/generating_categories_screen.dart';
-import 'screens/new_category_screen.dart';
-import 'screens/new_recipe_screen.dart';
-import 'screens/recipe_list_screen.dart';
-import 'screens/recipe_details_screen.dart';
+import 'screens/Category/generating_categories_screen.dart';
+import 'screens/Category/new_category_screen.dart';
+import 'screens/Recipe/new_recipe_screen.dart';
+import 'screens/Recipe/recipe_list_screen.dart';
+import 'screens/Recipe/recipe_details_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/search_screen.dart';
 import 'screens/imaga_input_screen.dart';

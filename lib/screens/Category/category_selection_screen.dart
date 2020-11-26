@@ -1,11 +1,12 @@
+import 'package:delicat/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:provider/provider.dart';
 
-import '../routeNames.dart';
-import '../models/category.dart';
-import '../widgets/predefined_categoy_item.dart';
+import '../../routeNames.dart';
+import '../../models/category.dart';
+import '../../widgets/predefined_categoy_item.dart';
 
 class CatSelectionScreen extends StatefulWidget {
   const CatSelectionScreen({Key key}) : super(key: key);
@@ -43,15 +44,29 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   }
 
   void submitCategories(context) {
-    var allCats = Provider.of<Categories>(context).categories;
-    for (Category cat in selectedCategories) {
-      if (!allCats.contains(cat)) {
-        Provider.of<Categories>(context).addCategory(cat);
-      }
-    }
+    // the button functionaily is over, so change the variable
+    // #############
     if (isFirstTime) {
       Provider.of<Categories>(context).setFirstTime(false);
       isFirstTime = false;
+    }
+
+    // get our cats and our userUuid
+    // add it to our user
+    // #############
+    var allOurCats = Provider.of<Categories>(context).categories;
+    String userUuid = Provider.of<User>(context).getCurrentUserUuid;
+    // add what category is not in our list
+    for (Category cat in selectedCategories) {
+      if (allOurCats.length != 0) {
+        for (var myCat in allOurCats) {
+          if (cat.name != myCat.name) {
+            Provider.of<Categories>(context).addCategory(cat, userUuid);
+          }
+        }
+      } else {
+        Provider.of<Categories>(context).addCategory(cat, userUuid);
+      }
     }
     Navigator.of(context)
         .pushReplacementNamed(RouterNames.GeneratingCategoriesScreen);
@@ -194,12 +209,12 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
                           mainAxisSpacing: 20,
                         ),
                         padding: const EdgeInsets.all(15),
-                        itemCount: categories.predefinedItems.length,
+                        itemCount: categories.predefinedCategories.length,
                         itemBuilder: (ctx, i) => PredefinedCategoryItem(
-                          categories.predefinedItems[i],
+                          categories.predefinedCategories[i],
                           addCategoryToSelection,
                           selectedCategories
-                              .contains(categories.predefinedItems[i]),
+                              .contains(categories.predefinedCategories[i]),
                         ),
                       ),
                     ),

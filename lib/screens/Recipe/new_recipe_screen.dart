@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'dart:math';
 import 'dart:io';
 
-import '../routeNames.dart';
-import '../screen_scaffold.dart';
-import '../providers/recipes.dart';
-import '../models/recipe.dart';
+import '../../routeNames.dart';
+import '../../screen_scaffold.dart';
+import '../../providers/recipes.dart';
+import '../../models/recipe.dart';
 
 class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
@@ -37,7 +37,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     isNew = Provider.of<Recipes>(context).getIsNew();
     recipe = Provider.of<Recipes>(context).getOngoingRecipe();
     if (isNew == false || recipe != Recipe()) {
-      print("recipe on edit: $recipe");
+      // print("recipe on edit: $recipe");
       if (imageFilePath == null) {
         imageFilePath = '';
       }

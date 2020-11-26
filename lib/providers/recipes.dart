@@ -180,7 +180,7 @@ class Recipes with ChangeNotifier {
   notifyListeners();
 
   void fetchAndSetFavoriteRecipes() async {
-    print("recipes: $_recipes");
+    // print("recipes: $_recipes");
     _favoriteRecipes =
         _recipes.where((recipe) => recipe.isFavorite == true).toList();
   }

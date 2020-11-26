@@ -30,10 +30,10 @@ class CategoryItem extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: (category.photo.substring(0, 1) == "a")
-                          ? AssetImage(category.photo)
-                          : FileImage(File(category.photo))),
+                    fit: BoxFit.cover,
+                    // image: FileImage(File(category.photo)),
+                    image: NetworkImage(category.photo),
+                  ),
                 ),
               ),
             ],

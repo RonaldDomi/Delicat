@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/category.dart';
-import '../providers/categories.dart';
-import '../routeNames.dart';
-import '../helpers/db_helper.dart';
+import '../../models/category.dart';
+import '../../providers/categories.dart';
+import '../../routeNames.dart';
+import '../../helpers/db_helper.dart';
 
-import '../widgets/categories_item.dart';
-import '../screen_scaffold.dart';
+import '../../widgets/categories_item.dart';
+import '../../screen_scaffold.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override

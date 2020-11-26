@@ -1,6 +1,12 @@
+import 'dart:convert';
+
+import 'package:delicat/providers/user.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter/material.dart';
+
+import 'package:http/http.dart' as http;
 
 import '../helpers/db_helper.dart';
 import '../helperFunctions.dart';
@@ -11,75 +17,74 @@ class Categories with ChangeNotifier {
   String _currentNewCategoryPhoto = "";
   bool _isOngoingCategoryNew;
   bool _firstTime;
-  // var uuid = Uuid();
 
   List<Category> _categories = [
-    Category(
-      id: Uuid().v4(),
-      name: 'Dessert',
-      colorCode: '#E5C1CB',
-      photo: "assets/photos/dessert-circle.png",
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#E5C1CB"),
-      ).brighten(14).color),
-    ),
-    Category(
-      id: Uuid().v4(),
-      name: 'Vegetable',
-      colorCode: '#DDE5B0',
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#DDE5B0"),
-      ).brighten(14).color),
-      photo: "assets/photos/vegetable-circle.png",
-    ),
-    Category(
-      id: Uuid().v4(),
-      name: 'Breakfast',
-      colorCode: '#ABBFB5',
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#ABBFB5"),
-      ).brighten(14).color),
-      photo: "assets/photos/breakfast-circle.png",
-    ),
+    // Category(
+    //   id: Uuid().v4(),
+    //   name: 'Dessert',
+    //   colorCode: '#E5C1CB',
+    //   photo: "assets/photos/dessert-circle.png",
+    //   colorLightCode: colorToHex(TinyColor(
+    //     hexToColor("#E5C1CB"),
+    //   ).brighten(14).color),
+    // ),
+    // Category(
+    //   id: Uuid().v4(),
+    //   name: 'Vegetable',
+    //   colorCode: '#DDE5B0',
+    //   colorLightCode: colorToHex(TinyColor(
+    //     hexToColor("#DDE5B0"),
+    //   ).brighten(14).color),
+    //   photo: "assets/photos/vegetable-circle.png",
+    // ),
+    // Category(
+    //   id: Uuid().v4(),
+    //   name: 'Breakfast',
+    //   colorCode: '#ABBFB5',
+    //   colorLightCode: colorToHex(TinyColor(
+    //     hexToColor("#ABBFB5"),
+    //   ).brighten(14).color),
+    //   photo: "assets/photos/breakfast-circle.png",
+    // ),
   ];
 
   List<Category> _predefinedCategories = [
-    Category(
-      id: Uuid().v4(),
-      name: 'Dessert',
-      colorCode: '#E5C1CB',
-      photo: "assets/photos/dessert-circle.png",
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#E5C1CB"),
-      ).brighten(14).color),
-    ),
-    Category(
-      id: Uuid().v4(),
-      name: 'Vegetable',
-      colorCode: '#DDE5B0',
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#DDE5B0"),
-      ).brighten(14).color),
-      photo: "assets/photos/vegetable-circle.png",
-    ),
-    Category(
-      id: Uuid().v4(),
-      name: 'Breakfast',
-      colorCode: '#ABBFB5',
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#ABBFB5"),
-      ).brighten(14).color),
-      photo: "assets/photos/breakfast-circle.png",
-    ),
-    Category(
-      id: Uuid().v4(),
-      name: 'Burger',
-      colorCode: '#1B2E46',
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("#1B2E46"),
-      ).brighten(14).color),
-      photo: "assets/photos/burgers-circle.png",
-    ),
+    // Category(
+    //   id: Uuid().v4(),
+    //   name: 'Dessert',
+    //   colorCode: '#E5C1CB',
+    //   photo: "assets/photos/dessert-circle.png",
+    //   colorLightCode: colorToHex(TinyColor(
+    //     hexToColor("#E5C1CB"),
+    //   ).brighten(14).color),
+    // ),
+    // Category(
+    //   id: Uuid().v4(),
+    //   name: 'Vegetable',
+    //   colorCode: '#DDE5B0',
+    //   colorLightCode: colorToHex(TinyColor(
+    //     hexToColor("#DDE5B0"),
+    //   ).brighten(14).color),
+    //   photo: "assets/photos/vegetable-circle.png",
+    // ),
+    // Category(
+    //   id: Uuid().v4(),
+    //   name: 'Breakfast',
+    //   colorCode: '#ABBFB5',
+    //   colorLightCode: colorToHex(TinyColor(
+    //     hexToColor("#ABBFB5"),
+    //   ).brighten(14).color),
+    //   photo: "assets/photos/breakfast-circle.png",
+    // ),
+    // Category(
+    //   id: Uuid().v4(),
+    //   name: 'Burger',
+    //   colorCode: '#1B2E46',
+    //   colorLightCode: colorToHex(TinyColor(
+    //     hexToColor("#1B2E46"),
+    //   ).brighten(14).color),
+    //   photo: "assets/photos/burgers-circle.png",
+    // ),
   ];
 
   List<Category> get categories {
@@ -130,23 +135,63 @@ class Categories with ChangeNotifier {
     ongoingCategory = Category();
   }
 
-  List<Category> get predefinedItems {
+  List<Category> get predefinedCategories {
     return [..._predefinedCategories];
   }
 
-  void fetchAndSetCategories() async {
-    final dataList = await DBHelper.getData('category');
-    _categories = dataList
-        .map(
-          (item) => Category(
-            id: item['id'],
-            colorCode: item['color_code'],
-            colorLightCode: item['color_code_light'],
-            name: item['name'],
-            photo: item['photo'],
-          ),
-        )
-        .toList();
+  Future<List<Category>> fetchAndSetAllCategories() async {
+    const url = 'http://54.77.35.193/categories';
+    try {
+      final response = await http.get(url);
+      List<Category> newList = [];
+      for (var category in json.decode(response.body)) {
+        var categoryToAdd = Category(
+          recipes: [],
+          id: category["uuid"],
+          userUuid: category["userUuid"],
+          name: category["name"],
+          photo: category["photo"],
+          colorCode: category["colorCode"],
+          colorLightCode: colorToHex(TinyColor(
+            hexToColor("${category["colorCode"]}"),
+          ).brighten(14).color),
+        );
+
+        newList.add(categoryToAdd);
+      }
+      return newList;
+    } catch (error) {
+      print("error: $error");
+    }
+  }
+
+  void setUserCategories(userCategories) {
+    _categories = userCategories;
+  }
+
+  void fetchAndSetPredefinedCategories() async {
+    const url = 'http://54.77.35.193/categories';
+    try {
+      final response = await http.get(url);
+      for (var category in json.decode(response.body)) {
+        var categoryToAdd = Category(
+          recipes: [],
+          id: category["uuid"],
+          userUuid: category["userUuid"],
+          name: category["name"],
+          photo: category["photo"],
+          colorCode: category["colorCode"],
+          colorLightCode: colorToHex(TinyColor(
+            hexToColor("${category["colorCode"]}"),
+          ).brighten(14).color),
+        );
+        if (category['default'] != null && category['default'] != false) {
+          _predefinedCategories.add(categoryToAdd);
+        }
+      }
+    } catch (error) {
+      print("error: $error");
+    }
   }
 
   void commentedFunctions() {
@@ -232,16 +277,34 @@ class Categories with ChangeNotifier {
     notifyListeners();
   }
 
-  void addCategory(Category category) {
-    _categories.add(category);
-    DBHelper.insert('category', {
-      "id": category.id,
+  void addCategory(Category category, String userUuid) async {
+    const url = 'http://54.77.35.193/Categories';
+
+    String newUuid = Uuid().v4();
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String body = json.encode({
+      // "recipes": [],
+      "uuid": newUuid,
+      "userUuid": userUuid,
       "name": category.name,
       "photo": category.photo,
-      "color_code": category.colorCode,
-      "color_code_light": category.colorLightCode,
+      "colorCode": category.colorCode,
+      // "default": false,
     });
-    notifyListeners();
+    try {
+      await http.post(url, headers: headers, body: body);
+      _categories.add(Category(
+        id: newUuid,
+        userUuid: userUuid,
+        recipes: [],
+        name: category.name,
+        photo: category.photo,
+        colorCode: category.colorCode,
+      ));
+      notifyListeners();
+    } catch (error) {
+      print("error: $error");
+    }
   }
 
   Future<void> removeCategory(String id) async {

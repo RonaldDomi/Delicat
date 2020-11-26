@@ -11,10 +11,10 @@ import 'dart:io';
 // import 'package:delicat/screens/categories_screen.dart';
 // import 'package:path_provider/path_provider.dart';
 
-import '../routeNames.dart';
-import '../models/category.dart';
-import '../providers/categories.dart';
-import '../screen_scaffold.dart';
+import '../../routeNames.dart';
+import '../../models/category.dart';
+import '../../providers/categories.dart';
+import '../../screen_scaffold.dart';
 
 const List<Color> _availableColors = [
   Colors.red,
@@ -85,16 +85,25 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Add optional parameters'),
+            title: Text('Add your low quality self made nokia camera foto?'),
             actions: <Widget>[
               FlatButton(
-                child: const Text('CANCEL'),
+                child: const Text('no..'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                  child: const Text('PICK'),
+                  child: const Text('Its not a nokia, its a PATATO ON A STICK'),
+                  onPressed: () {
+                    onPick();
+                    Navigator.of(context).pop();
+                  }),
+              FlatButton(
+                  child: const Text(
+                    "Don't touch me, im here just to take up space",
+                    textAlign: TextAlign.right,
+                  ),
                   onPressed: () {
                     onPick();
                     Navigator.of(context).pop();
@@ -285,7 +294,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        "New Categorie",
+                        (!_isNew) ? "Update Category" : "New Categorie",
                         style: TextStyle(
                           fontSize: 23,
                           color: Color(0xffBB9982),
@@ -494,39 +503,40 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                     ],
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  // width: MediaQuery.of(context).size.width * 0.8,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(29),
-                    color: Color(0xffF9F9F9),
-                  ),
-                  padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.all(10),
-                  child: Column(
-                    children: <Widget>[
-                      Text("Please choose what we have made for you"),
-                      RaisedButton(
-                        onPressed: () {
-                          // var pass;
-                          Navigator.of(context)
-                              .pushNamed(RouterNames.CategoriesSelectionScreen);
-                        },
-                        color: hexToColor("#F6C2A4"),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(19.0),
-                        ),
-                        elevation: 6,
-                        child: Text(
-                          "Choose from ours",
-                          style: TextStyle(
-                            color: Colors.white,
+                if (_isNew)
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    // width: MediaQuery.of(context).size.width * 0.8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(29),
+                      color: Color(0xffF9F9F9),
+                    ),
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(10),
+                    child: Column(
+                      children: <Widget>[
+                        Text("Please choose what we have made for you"),
+                        RaisedButton(
+                          onPressed: () {
+                            // var pass;
+                            Navigator.of(context).pushNamed(
+                                RouterNames.CategoriesSelectionScreen);
+                          },
+                          color: hexToColor("#F6C2A4"),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(19.0),
                           ),
-                        ),
-                      )
-                    ],
+                          elevation: 6,
+                          child: Text(
+                            "Choose from ours",
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),

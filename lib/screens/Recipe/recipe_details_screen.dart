@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
-import '../providers/recipes.dart';
-import '../providers/categories.dart';
+import '../../providers/recipes.dart';
+import '../../providers/categories.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../models/recipe.dart';
+import '../../models/recipe.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
   final String recipeId;
