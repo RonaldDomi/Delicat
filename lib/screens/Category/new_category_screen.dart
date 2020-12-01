@@ -1,4 +1,5 @@
 import 'package:delicat/helperFunctions.dart';
+import 'package:delicat/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:tinycolor/tinycolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'dart:io';
+import 'dart:convert';
 // import 'package:delicat/screens/categories_screen.dart';
 // import 'package:path_provider/path_provider.dart';
 
@@ -49,7 +51,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   Color pickerColor = Colors.red;
   bool _isNew;
   Category category;
-  bool onlyFirstTime = true;
+  // bool onlyFirstTime = true;
   // bool _isEdited = false;
 
   final _nameController = TextEditingController();
@@ -60,6 +62,31 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   String _imageFilePath;
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void didChangeDependencies() {
+    postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
+    category = Provider.of<Categories>(context).getOngoingCategory();
+    // if (onlyFirstTime) {
+    _imageFilePath = category.photo;
+    //   onlyFirstTime = false;
+    // }
+    _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
+    _colorCodeController.text = colorToHex(Colors.red);
+    if (_imageFilePath == null) {
+      _imageFilePath = '';
+    }
+    if (category.name != null) {
+      _nameController.text = category.name;
+    }
+    if (category.colorCode != null) {
+      _colorCodeController.text = category.colorCode;
+      pickerColor = category.colorCode != null
+          ? hexToColor(category.colorCode)
+          : Colors.red;
+    }
+    super.didChangeDependencies();
+  }
 
   void changeColor(Color color) {
     setState(() => {
@@ -85,25 +112,16 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Add your low quality self made nokia camera foto?'),
+            title: Text('Choose a photo from your phone'),
             actions: <Widget>[
               FlatButton(
-                child: const Text('no..'),
+                child: const Text('No, Actually skip'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               FlatButton(
-                  child: const Text('Its not a nokia, its a PATATO ON A STICK'),
-                  onPressed: () {
-                    onPick();
-                    Navigator.of(context).pop();
-                  }),
-              FlatButton(
-                  child: const Text(
-                    "Don't touch me, im here just to take up space",
-                    textAlign: TextAlign.right,
-                  ),
+                  child: const Text('Yes'),
                   onPressed: () {
                     onPick();
                     Navigator.of(context).pop();
@@ -111,40 +129,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ],
           );
         });
-  }
-
-  @override
-  void didChangeDependencies() {
-    // print(
-    //     "------------------------------------------------------------------------------------------------------------------------------------------");
-    // print("DIDCHANGEDEPENDENCIES");
-    // print(
-    //     "------------------------------------------------------------------------------------------------------------------------------------------");
-    postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
-    category = Provider.of<Categories>(context).getOngoingCategory();
-    if (onlyFirstTime) {
-      _imageFilePath = category.photo;
-      onlyFirstTime = false;
-    }
-    _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
-    // print("file: $_imageFilePath");
-    // print("category; $category");
-    _colorCodeController.text = colorToHex(Colors.red);
-    if (_imageFilePath == null) {
-      _imageFilePath = '';
-    }
-    if (category.name != null) {
-      _nameController.text = category.name;
-    }
-    if (category.colorCode != null) {
-      _colorCodeController.text = category.colorCode;
-      pickerColor = category.colorCode != null
-          ? hexToColor(category.colorCode)
-          : Colors.red;
-      // pickerColor = Colors.red;
-    }
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
   }
 
   Future<void> _saveForm() async {
@@ -170,18 +154,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         img = _imageFilePath;
       } else if (postedImage != "") {
         img = postedImage;
-        try {
-          var imageId = await ImageDownloader.downloadImage(img);
-          if (imageId == null) {
-            return;
-          }
-
-          var path = await ImageDownloader.findPath(imageId);
-          // print("path: $path");
-          img = path;
-        } on PlatformException catch (error) {
-          print(error);
-        }
       } else {
         img = category.photo;
       }
@@ -206,40 +178,40 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
     } else if (_isNew == true) {
+      print('starting submit function');
       var img;
+      var img64;
       if (_imageFilePath != "") {
+        print("it is local");
         img = _imageFilePath;
+        final bytes = File(img).readAsBytesSync();
+
+        img64 = base64Encode(bytes);
       } else {
         img = postedImage;
-        try {
-          var imageId = await ImageDownloader.downloadImage(img);
-          if (imageId == null) {
-            return;
-          }
-
-          var path = await ImageDownloader.findPath(imageId);
-          img = path;
-        } on PlatformException catch (error) {
-          print(error);
-        }
       }
       Category _newCategory = Category(
         name: _nameController.text,
-        photo: img,
         colorCode: _colorCodeController.text,
         colorLightCode: colorToHex(newCodeLight),
       );
-
-      await Provider.of<Categories>(context, listen: false)
-          .createCategory(_newCategory);
+      String userUuid = Provider.of<User>(context).getCurrentUserUuid;
+      Category createdCategory =
+          await Provider.of<Categories>(context, listen: false)
+              .createCategory(_newCategory, userUuid);
+      if (_imageFilePath != "") {
+        print("$img64");
+        await Provider.of<Categories>(context, listen: false)
+            .patchCategory(createdCategory, img64);
+      }
 
       _imageFilePath = "";
       postedImage = "";
+      _nameController.text = "";
       Provider.of<Categories>(context).zeroCurrentPhoto();
       Provider.of<Categories>(context).zeroOngoingCategory();
-      _nameController.text = "";
 
-      Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
+      // Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
     }
   }

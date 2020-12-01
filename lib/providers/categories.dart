@@ -175,7 +175,6 @@ class Categories with ChangeNotifier {
       final response = await http.get(url);
       for (var category in json.decode(response.body)) {
         var categoryToAdd = Category(
-          recipes: [],
           id: category["uuid"],
           userUuid: category["userUuid"],
           name: category["name"],
@@ -256,23 +255,50 @@ class Categories with ChangeNotifier {
     return cat;
   }
 
-  void createCategory(Category category) {
+  Future<Category> createCategory(Category category, String userUuid) async {
+    const urlPost = 'http://54.77.35.193/Categories';
+    String newUuid = Uuid().v4();
     final newCategory = Category(
-      id: Uuid().v4(),
+      id: newUuid,
       name: category.name,
-      photo: category.photo,
       colorCode: category.colorCode,
       colorLightCode: category.colorLightCode,
+      recipes: [],
+      userUuid: userUuid,
     );
-    _categories.add(newCategory);
-    DBHelper.insert('category', {
-      "id": newCategory.id,
-      "name": newCategory.name,
-      // "photo": newCategory.photo.path,
-      "photo": newCategory.photo,
-      "color_code": newCategory.colorCode,
-      "color_code_light": newCategory.colorLightCode,
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String bodyPost = json.encode({
+      "recipes": [],
+      "uuid": newUuid,
+      "userUuid": userUuid,
+      "name": category.name,
+      "colorCode": category.colorCode,
+      "default": false,
     });
+    try {
+      await http.post(urlPost, headers: headers, body: bodyPost);
+      _categories.add(newCategory);
+    } catch (error) {
+      print("error: $error");
+    }
+    notifyListeners();
+    return newCategory;
+  }
+
+  void patchCategory(Category category, String photo) async {
+    var urlPatch = "http://54.77.35.193/categories/${category.id}";
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String bodyPatch = json.encode({
+      "uuid": category.id,
+      "photo": photo,
+    });
+    try {
+      var reponse =
+          await http.post(urlPatch, headers: headers, body: bodyPatch);
+      print(reponse.body);
+    } catch (error) {
+      print("error: $error");
+    }
 
     notifyListeners();
   }
@@ -283,13 +309,13 @@ class Categories with ChangeNotifier {
     String newUuid = Uuid().v4();
     Map<String, String> headers = {"Content-type": "application/json"};
     String body = json.encode({
-      // "recipes": [],
+      "recipes": [],
       "uuid": newUuid,
       "userUuid": userUuid,
       "name": category.name,
       "photo": category.photo,
       "colorCode": category.colorCode,
-      // "default": false,
+      "default": false,
     });
     try {
       await http.post(url, headers: headers, body: body);
@@ -308,10 +334,9 @@ class Categories with ChangeNotifier {
   }
 
   Future<void> removeCategory(String id) async {
-    _categories.removeWhere((item) =>
-        item.id ==
-        id); //here we assume response finished correctly, maybe additional checks needed
-
+    var url = 'http://54.77.35.193/Categories/$id';
+    _categories.removeWhere((item) => item.id == id);
+    await http.delete(url);
     notifyListeners();
   }
 

@@ -61,10 +61,12 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
       if (allOurCats.length != 0) {
         for (var myCat in allOurCats) {
           if (cat.name != myCat.name) {
+            print("adding");
             Provider.of<Categories>(context).addCategory(cat, userUuid);
           }
         }
       } else {
+        print("adding 2");
         Provider.of<Categories>(context).addCategory(cat, userUuid);
       }
     }
