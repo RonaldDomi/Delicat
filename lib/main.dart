@@ -2,8 +2,7 @@ import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'router.dart';
-
+import './router.dart' as MyRouter;
 import './providers/recipes.dart';
 import './providers/categories.dart';
 import './providers/user.dart';
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
         ),
         // navigatorObservers: [MyNavigatorObserver()],
         initialRoute: "/",
-        onGenerateRoute: Router.generateRoute,
+        onGenerateRoute: MyRouter.Router.generateRoute,
       ),
     );
   }
