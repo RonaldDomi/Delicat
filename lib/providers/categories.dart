@@ -257,6 +257,7 @@ class Categories with ChangeNotifier {
 
   Future<Category> createCategory(Category category, String userUuid) async {
     const urlPost = 'http://54.77.35.193/Categories';
+    const urlPostUpload = 'http://54.77.35.193/categories/upload';
     String newUuid = Uuid().v4();
     final newCategory = Category(
       id: newUuid,
@@ -267,40 +268,56 @@ class Categories with ChangeNotifier {
       userUuid: userUuid,
     );
     Map<String, String> headers = {"Content-type": "application/json"};
-    String bodyPost = json.encode({
+    String bodyPost = "";
+    bodyPost = json.encode({
       "recipes": [],
       "uuid": newUuid,
       "userUuid": userUuid,
       "name": category.name,
+      "photo": category.photo,
       "colorCode": category.colorCode,
       "default": false,
     });
-    try {
-      await http.post(urlPost, headers: headers, body: bodyPost);
-      _categories.add(newCategory);
-    } catch (error) {
-      print("error: $error");
+    if (category.photo.startsWith('https://')) {
+      try {
+        await http.post(urlPost, headers: headers, body: bodyPost);
+        newCategory.photo = category.photo;
+        _categories.add(newCategory);
+      } catch (error) {
+        print("error: $error");
+      }
+    } else {
+      try {
+        var response =
+            await http.post(urlPostUpload, headers: headers, body: bodyPost);
+        String catPhoto = json.decode(response.body)["photo"];
+        print("$catPhoto");
+        newCategory.photo = catPhoto;
+        _categories.add(newCategory);
+      } catch (error) {
+        print("error: $error");
+      }
     }
     notifyListeners();
     return newCategory;
   }
 
   void patchCategory(Category category, String photo) async {
-    var urlPatch = "http://54.77.35.193/categories/${category.id}";
-    Map<String, String> headers = {"Content-type": "application/json"};
-    String bodyPatch = json.encode({
-      "uuid": category.id,
-      "photo": photo,
-    });
-    try {
-      var reponse =
-          await http.post(urlPatch, headers: headers, body: bodyPatch);
-      print(reponse.body);
-    } catch (error) {
-      print("error: $error");
-    }
+    // var urlPatch = "http://54.77.35.193/categories/${category.id}";
+    // Map<String, String> headers = {"Content-type": "application/json"};
+    // String bodyPatch = json.encode({
+    //   "uuid": category.id,
+    //   "photo": photo,
+    // });
+    // try {
+    //   var reponse =
+    //       await http.post(urlPatch, headers: headers, body: bodyPatch);
+    //   print(reponse.body);
+    // } catch (error) {
+    //   print("error: $error");
+    // }
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   void addCategory(Category category, String userUuid) async {

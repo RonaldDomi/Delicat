@@ -32,7 +32,6 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(Duration(seconds: 1), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool firstTime = prefs.getBool('firstTime');
-
       //
       //
       if (firstTime != null && !firstTime) {

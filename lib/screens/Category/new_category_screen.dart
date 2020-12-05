@@ -51,7 +51,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   Color pickerColor = Colors.red;
   bool _isNew;
   Category category;
-  // bool onlyFirstTime = true;
   // bool _isEdited = false;
 
   final _nameController = TextEditingController();
@@ -67,12 +66,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   void didChangeDependencies() {
     postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
     category = Provider.of<Categories>(context).getOngoingCategory();
-    // if (onlyFirstTime) {
     _imageFilePath = category.photo;
-    //   onlyFirstTime = false;
-    // }
     _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
     _colorCodeController.text = colorToHex(Colors.red);
+    print("postedImage: $postedImage \ncategory: $category");
     if (_imageFilePath == null) {
       _imageFilePath = '';
     }
@@ -123,6 +120,11 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
               FlatButton(
                   child: const Text('Yes'),
                   onPressed: () {
+                    FocusScopeNode currentFocus = FocusScope.of(context);
+
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
                     onPick();
                     Navigator.of(context).pop();
                   }),
@@ -132,6 +134,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   }
 
   Future<void> _saveForm() async {
+    print("submiting, with postedImage : $postedImage");
     final isValid = _form.currentState.validate();
     if (!isValid) {
       return;
@@ -178,32 +181,31 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
     } else if (_isNew == true) {
-      print('starting submit function');
-      var img;
-      var img64;
+      print("postedImage: $postedImage");
+      print("_imageFilePath: $_imageFilePath");
+      var img, img64;
       if (_imageFilePath != "") {
         print("it is local");
-        img = _imageFilePath;
-        final bytes = File(img).readAsBytesSync();
+        img64 = _imageFilePath;
+        final bytes = File(img64).readAsBytesSync();
 
-        img64 = base64Encode(bytes);
+        img = base64Encode(bytes);
       } else {
+        print("unsplash: $postedImage");
         img = postedImage;
       }
       Category _newCategory = Category(
         name: _nameController.text,
         colorCode: _colorCodeController.text,
+        photo: img,
         colorLightCode: colorToHex(newCodeLight),
       );
       String userUuid = Provider.of<User>(context).getCurrentUserUuid;
+      print("screen, create category");
       Category createdCategory =
           await Provider.of<Categories>(context, listen: false)
               .createCategory(_newCategory, userUuid);
-      if (_imageFilePath != "") {
-        print("$img64");
-        await Provider.of<Categories>(context, listen: false)
-            .patchCategory(createdCategory, img64);
-      }
+      print("screen, category created, $createdCategory");
 
       _imageFilePath = "";
       postedImage = "";
@@ -211,7 +213,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       Provider.of<Categories>(context).zeroCurrentPhoto();
       Provider.of<Categories>(context).zeroOngoingCategory();
 
-      // Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
+      Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
     }
   }
