@@ -174,7 +174,8 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
             ),
           ),
           SlidingUpPanel(
-            minHeight: 40,
+            // minHeight: 40,
+            minHeight: 80,
             maxHeight: 340,
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(18.0),
@@ -186,6 +187,7 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
               ),
               child: Column(
                 children: <Widget>[
+                  SizedBox(height: 20),
                   Padding(
                     padding: const EdgeInsets.all(17.0),
                     child: SizedBox(

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:delicat/providers/recipes.dart';
+import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:delicat/helperFunctions.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
-  PickedFile _imageFile;
+  File _imageFile;
   final ImagePicker _picker = ImagePicker();
   dynamic _pickImageError;
   String _retrieveDataError;
@@ -30,7 +31,7 @@ class _CameraScreenState extends State<CameraScreen> {
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     await _displayPickImageDialog(context, () async {
       try {
-        final pickedFile = await _picker.getImage(
+        final pickedFile = await ImagePicker.pickImage(
           source: source,
         );
         setState(() async {
@@ -73,31 +74,20 @@ class _CameraScreenState extends State<CameraScreen> {
     if (_imageFile != null) {
       return Container(
         height: MediaQuery.of(context).size.height * 0.5,
-        child: Center(
-          child: ClipOval(
-            child: Container(
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: hexToColor("#E4E4E4"),
-                border: Border.all(
-                  color: hexToColor("#EEDA76"),
-                  width: 5,
-                ),
-                // image: DecorationImage(
-                //   fit: BoxFit.fill,
-                //   image: Image.file(
-                //     File(
-                //       _imageFile.path,
-                //     ),
-                //   ),
-                // ),
-              ),
-              child: Image.file(
-                File(
-                  _imageFile.path,
-                ),
-              ),
+        child: Container(
+          height: 300,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: hexToColor("#E4E4E4"),
+            border: Border.all(
+              color: hexToColor("#EEDA76"),
+              width: 5,
+            ),
+          ),
+          child: CircleAvatar(
+            radius: 150,
+            backgroundImage: new FileImage(
+              _imageFile,
             ),
           ),
         ),
