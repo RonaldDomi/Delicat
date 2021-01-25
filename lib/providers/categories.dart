@@ -1,15 +1,19 @@
 import 'dart:convert';
 
-import 'package:delicat/providers/user.dart';
-import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:delicat/providers/user.dart';
+// import 'package:provider/provider.dart';
+// import 'package:uuid/uuid.dart';
+
+import 'package:http_parser/http_parser.dart';
+import 'package:dio/dio.dart';
+import 'package:mime/mime.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 
-import '../helpers/db_helper.dart';
-import '../helperFunctions.dart';
+// import '../helpers/db_helper.dart';
+import '../other/helperFunctions.dart';
 import '../models/category.dart';
 
 class Categories with ChangeNotifier {
@@ -111,6 +115,10 @@ class Categories with ChangeNotifier {
     _firstTime = firstTime;
   }
 
+  void setCategories(categories) {
+    _categories = categories;
+  }
+
   bool getFirstTime() {
     return _firstTime;
   }
@@ -139,44 +147,18 @@ class Categories with ChangeNotifier {
     return [..._predefinedCategories];
   }
 
-  Future<List<Category>> fetchAndSetAllCategories() async {
-    const url = 'http://54.77.35.193/categories';
-    try {
-      final response = await http.get(url);
-      List<Category> newList = [];
-      for (var category in json.decode(response.body)) {
-        var categoryToAdd = Category(
-          recipes: [],
-          id: category["uuid"],
-          userUuid: category["userUuid"],
-          name: category["name"],
-          photo: category["photo"],
-          colorCode: category["colorCode"],
-          colorLightCode: colorToHex(TinyColor(
-            hexToColor("${category["colorCode"]}"),
-          ).brighten(14).color),
-        );
-
-        newList.add(categoryToAdd);
-      }
-      return newList;
-    } catch (error) {
-      print("error: $error");
-    }
-  }
-
   void setUserCategories(userCategories) {
     _categories = userCategories;
   }
 
   void fetchAndSetPredefinedCategories() async {
-    const url = 'http://54.77.35.193/categories';
+    const url = 'http://54.195.158.131/categories/default';
     try {
       final response = await http.get(url);
       for (var category in json.decode(response.body)) {
         var categoryToAdd = Category(
-          id: category["uuid"],
-          userUuid: category["userUuid"],
+          recipes: [],
+          id: category["_id"],
           name: category["name"],
           photo: category["photo"],
           colorCode: category["colorCode"],
@@ -184,8 +166,31 @@ class Categories with ChangeNotifier {
             hexToColor("${category["colorCode"]}"),
           ).brighten(14).color),
         );
-        if (category['default'] != null && category['default'] != false) {
-          _predefinedCategories.add(categoryToAdd);
+        _predefinedCategories.add(categoryToAdd);
+      }
+    } catch (error) {
+      print("error: $error");
+    }
+  }
+
+  void fetchAndSetCategories(String userId) async {
+    const url = 'http://54.195.158.131/categories';
+    try {
+      final response = await http.get(url);
+      for (var category in json.decode(response.body)) {
+        if (category["userId"] == userId) {
+          var categoryToAdd = Category(
+            recipes: [],
+            id: category["_id"],
+            userId: category["userId"],
+            name: category["name"],
+            photo: category["photo"],
+            colorCode: category["colorCode"],
+            colorLightCode: colorToHex(TinyColor(
+              hexToColor("${category["colorCode"]}"),
+            ).brighten(14).color),
+          );
+          _categories.add(categoryToAdd);
         }
       }
     } catch (error) {
@@ -255,55 +260,8 @@ class Categories with ChangeNotifier {
     return cat;
   }
 
-  Future<Category> createCategory(Category category, String userUuid) async {
-    const urlPost = 'http://54.77.35.193/Categories';
-    const urlPostUpload = 'http://54.77.35.193/categories/upload';
-    String newUuid = Uuid().v4();
-    final newCategory = Category(
-      id: newUuid,
-      name: category.name,
-      colorCode: category.colorCode,
-      colorLightCode: category.colorLightCode,
-      recipes: [],
-      userUuid: userUuid,
-    );
-    Map<String, String> headers = {"Content-type": "application/json"};
-    String bodyPost = "";
-    bodyPost = json.encode({
-      "recipes": [],
-      "uuid": newUuid,
-      "userUuid": userUuid,
-      "name": category.name,
-      "photo": category.photo,
-      "colorCode": category.colorCode,
-      "default": false,
-    });
-    if (category.photo.startsWith('https://')) {
-      try {
-        await http.post(urlPost, headers: headers, body: bodyPost);
-        newCategory.photo = category.photo;
-        _categories.add(newCategory);
-      } catch (error) {
-        print("error: $error");
-      }
-    } else {
-      try {
-        var response =
-            await http.post(urlPostUpload, headers: headers, body: bodyPost);
-        String catPhoto = json.decode(response.body)["photo"];
-        print("$catPhoto");
-        newCategory.photo = catPhoto;
-        _categories.add(newCategory);
-      } catch (error) {
-        print("error: $error");
-      }
-    }
-    notifyListeners();
-    return newCategory;
-  }
-
   void patchCategory(Category category, String photo) async {
-    // var urlPatch = "http://54.77.35.193/categories/${category.id}";
+    // var urlPatch = "http://54.195.158.131/categories/${category.id}";
     // Map<String, String> headers = {"Content-type": "application/json"};
     // String bodyPatch = json.encode({
     //   "uuid": category.id,
@@ -320,58 +278,101 @@ class Categories with ChangeNotifier {
     // notifyListeners();
   }
 
-  void addCategory(Category category, String userUuid) async {
-    const url = 'http://54.77.35.193/Categories';
-
-    String newUuid = Uuid().v4();
-    Map<String, String> headers = {"Content-type": "application/json"};
-    String body = json.encode({
-      "recipes": [],
-      "uuid": newUuid,
-      "userUuid": userUuid,
-      "name": category.name,
-      "photo": category.photo,
-      "colorCode": category.colorCode,
-      "default": false,
-    });
-    try {
-      await http.post(url, headers: headers, body: body);
-      _categories.add(Category(
-        id: newUuid,
-        userUuid: userUuid,
-        recipes: [],
-        name: category.name,
-        photo: category.photo,
-        colorCode: category.colorCode,
-      ));
-      notifyListeners();
-    } catch (error) {
-      print("error: $error");
-    }
-  }
-
   Future<void> removeCategory(String id) async {
-    var url = 'http://54.77.35.193/Categories/$id';
+    var url = 'http://54.195.158.131/Categories/$id';
     _categories.removeWhere((item) => item.id == id);
     await http.delete(url);
     notifyListeners();
   }
 
-  Future<void> editCategory(Category editedCategory) {
+  Future<Category> editCategory(Category editedCategory, String userId) async {
+    const urlPatch = 'http://54.195.158.131/Categories';
+    const urlPatchUpload = 'http://54.195.158.131/categories/upload';
+
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String bodyPatch = "";
+    bodyPatch = json.encode({
+      "userId": userId,
+      "name": editedCategory.name,
+      "colorCode": editedCategory.colorCode,
+      "photo": editedCategory.photo,
+    });
+    print(bodyPatch);
+    if (editedCategory.photo.startsWith('https://')) {
+      try {
+        await http.patch(urlPatch + "/${editedCategory.id}",
+            headers: headers, body: bodyPatch);
+      } catch (error) {
+        print("error: $error");
+      }
+    } else {
+      print("adding the local...");
+      try {
+        print("trying...");
+        print("sending body: $bodyPatch");
+        var response = await http.patch(
+            urlPatchUpload + "/${editedCategory.id}",
+            headers: headers,
+            body: bodyPatch);
+        String catPhoto = json.decode(response.body)["photo"];
+      } catch (error) {
+        print("trying but...");
+        print("error: $error");
+      }
+    }
     final existingCategoryIndex =
         _categories.indexWhere((element) => element.id == editedCategory.id);
 
     _categories[existingCategoryIndex] = editedCategory;
-
-    DBHelper.edit('category', editedCategory.id, {
-      "id": editedCategory.id,
-      "name": editedCategory.name,
-      // "photo": editedCategory.photo.path,
-      "photo": editedCategory.photo,
-      "color_code": editedCategory.colorCode,
-      "color_code_light": editedCategory.colorLightCode,
-    });
-
     notifyListeners();
+    return editedCategory;
+  }
+
+  Future<Category> createCategory(Category category, String userId) async {
+    const url = 'http://54.195.158.131/Categories';
+    final mimeTypeData =
+        lookupMimeType(category.photo, headerBytes: [0xFF, 0xD8]).split('/');
+    FormData formData = FormData.fromMap({
+      "userId": userId,
+      "name": category.name,
+      "colorCode": category.colorCode,
+      "photo": await MultipartFile.fromFile(
+        category.photo,
+        filename: category.photo.split("/").last,
+        contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+      )
+    });
+    try {
+      var response = await Dio().post(url, data: formData);
+
+      Category category = Category.fromMap(response.data);
+      print(category);
+      _categories.add(category);
+      notifyListeners();
+      return category;
+    } catch (error) {
+      print("error: $error");
+    }
+  }
+
+  void addCategory(Category category, String userId) async {
+    const url = 'http://54.195.158.131/Categories';
+    print(category.photo);
+    FormData formData = FormData.fromMap({
+      "userId": userId,
+      "name": category.name,
+      "colorCode": category.colorCode,
+      "photo_url": category.photo,
+    });
+    try {
+      var response = await Dio().post(url, data: formData);
+      Category category = Category.fromMap(response.data);
+      print(category);
+      _categories.add(category);
+      notifyListeners();
+    } catch (error) {
+      print("error: ${error.message}");
+      print("error: ${error.request}");
+    }
   }
 }

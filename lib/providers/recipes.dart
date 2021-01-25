@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import '../helperFunctions.dart';
+import '../other/helperFunctions.dart';
 import '../helpers/db_helper.dart';
 
+import 'package:http/http.dart' as http;
 import '../models/recipe.dart';
 // import '../models/category.dart';
 
@@ -97,81 +100,88 @@ class Recipes with ChangeNotifier {
     return false;
   }
 
-  void addRecipe(Recipe newRecipe) async {
-    var rng = new Random();
-    var recId = rng.nextInt(1000).toString();
+  void getSetRecipesByCategory(String categoryId) async {
+    const url = 'http://54.195.158.131/recipes/byCategoryId/';
+    try {
+      final response = await http.get(url + categoryId);
+      for (var recipe in json.decode(response.body)) {
+        var recipeToAdd = Recipe(
+          id: recipe["_id"],
+          categoryId: recipe["categoryId"],
+          isFavorite: recipe["isFavorite"],
+          name: recipe["name"],
+          photo: recipe["photo"],
+          description: recipe["text"],
+        );
+        _recipes.add(recipeToAdd);
+      }
+    } catch (error) {
+      print("error: $error");
+    }
+  }
+
+  void addRecipe(Recipe newRecipe, String categoryId) async {
+    // const url = 'http://54.195.158.131/recipes/upload';
+    const url = 'http://54.195.158.131/recipes';
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String body = json.encode({
+      "categoryId": categoryId,
+      "name": newRecipe.name,
+      // "photo": newRecipe.photo,
+      "text": newRecipe.description,
+      "isFavorite": false,
+    });
+
+    print(body);
+
     Recipe addRecipe = Recipe(
-      id: recId,
       name: newRecipe.name,
-      photo: newRecipe.photo,
-      isFavorite: newRecipe.isFavorite,
+      // photo: newRecipe.photo,
+      isFavorite: false,
       description: newRecipe.description,
       categoryId: newRecipe.categoryId,
     );
-    var isFav;
-    if (newRecipe.isFavorite) {
-      isFav = 1;
-    } else {
-      isFav = 0;
-    }
+    print("send response");
+    var response = await http.post(url, headers: headers, body: body);
+    String recipeId = json.decode(response.body)["_id"];
+    // String recipePhoto = json.decode(response.body)["photo"];
+    print("new id: $recipeId");
+    addRecipe.id = recipeId;
+    // addRecipe.photo = recipePhoto;
+
     _recipes.add(addRecipe);
-    DBHelper.insert('recipe', {
-      "id": recId,
-      "name": newRecipe.name,
-      "photo": newRecipe.photo,
-      "is_favorite": isFav,
-      "description": newRecipe.description,
-      "category_id": newRecipe.categoryId,
-    });
     notifyListeners();
   }
 
-  void removeRecipe(String id) {
+  void removeRecipe(String id) async {
     _recipes.removeWhere((item) => item.id == id);
-    DBHelper.delete('recipe', id);
+    var url = 'http://54.195.158.131/Recipes/$id';
+    await http.delete(url);
     notifyListeners();
   }
 
-  void editRecipe(Recipe editedRecipe) {
+  void editRecipe(Recipe editedRecipe) async {
     final recipeIndex =
         _recipes.indexWhere((item) => item.id == editedRecipe.id);
     _recipes[recipeIndex] = editedRecipe;
 
-    var isFav;
-    if (editedRecipe.isFavorite) {
-      isFav = 1;
-    } else {
-      isFav = 0;
-    }
-    DBHelper.edit('recipe', editedRecipe.id, {
-      "id": editedRecipe.id,
+    const url = 'http://54.195.158.131/recipes';
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String bodyPatch = "";
+    bodyPatch = json.encode({
       "name": editedRecipe.name,
-      "photo": editedRecipe.photo,
-      "is_favorite": isFav,
-      "description": editedRecipe.description,
-      "category_id": editedRecipe.categoryId,
+      "text": editedRecipe.description,
+      // "photo": editedRecipe.photo,
     });
+    // print(bodyPatch);
+    await http.patch(url + "/${editedRecipe.id}",
+        headers: headers, body: bodyPatch);
 
     notifyListeners();
   }
 
-  void fetchAndSetAllRecipes() async {
-    final dataList = await DBHelper.getData('recipe');
-    _recipes = dataList
-        .map(
-          (item) => Recipe(
-            id: item['id'],
-            categoryId: item['category_id'].toString(),
-            description: item['description'],
-            isFavorite: bitToBool(item['is_favorite']),
-            name: item['name'],
-            photo: item['photo'],
-          ),
-        )
-        .toList();
-  }
-
   List<Recipe> getRecipesByCategoryId(String categoryId) {
+    print("all recipes: $_recipes");
     var catRecps =
         _recipes.where((recipe) => recipe.categoryId == categoryId).toList();
     return catRecps;

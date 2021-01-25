@@ -1,4 +1,4 @@
-import 'package:delicat/helperFunctions.dart';
+import 'package:delicat/other/helperFunctions.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +22,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
+    recipe.isFavorite = false;
     final category =
         Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
 
@@ -137,19 +138,20 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Container(
-            width: 150,
-            height: 150,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                // image: AssetImage("assets/photos/veggies.jpg"),
-                image: FileImage(
-                  File(recipe.photo),
+          if (recipe.photo != null)
+            Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  // image: AssetImage("assets/photos/veggies.jpg"),
+                  image: NetworkImage(
+                    recipe.photo,
+                  ),
                 ),
               ),
             ),
-          ),
           SlidingUpPanel(
             minHeight: 40,
             maxHeight: MediaQuery.of(context).size.height * 0.5,

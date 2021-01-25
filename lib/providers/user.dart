@@ -1,33 +1,33 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 import 'package:http/http.dart' as http;
 
 class User with ChangeNotifier {
-  String _currentUserUuid;
+  String _currentUserId;
 
-  String get getCurrentUserUuid {
-    return _currentUserUuid;
+  String get getCurrentUserId {
+    return _currentUserId;
   }
 
-  void setCurrentUserUuid(String newUuid) {
-    _currentUserUuid = newUuid;
+  void setCurrentUserId(String newId) {
+    _currentUserId = newId;
   }
 
-  Future<String> createNewUser() async {
-    String newUuid = Uuid().v4();
-    setCurrentUserUuid(newUuid);
+  Future<String> createAndSetNewUser() async {
+    const url = 'http://54.195.158.131/user';
 
-    const url = 'http://54.77.35.193/user';
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String body = json.encode({
+      "username": "Ronald2",
+      "password": "password",
+    });
     try {
-      await http.post(url, body: {'uuid': newUuid});
+      var response = await http.post(url, headers: headers, body: body);
+      _currentUserId = json.decode(response.body)["_id"];
     } catch (error) {
       print("error: $error");
     }
-
-    return newUuid;
   }
 }

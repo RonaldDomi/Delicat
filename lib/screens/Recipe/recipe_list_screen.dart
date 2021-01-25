@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 import '../../providers/categories.dart';
 import '../../providers/recipes.dart';
 import '../../routeNames.dart';
-import '../../screen_scaffold.dart';
+import '../other/screen_scaffold.dart';
 import '../../widgets/recipe_list_item.dart';
 
-import '../../helperFunctions.dart';
+import '../../other/helperFunctions.dart';
 
 class RecipeListScreen extends StatefulWidget {
   final String categoryId;

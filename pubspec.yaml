@@ -16,8 +16,10 @@ dependencies:
   http: ^0.12.1
   flutter_colorpicker: ^0.3.4
   cupertino_icons: ^0.1.2
+  mime: ^0.9.7
   sliding_up_panel: ^1.0.2
   progress_indicators: ^0.1.5
+  dio: ^3.0.10
   unsplash_client: ^0.2.0
   image_picker: ^0.6.7+4
   image_downloader: ^0.20.0

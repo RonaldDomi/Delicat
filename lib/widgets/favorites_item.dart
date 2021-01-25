@@ -1,7 +1,7 @@
 import 'package:delicat/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../helperFunctions.dart';
+import '../other/helperFunctions.dart';
 import '../models/recipe.dart';
 import '../providers/categories.dart';
 import 'dart:io';

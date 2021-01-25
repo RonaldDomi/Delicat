@@ -1,13 +1,13 @@
-import 'package:delicat/helperFunctions.dart';
+import 'package:delicat/other/helperFunctions.dart';
 import 'package:delicat/widgets/favorites_item.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import '../providers/recipes.dart';
-import '../models/recipe.dart';
+import '../../providers/recipes.dart';
+import '../../models/recipe.dart';
 
-import '../routeNames.dart';
-import '../screen_scaffold.dart';
+import '../../routeNames.dart';
+import 'screen_scaffold.dart';
 
 class SearchScreen extends StatefulWidget {
   @override

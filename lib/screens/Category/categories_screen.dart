@@ -7,7 +7,7 @@ import '../../routeNames.dart';
 import '../../helpers/db_helper.dart';
 
 import '../../widgets/categories_item.dart';
-import '../../screen_scaffold.dart';
+import '../other/screen_scaffold.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -15,12 +15,6 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  void clearTableData() {
-    setState(() {
-      DBHelper.truncateTable("category"); //actually is truncateTable
-    });
-  }
-
   Future<bool> _onBackPressed() {
     return showDialog(
           context: context,

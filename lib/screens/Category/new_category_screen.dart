@@ -1,4 +1,4 @@
-import 'package:delicat/helperFunctions.dart';
+import 'package:delicat/other/helperFunctions.dart';
 import 'package:delicat/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +16,7 @@ import 'dart:convert';
 import '../../routeNames.dart';
 import '../../models/category.dart';
 import '../../providers/categories.dart';
-import '../../screen_scaffold.dart';
+import '../other/screen_scaffold.dart';
 
 const List<Color> _availableColors = [
   Colors.red,
@@ -59,19 +59,17 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   String postedImage = "";
 
-  String _imageFilePath;
+  String _imageFilePath = '';
   final ImagePicker _picker = ImagePicker();
 
   @override
   void didChangeDependencies() {
     postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
     category = Provider.of<Categories>(context).getOngoingCategory();
-    _imageFilePath = category.photo;
     _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
     _colorCodeController.text = colorToHex(Colors.red);
-    print("postedImage: $postedImage \ncategory: $category");
-    if (_imageFilePath == null) {
-      _imageFilePath = '';
+    if (postedImage == "" && category.photo != null) {
+      postedImage = category.photo;
     }
     if (category.name != null) {
       _nameController.text = category.name;
@@ -93,14 +91,14 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     _colorCodeController.text = currentColorCode;
   }
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
-    await _displayPickImageDialog(context, () async {
-      final pickedFile = await _picker.getImage(
-        source: source,
-      );
-      setState(() {
-        _imageFilePath = pickedFile.path;
-      });
+  void _onImageButtonPressed(ImageSource source) async {
+    // var file = await _picker.getImage(source: source);
+    // _imageFilePath = file.path;
+    final pickedFile = await _picker.getImage(
+      source: source,
+    );
+    setState(() {
+      _imageFilePath = pickedFile.path;
     });
   }
 
@@ -169,8 +167,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         photo: img,
       );
 
+      String userId = Provider.of<User>(context).getCurrentUserId;
       await Provider.of<Categories>(context, listen: false)
-          .editCategory(editedCategory);
+          .editCategory(editedCategory, userId);
 
       _imageFilePath = "";
       postedImage = "";
@@ -181,30 +180,27 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
     } else if (_isNew == true) {
-      print("postedImage: $postedImage");
-      print("_imageFilePath: $_imageFilePath");
       var img, img64;
       if (_imageFilePath != "") {
-        print("it is local");
         img64 = _imageFilePath;
         final bytes = File(img64).readAsBytesSync();
 
+        img = "data:image/png;base64," + base64Encode(bytes);
         img = base64Encode(bytes);
       } else {
-        print("unsplash: $postedImage");
         img = postedImage;
       }
       Category _newCategory = Category(
         name: _nameController.text,
         colorCode: _colorCodeController.text,
-        photo: img,
+        photo: _imageFilePath,
         colorLightCode: colorToHex(newCodeLight),
       );
-      String userUuid = Provider.of<User>(context).getCurrentUserUuid;
-      print("screen, create category");
+      String userId = Provider.of<User>(context).getCurrentUserId;
+      print("screen, create category: $_newCategory");
       Category createdCategory =
           await Provider.of<Categories>(context, listen: false)
-              .createCategory(_newCategory, userUuid);
+              .createCategory(_newCategory, userId);
       print("screen, category created, $createdCategory");
 
       _imageFilePath = "";
@@ -376,10 +372,10 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: (_imageFilePath.substring(0, 6) ==
-                                          "assets")
-                                      ? AssetImage(_imageFilePath)
-                                      : FileImage(File(_imageFilePath)),
+                                  image:
+                                      (_imageFilePath.substring(0, 6) == "http")
+                                          ? AssetImage(_imageFilePath)
+                                          : FileImage(File(_imageFilePath)),
                                 ),
                               ),
                             ),
@@ -431,10 +427,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          _onImageButtonPressed(ImageSource.gallery,
-                              context: context);
-                          // _onImageButtonPressed(ImageSource.camera,
-                          //     context: context);
+                          _onImageButtonPressed(ImageSource.gallery);
+                          // _onImageButtonPressed(ImageSource.camera);
                         },
                         color: hexToColor("#F6C2A4"),
                         shape: RoundedRectangleBorder(

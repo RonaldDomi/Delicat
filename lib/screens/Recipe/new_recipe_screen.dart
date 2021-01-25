@@ -1,11 +1,13 @@
-import 'package:delicat/helperFunctions.dart';
+import 'dart:convert';
+
+import 'package:delicat/other/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'dart:io';
 
 import '../../routeNames.dart';
-import '../../screen_scaffold.dart';
+import '../other/screen_scaffold.dart';
 import '../../providers/recipes.dart';
 import '../../models/recipe.dart';
 
@@ -100,7 +102,12 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       newRecipe.id = recipe.id;
       Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
     } else if (isNew) {
-      Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe);
+      final bytes = File(imageFilePath).readAsBytesSync();
+
+      // img = "data:image/png;base64," + base64Encode(bytes);
+      newRecipe.photo = base64Encode(bytes);
+      Provider.of<Recipes>(context, listen: false)
+          .addRecipe(newRecipe, widget.categoryId);
     }
     Provider.of<Recipes>(context).zeroCurrentPhoto();
     Provider.of<Recipes>(context).zeroOngoingRecipe();

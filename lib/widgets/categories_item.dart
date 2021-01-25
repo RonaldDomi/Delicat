@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
-import '../helperFunctions.dart';
+import '../other/helperFunctions.dart';
 import '../models/category.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:io';

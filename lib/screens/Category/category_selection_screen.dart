@@ -51,23 +51,26 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
       isFirstTime = false;
     }
 
-    // get our cats and our userUuid
+    // get our cats and our userId
     // add it to our user
     // #############
-    var allOurCats = Provider.of<Categories>(context).categories;
-    String userUuid = Provider.of<User>(context).getCurrentUserUuid;
+    var myCats = Provider.of<Categories>(context).categories;
+    String userId = Provider.of<User>(context).getCurrentUserId;
+    print('at least i have a userId: $userId');
     // add what category is not in our list
     for (Category cat in selectedCategories) {
-      if (allOurCats.length != 0) {
-        for (var myCat in allOurCats) {
-          if (cat.name != myCat.name) {
-            print("adding");
-            Provider.of<Categories>(context).addCategory(cat, userUuid);
+      if (myCats.length != 0) {
+        bool alreadyExists = false;
+        for (var myCat in myCats) {
+          if (myCat.name == cat.name) {
+            alreadyExists = true;
           }
         }
+        if (!alreadyExists) {
+          Provider.of<Categories>(context).addCategory(cat, userId);
+        }
       } else {
-        print("adding 2");
-        Provider.of<Categories>(context).addCategory(cat, userUuid);
+        Provider.of<Categories>(context).addCategory(cat, userId);
       }
     }
     Navigator.of(context)

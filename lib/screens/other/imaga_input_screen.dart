@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 
-import '../imagesHelperFunctions.dart';
+import '../../other/imagesHelperFunctions.dart';
 
 class ImageScreen extends StatefulWidget {
   @override

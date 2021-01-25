@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:delicat/providers/recipes.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:delicat/helperFunctions.dart';
+import 'package:delicat/other/helperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 // import 'package:delicat/models/recipe.dart';
 // import 'package:provider/provider.dart';
 
-import '../routeNames.dart';
+import '../../routeNames.dart';
 
 class CameraScreen extends StatefulWidget {
   final String colorCode;

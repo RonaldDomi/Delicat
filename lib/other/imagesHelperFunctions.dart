@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:http/http.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:unsplash_client/unsplash_client.dart';
 
@@ -32,4 +36,16 @@ Future<List<String>> searchImage(String keyword) async {
   }
 
   return photos;
+}
+
+Future<File> saveImageFromWeb(imageUrl) async {
+  var response = await get(imageUrl);
+  var documentDirectory = await getApplicationDocumentsDirectory();
+  var firstPath = documentDirectory.path + "/assets/categoryImages";
+  var filePathAndName =
+      documentDirectory.path + '/assets/categoryImages/pic1.jpg';
+  await Directory(firstPath).create(recursive: true);
+  File file2 = new File(filePathAndName);
+  file2.writeAsBytesSync(response.bodyBytes);
+  return file2;
 }

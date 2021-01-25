@@ -8,10 +8,10 @@ import 'screens/Category/new_category_screen.dart';
 import 'screens/Recipe/new_recipe_screen.dart';
 import 'screens/Recipe/recipe_list_screen.dart';
 import 'screens/Recipe/recipe_details_screen.dart';
-import 'screens/favorites_screen.dart';
-import 'screens/search_screen.dart';
-import 'screens/imaga_input_screen.dart';
-import 'screens/camera_screen.dart';
+import 'screens/other/favorites_screen.dart';
+import 'screens/other/search_screen.dart';
+import 'screens/other/imaga_input_screen.dart';
+import 'screens/other/camera_screen.dart';
 
 import './routeNames.dart';
 import 'screens/splash_screen.dart';

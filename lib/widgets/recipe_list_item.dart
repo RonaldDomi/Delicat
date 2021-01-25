@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
-import '../helperFunctions.dart';
+import '../other/helperFunctions.dart';
 import '../models/recipe.dart';
 import '../providers/recipes.dart';
 
@@ -15,6 +15,7 @@ class RecipeListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    recipe = Recipe();
     final isFavorite =
         Provider.of<Recipes>(context).isRecipeFavorite(recipe.id);
 
@@ -26,22 +27,23 @@ class RecipeListItem extends StatelessWidget {
       ),
       child: Column(
         children: <Widget>[
-          Container(
-            width: 150,
-            height: 150,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: FileImage(
-                  File(recipe.photo),
+          if (recipe.photo != null)
+            Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    recipe.photo,
+                  ),
+                  // image: AssetImage(
+                  //   recipe.photo,
+                  // ),
                 ),
-                // image: AssetImage(
-                //   recipe.photo,
-                // ),
               ),
             ),
-          ),
           SizedBox(height: 20),
           Container(
             width: 170,
@@ -86,17 +88,20 @@ class RecipeListItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  "${recipe.name}",
+                  "hello",
+                  // "${recipe.name}",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
-                if (recipe.description.length > 100)
+                if (0 > 100)
+                  // if (recipe.description.length > 100)
                   Text(
                     "${recipe.description.substring(0, 100)}",
                   )
                 else
                   Text(
-                    "${recipe.description}",
+                    // "${recipe.description}",
+                    "recipe.description",
                   )
               ],
             ),
