@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:delicat/other/helperFunctions.dart';
+import 'package:delicat/other/colorHelperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';

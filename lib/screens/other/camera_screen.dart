@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:delicat/providers/recipes.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:delicat/other/helperFunctions.dart';
+import 'package:delicat/other/colorHelperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';

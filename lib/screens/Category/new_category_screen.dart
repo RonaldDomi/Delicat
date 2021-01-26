@@ -1,4 +1,5 @@
-import 'package:delicat/other/helperFunctions.dart';
+import 'package:delicat/other/colorHelperFunctions.dart';
+import 'package:delicat/other/imagesHelperFunctions.dart';
 import 'package:delicat/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -180,15 +181,12 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
     } else if (_isNew == true) {
-      var img, img64;
       if (_imageFilePath != "") {
-        img64 = _imageFilePath;
-        final bytes = File(img64).readAsBytesSync();
-
-        img = "data:image/png;base64," + base64Encode(bytes);
-        img = base64Encode(bytes);
+        // local
       } else {
-        img = postedImage;
+        // download and all that thing
+        File downloadedFile = await saveImageFromWeb(postedImage);
+        _imageFilePath = downloadedFile.path;
       }
       Category _newCategory = Category(
         name: _nameController.text,
@@ -197,11 +195,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         colorLightCode: colorToHex(newCodeLight),
       );
       String userId = Provider.of<User>(context).getCurrentUserId;
-      print("screen, create category: $_newCategory");
-      Category createdCategory =
-          await Provider.of<Categories>(context, listen: false)
-              .createCategory(_newCategory, userId);
-      print("screen, category created, $createdCategory");
+      await Provider.of<Categories>(context, listen: false)
+          .createCategory(_newCategory, userId);
 
       _imageFilePath = "";
       postedImage = "";

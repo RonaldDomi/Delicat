@@ -9,7 +9,7 @@ import '../../routeNames.dart';
 import '../other/screen_scaffold.dart';
 import '../../widgets/recipe_list_item.dart';
 
-import '../../other/helperFunctions.dart';
+import '../../other/colorHelperFunctions.dart';
 
 class RecipeListScreen extends StatefulWidget {
   final String categoryId;

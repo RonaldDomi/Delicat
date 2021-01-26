@@ -1,4 +1,4 @@
-import 'package:delicat/other/helperFunctions.dart';
+import 'package:delicat/other/colorHelperFunctions.dart';
 import 'package:delicat/widgets/favorites_item.dart';
 import 'package:flutter/material.dart';
 

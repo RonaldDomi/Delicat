@@ -53,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
         for (Category myCat in myCategories) {
           await Provider.of<Recipes>(context).getSetRecipesByCategory(myCat.id);
         }
-        var _recipes = Provider.of<Recipes>(context).recipes;
+        // var _recipes = Provider.of<Recipes>(context).recipes;
         // print("all recipes: $_recipes");
 
         Navigator.of(context)

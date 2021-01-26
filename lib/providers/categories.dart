@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 // import '../helpers/db_helper.dart';
-import '../other/helperFunctions.dart';
+import '../other/colorHelperFunctions.dart';
 import '../models/category.dart';
 
 class Categories with ChangeNotifier {
@@ -22,74 +22,9 @@ class Categories with ChangeNotifier {
   bool _isOngoingCategoryNew;
   bool _firstTime;
 
-  List<Category> _categories = [
-    // Category(
-    //   id: Uuid().v4(),
-    //   name: 'Dessert',
-    //   colorCode: '#E5C1CB',
-    //   photo: "assets/photos/dessert-circle.png",
-    //   colorLightCode: colorToHex(TinyColor(
-    //     hexToColor("#E5C1CB"),
-    //   ).brighten(14).color),
-    // ),
-    // Category(
-    //   id: Uuid().v4(),
-    //   name: 'Vegetable',
-    //   colorCode: '#DDE5B0',
-    //   colorLightCode: colorToHex(TinyColor(
-    //     hexToColor("#DDE5B0"),
-    //   ).brighten(14).color),
-    //   photo: "assets/photos/vegetable-circle.png",
-    // ),
-    // Category(
-    //   id: Uuid().v4(),
-    //   name: 'Breakfast',
-    //   colorCode: '#ABBFB5',
-    //   colorLightCode: colorToHex(TinyColor(
-    //     hexToColor("#ABBFB5"),
-    //   ).brighten(14).color),
-    //   photo: "assets/photos/breakfast-circle.png",
-    // ),
-  ];
+  List<Category> _categories = [];
 
-  List<Category> _predefinedCategories = [
-    // Category(
-    //   id: Uuid().v4(),
-    //   name: 'Dessert',
-    //   colorCode: '#E5C1CB',
-    //   photo: "assets/photos/dessert-circle.png",
-    //   colorLightCode: colorToHex(TinyColor(
-    //     hexToColor("#E5C1CB"),
-    //   ).brighten(14).color),
-    // ),
-    // Category(
-    //   id: Uuid().v4(),
-    //   name: 'Vegetable',
-    //   colorCode: '#DDE5B0',
-    //   colorLightCode: colorToHex(TinyColor(
-    //     hexToColor("#DDE5B0"),
-    //   ).brighten(14).color),
-    //   photo: "assets/photos/vegetable-circle.png",
-    // ),
-    // Category(
-    //   id: Uuid().v4(),
-    //   name: 'Breakfast',
-    //   colorCode: '#ABBFB5',
-    //   colorLightCode: colorToHex(TinyColor(
-    //     hexToColor("#ABBFB5"),
-    //   ).brighten(14).color),
-    //   photo: "assets/photos/breakfast-circle.png",
-    // ),
-    // Category(
-    //   id: Uuid().v4(),
-    //   name: 'Burger',
-    //   colorCode: '#1B2E46',
-    //   colorLightCode: colorToHex(TinyColor(
-    //     hexToColor("#1B2E46"),
-    //   ).brighten(14).color),
-    //   photo: "assets/photos/burgers-circle.png",
-    // ),
-  ];
+  List<Category> _predefinedCategories = [];
 
   List<Category> get categories {
     return [..._categories];
@@ -260,24 +195,6 @@ class Categories with ChangeNotifier {
     return cat;
   }
 
-  void patchCategory(Category category, String photo) async {
-    // var urlPatch = "http://54.195.158.131/categories/${category.id}";
-    // Map<String, String> headers = {"Content-type": "application/json"};
-    // String bodyPatch = json.encode({
-    //   "uuid": category.id,
-    //   "photo": photo,
-    // });
-    // try {
-    //   var reponse =
-    //       await http.post(urlPatch, headers: headers, body: bodyPatch);
-    //   print(reponse.body);
-    // } catch (error) {
-    //   print("error: $error");
-    // }
-
-    // notifyListeners();
-  }
-
   Future<void> removeCategory(String id) async {
     var url = 'http://54.195.158.131/Categories/$id';
     _categories.removeWhere((item) => item.id == id);
@@ -332,6 +249,7 @@ class Categories with ChangeNotifier {
     const url = 'http://54.195.158.131/Categories';
     final mimeTypeData =
         lookupMimeType(category.photo, headerBytes: [0xFF, 0xD8]).split('/');
+
     FormData formData = FormData.fromMap({
       "userId": userId,
       "name": category.name,
@@ -346,7 +264,6 @@ class Categories with ChangeNotifier {
       var response = await Dio().post(url, data: formData);
 
       Category category = Category.fromMap(response.data);
-      print(category);
       _categories.add(category);
       notifyListeners();
       return category;
