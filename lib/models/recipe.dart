@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
 class Recipe {
   String id;
@@ -16,6 +16,34 @@ class Recipe {
     this.description,
     this.categoryId,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'photo': photo,
+      'isFavorite': isFavorite,
+      'description': description,
+      'categoryId': categoryId,
+    };
+  }
+
+  factory Recipe.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return Recipe(
+      id: map['_id'],
+      categoryId: map['categoryId'],
+      name: map['name'],
+      description: "",
+      photo: map['photo'],
+      isFavorite: map['isFavorite'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Recipe.fromJson(String source) => Recipe.fromMap(json.decode(source));
 
   @override
   String toString() {

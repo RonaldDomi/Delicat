@@ -1,14 +1,17 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 
-import '../other/colorHelperFunctions.dart';
+// import 'dart:math';
+// import '../other/colorHelperFunctions.dart';
+// import '../models/category.dart';
 import '../helpers/db_helper.dart';
+import '../models/recipe.dart';
 
 import 'package:http/http.dart' as http;
-import '../models/recipe.dart';
-// import '../models/category.dart';
 
 class Recipes with ChangeNotifier {
   List<Recipe> _recipes = [];
@@ -120,37 +123,34 @@ class Recipes with ChangeNotifier {
     }
   }
 
-  void addRecipe(Recipe newRecipe, String categoryId) async {
-    // const url = 'http://54.195.158.131/recipes/upload';
-    const url = 'http://54.195.158.131/recipes';
-    Map<String, String> headers = {"Content-type": "application/json"};
-    String body = json.encode({
+  void addRecipe(Recipe recipe, String categoryId) async {
+    const url = 'http://54.195.158.131/Recipes';
+    final mimeTypeData =
+        lookupMimeType(recipe.photo, headerBytes: [0xFF, 0xD8]).split('/');
+    print("${recipe.photo}");
+    print("${recipe.isFavorite}");
+    FormData formData = FormData.fromMap({
       "categoryId": categoryId,
-      "name": newRecipe.name,
-      // "photo": newRecipe.photo,
-      "text": newRecipe.description,
-      "isFavorite": false,
+      "name": recipe.name,
+      "text": recipe.description,
+      "isFavorite": recipe.isFavorite,
+      "photo": await MultipartFile.fromFile(
+        recipe.photo,
+        filename: recipe.photo.split("/").last,
+        contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+      )
     });
+    try {
+      var response = await Dio().post(url, data: formData);
 
-    print(body);
-
-    Recipe addRecipe = Recipe(
-      name: newRecipe.name,
-      // photo: newRecipe.photo,
-      isFavorite: false,
-      description: newRecipe.description,
-      categoryId: newRecipe.categoryId,
-    );
-    print("send response");
-    var response = await http.post(url, headers: headers, body: body);
-    String recipeId = json.decode(response.body)["_id"];
-    // String recipePhoto = json.decode(response.body)["photo"];
-    print("new id: $recipeId");
-    addRecipe.id = recipeId;
-    // addRecipe.photo = recipePhoto;
-
-    _recipes.add(addRecipe);
-    notifyListeners();
+      Recipe recipe = Recipe.fromMap(response.data);
+      _recipes.add(recipe);
+      notifyListeners();
+    } catch (error) {
+      // TODO: have toaster messages on the UI
+      // toaster.show('There was an issue creating the category');
+      print("error: $error");
+    }
   }
 
   void removeRecipe(String id) async {

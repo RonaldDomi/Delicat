@@ -91,31 +91,31 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       ),
                     ],
                   ),
-                  // RaisedButton(
-                  //   onPressed: () {
-                  //     Provider.of<Recipes>(context, listen: false)
-                  //         .setIsNew(true);
-                  //     Navigator.of(context).pushNamed(
-                  //       RouterNames.NewRecipeScreen,
-                  //       arguments: [
-                  //         category.name,
-                  //         category.colorLightCode,
-                  //         category.id,
-                  //       ],
-                  //     );
-                  //   },
-                  //   color: Colors.white,
-                  //   elevation: 6,
-                  //   shape: RoundedRectangleBorder(
-                  //     borderRadius: BorderRadius.circular(18.0),
-                  //   ),
-                  //   child: Text(
-                  //     "add a new dish",
-                  //     style: TextStyle(
-                  //       color: Color(0xffF6C2A4),
-                  //     ),
-                  //   ),
-                  // ),
+                  RaisedButton(
+                    onPressed: () {
+                      Provider.of<Recipes>(context, listen: false)
+                          .setIsNew(true);
+                      Navigator.of(context).pushNamed(
+                        RouterNames.NewRecipeScreen,
+                        arguments: [
+                          category.name,
+                          category.colorLightCode,
+                          category.id,
+                        ],
+                      );
+                    },
+                    color: Colors.white,
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    child: Text(
+                      "add a new dish",
+                      style: TextStyle(
+                        color: Color(0xffF6C2A4),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

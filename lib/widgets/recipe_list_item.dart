@@ -15,10 +15,10 @@ class RecipeListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    recipe = Recipe();
+    // recipe = Recipe();
     final isFavorite =
         Provider.of<Recipes>(context).isRecipeFavorite(recipe.id);
-
+    // final isFavorite = false;
     return Card(
       elevation: 6,
       color: hexToColor(categoryColorCode),

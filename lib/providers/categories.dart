@@ -290,7 +290,6 @@ class Categories with ChangeNotifier {
 
   void addCategory(Category category, String userId) async {
     const url = 'http://54.195.158.131/Categories';
-    print(category.photo);
     FormData formData = FormData.fromMap({
       "userId": userId,
       "name": category.name,

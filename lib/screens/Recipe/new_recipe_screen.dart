@@ -102,10 +102,6 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       newRecipe.id = recipe.id;
       Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
     } else if (isNew) {
-      final bytes = File(imageFilePath).readAsBytesSync();
-
-      // img = "data:image/png;base64," + base64Encode(bytes);
-      newRecipe.photo = base64Encode(bytes);
       Provider.of<Recipes>(context, listen: false)
           .addRecipe(newRecipe, widget.categoryId);
     }
