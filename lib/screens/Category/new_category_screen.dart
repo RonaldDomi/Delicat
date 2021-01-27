@@ -133,6 +133,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   }
 
   Future<void> _saveForm() async {
+    // TODO: Invest into flutter unit testing
+    // TODO: look at how to use form libraries for automatic validation
+    // example: let fieldName = FormControl(null, [Validators.required, MyCustomLogic.needsPhoto]);
     print("submiting, with postedImage : $postedImage");
     final isValid = _form.currentState.validate();
     if (!isValid) {
@@ -151,15 +154,27 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       hexToColor(_colorCodeController.text),
     ).brighten(14).color;
     if (_isNew == false) {
+      // refactor into function from here -----
+      // example: createImage(filePath, postedImage) { return img }
       var img;
       if (_imageFilePath != "") {
+        // if we putted a new file from phone, send the multipart
         img = _imageFilePath;
       } else if (postedImage != "") {
-        img = postedImage;
+        // postedImage when we are editing, is the delicat url_photo
+        if (postedImage != category.photo) {
+          // if we changed this postedImage, send the multipart
+          File downloadedFile = await saveImageFromWeb(postedImage);
+          img = downloadedFile.path;
+        } else {
+          // else, just send forward the delicat photo_url
+          img = postedImage;
+        }
       } else {
+        // if we don't remove photos, just send the delicat photo_url forward
         img = category.photo;
       }
-
+      // to here
       Category editedCategory = Category(
         id: category.id,
         name: _nameController.text,
@@ -167,8 +182,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         colorLightCode: colorToHex(newCodeLight),
         photo: img,
       );
-
       String userId = Provider.of<User>(context).getCurrentUserId;
+
       await Provider.of<Categories>(context, listen: false)
           .editCategory(editedCategory, userId);
 

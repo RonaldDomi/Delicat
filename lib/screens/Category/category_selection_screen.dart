@@ -177,7 +177,6 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
             ),
           ),
           SlidingUpPanel(
-            // minHeight: 40,
             minHeight: 80,
             maxHeight: 340,
             borderRadius: BorderRadius.only(

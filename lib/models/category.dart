@@ -9,7 +9,7 @@ class Category {
   final String userId;
   final String name;
   List<Recipe> recipes;
-  final String photo;
+  String photo;
   final String colorCode;
   final String colorLightCode;
 

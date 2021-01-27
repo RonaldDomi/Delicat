@@ -29,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // -- when it is not, to let the user create a new category, choosing one the predefined
     // ###########
 
+    //TODO: understand how to wait for function to finish before moving on. understand more general concepts about async in dart/flutter
     Future.delayed(Duration(seconds: 1), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool firstTime = prefs.getBool('firstTime');
@@ -50,9 +51,13 @@ class _SplashScreenState extends State<SplashScreen> {
         await Provider.of<Categories>(context).fetchAndSetCategories(userId);
         List<Category> myCategories =
             Provider.of<Categories>(context).categories;
+
+        //TODO: may be interesting to call all category recipes at once, and wait until they're finish in parallel, instead of having sequential
+        // execution. understand more async behavior in dart
         for (Category myCat in myCategories) {
           await Provider.of<Recipes>(context).getSetRecipesByCategory(myCat.id);
         }
+
         // var _recipes = Provider.of<Recipes>(context).recipes;
         // print("all recipes: $_recipes");
 
@@ -63,6 +68,8 @@ class _SplashScreenState extends State<SplashScreen> {
       } else if (firstTime == null) {
         // ###########
         // it is the first time, we should update the localstorage for the next time
+        //TODO: it may be better to set the flag after successfully loading the page. In this case,
+        // if we have an error the flag is already set
         // ###########
         prefs.setBool('firstTime', false);
 

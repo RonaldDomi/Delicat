@@ -203,46 +203,60 @@ class Categories with ChangeNotifier {
   }
 
   Future<Category> editCategory(Category editedCategory, String userId) async {
-    const urlPatch = 'http://54.195.158.131/Categories';
-    const urlPatchUpload = 'http://54.195.158.131/categories/upload';
+    //TODO: extract IP as constant on top of file (when server changes etc)
+    String url = 'http://54.195.158.131/Categories/';
+    url = url + editedCategory.id;
 
-    Map<String, String> headers = {"Content-type": "application/json"};
-    String bodyPatch = "";
-    bodyPatch = json.encode({
-      "userId": userId,
-      "name": editedCategory.name,
-      "colorCode": editedCategory.colorCode,
-      "photo": editedCategory.photo,
-    });
-    print(bodyPatch);
-    if (editedCategory.photo.startsWith('https://')) {
-      try {
-        await http.patch(urlPatch + "/${editedCategory.id}",
-            headers: headers, body: bodyPatch);
-      } catch (error) {
-        print("error: $error");
-      }
+    FormData formData;
+    // TODO: check if coming from server in a more roboust way, probably extract this into a constant at top of file
+    if (editedCategory.photo.startsWith("https://delicat")) {
+      formData = FormData.fromMap({
+        "userId": userId,
+        "name": editedCategory.name,
+        "colorCode": editedCategory.colorCode,
+        "photo_url": editedCategory.photo,
+      });
     } else {
-      print("adding the local...");
-      try {
-        print("trying...");
-        print("sending body: $bodyPatch");
-        var response = await http.patch(
-            urlPatchUpload + "/${editedCategory.id}",
-            headers: headers,
-            body: bodyPatch);
-        String catPhoto = json.decode(response.body)["photo"];
-      } catch (error) {
-        print("trying but...");
-        print("error: $error");
-      }
+      final mimeTypeData =
+          lookupMimeType(editedCategory.photo, headerBytes: [0xFF, 0xD8])
+              .split('/');
+      formData = FormData.fromMap({
+        "userId": userId,
+        "name": editedCategory.name,
+        "colorCode": editedCategory.colorCode,
+        "photo": await MultipartFile.fromFile(
+          editedCategory.photo,
+          filename: editedCategory.photo.split("/").last,
+          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+        )
+      });
     }
-    final existingCategoryIndex =
-        _categories.indexWhere((element) => element.id == editedCategory.id);
-
-    _categories[existingCategoryIndex] = editedCategory;
-    notifyListeners();
-    return editedCategory;
+    try {
+      var response = await Dio().patch(url, data: formData);
+      Category new_category = Category.fromMap(response.data);
+      // print(response.data['colorCode']);
+      // print(response.data.name);
+      // print(response.data.photo);
+      // Category new_category = Category(
+      //   colorCode: response.data.colorCode,
+      //   colorLightCode: colorToHex(TinyColor(
+      //     hexToColor("${response.data.colorCode}"),
+      //   ).brighten(14).color),
+      //   id: editedCategory.id,
+      //   name: response.data.name,
+      //   photo: response.data.photo,
+      //   recipes: [],
+      //   userId: response.data.userId,
+      // );
+      // print(new_category);
+      final existingCategoryIndex =
+          _categories.indexWhere((element) => element.id == editedCategory.id);
+      _categories[existingCategoryIndex] = new_category;
+      notifyListeners();
+      return new_category;
+    } catch (error) {
+      print("error: $error");
+    }
   }
 
   Future<Category> createCategory(Category category, String userId) async {
@@ -268,6 +282,8 @@ class Categories with ChangeNotifier {
       notifyListeners();
       return category;
     } catch (error) {
+      // TODO: have toaster messages on the UI
+      // toaster.show('There was an issue creating the category');
       print("error: $error");
     }
   }
@@ -283,6 +299,8 @@ class Categories with ChangeNotifier {
     });
     try {
       var response = await Dio().post(url, data: formData);
+      response.data['default'] = false;
+      response.data['userId'] = userId;
       Category category = Category.fromMap(response.data);
       print(category);
       _categories.add(category);
