@@ -82,15 +82,6 @@ class Recipes with ChangeNotifier {
         _recipes.firstWhere((recipe) => recipe.id == recipeId),
       );
       getRecipeById(recipeId).isFavorite = true;
-      DBHelper.edit('recipe', recipeId, {
-        // "id": editedCategory.id,
-        // "name": editedCategory.name,
-        // "photo": editedCategory.photo.path,
-        // "photo": editedCategory.photo,
-        // "color_code": editedCategory.colorCode,
-        // "color_code_light": editedCategory.colorLightCode,
-        "is_favorite": 1,
-      });
     }
     notifyListeners();
   }
@@ -161,27 +152,50 @@ class Recipes with ChangeNotifier {
   }
 
   void editRecipe(Recipe editedRecipe) async {
-    final recipeIndex =
-        _recipes.indexWhere((item) => item.id == editedRecipe.id);
-    _recipes[recipeIndex] = editedRecipe;
+    //TODO: extract IP as constant on top of file (when server changes etc)
+    String url = 'http://54.195.158.131/Recipes/';
+    url = url + editedRecipe.id;
 
-    const url = 'http://54.195.158.131/recipes';
-    Map<String, String> headers = {"Content-type": "application/json"};
-    String bodyPatch = "";
-    bodyPatch = json.encode({
-      "name": editedRecipe.name,
-      "text": editedRecipe.description,
-      // "photo": editedRecipe.photo,
-    });
-    // print(bodyPatch);
-    await http.patch(url + "/${editedRecipe.id}",
-        headers: headers, body: bodyPatch);
+    final mimeTypeData =
+        lookupMimeType(editedRecipe.photo, headerBytes: [0xFF, 0xD8])
+            .split('/');
 
-    notifyListeners();
+    // TODO: check if coming from server in a more roboust way, probably extract this into a constant at top of file
+    FormData formData;
+    if (editedRecipe.photo.startsWith("https://delicat")) {
+      formData = FormData.fromMap({
+        "name": editedRecipe.name,
+        "text": editedRecipe.description,
+        "isFavorite": editedRecipe.isFavorite,
+      });
+    } else {
+      formData = FormData.fromMap({
+        "name": editedRecipe.name,
+        "text": editedRecipe.description,
+        "isFavorite": editedRecipe.isFavorite,
+        "photo": await MultipartFile.fromFile(
+          editedRecipe.photo,
+          filename: editedRecipe.photo.split("/").last,
+          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+        )
+      });
+    }
+
+    try {
+      var response = await Dio().patch(url, data: formData);
+      Recipe new_category = Recipe.fromMap(response.data);
+
+      final existingRecipeIndex =
+          _recipes.indexWhere((element) => element.id == editedRecipe.id);
+      _recipes[existingRecipeIndex] = new_category;
+      notifyListeners();
+    } catch (error) {
+      print("error: $error");
+    }
   }
 
   List<Recipe> getRecipesByCategoryId(String categoryId) {
-    print("all recipes: $_recipes");
+    // print("all recipes: $_recipes");
     var catRecps =
         _recipes.where((recipe) => recipe.categoryId == categoryId).toList();
     return catRecps;

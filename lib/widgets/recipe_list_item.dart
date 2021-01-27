@@ -88,20 +88,17 @@ class RecipeListItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  "hello",
-                  // "${recipe.name}",
+                  "${recipe.name}",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
-                if (0 > 100)
-                  // if (recipe.description.length > 100)
+                if (recipe.description.length > 100)
                   Text(
                     "${recipe.description.substring(0, 100)}",
                   )
                 else
                   Text(
-                    // "${recipe.description}",
-                    "recipe.description",
+                    "${recipe.description}",
                   )
               ],
             ),

@@ -36,10 +36,9 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
   @override
   void didChangeDependencies() async {
     imageFilePath = Provider.of<Recipes>(context).getCurrentNewRecipePhoto();
-    isNew = Provider.of<Recipes>(context).getIsNew();
+    isNew = await Provider.of<Recipes>(context).getIsNew();
     recipe = Provider.of<Recipes>(context).getOngoingRecipe();
     if (isNew == false || recipe != Recipe()) {
-      // print("recipe on edit: $recipe");
       if (imageFilePath == null) {
         imageFilePath = '';
       }
@@ -98,7 +97,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       photo: imageFilePath,
       categoryId: widget.categoryId,
     );
-    if (!isNew) {
+    if (isNew == false) {
       newRecipe.id = recipe.id;
       Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
     } else if (isNew) {
@@ -268,7 +267,11 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: FileImage(File(imageFilePath)),
+                                  image: (isNew = true)
+                                      ? FileImage(File(imageFilePath))
+                                      : NetworkImage(imageFilePath),
+                                  // ? NetworkImage(imageFilePath)
+                                  // : FileImage(File(imageFilePath)),
                                 ),
                               ),
                             ),

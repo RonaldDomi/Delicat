@@ -234,21 +234,7 @@ class Categories with ChangeNotifier {
     try {
       var response = await Dio().patch(url, data: formData);
       Category new_category = Category.fromMap(response.data);
-      // print(response.data['colorCode']);
-      // print(response.data.name);
-      // print(response.data.photo);
-      // Category new_category = Category(
-      //   colorCode: response.data.colorCode,
-      //   colorLightCode: colorToHex(TinyColor(
-      //     hexToColor("${response.data.colorCode}"),
-      //   ).brighten(14).color),
-      //   id: editedCategory.id,
-      //   name: response.data.name,
-      //   photo: response.data.photo,
-      //   recipes: [],
-      //   userId: response.data.userId,
-      // );
-      // print(new_category);
+
       final existingCategoryIndex =
           _categories.indexWhere((element) => element.id == editedCategory.id);
       _categories[existingCategoryIndex] = new_category;

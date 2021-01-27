@@ -29,20 +29,18 @@ class _CameraScreenState extends State<CameraScreen> {
   String _retrieveDataError;
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
-    await _displayPickImageDialog(context, () async {
-      try {
-        final pickedFile = await ImagePicker.pickImage(
-          source: source,
-        );
-        setState(() async {
-          _imageFile = pickedFile;
-        });
-      } catch (e) {
-        setState(() {
-          _pickImageError = e;
-        });
-      }
-    });
+    try {
+      final pickedFile = await ImagePicker.pickImage(
+        source: source,
+      );
+      setState(() async {
+        _imageFile = pickedFile;
+      });
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+    }
   }
 
   Text _getRetrieveErrorWidget() {
