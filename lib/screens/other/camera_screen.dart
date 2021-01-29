@@ -1,3 +1,17 @@
+// whatsup type photo pickers, whatsupp style
+// update photo on unsplash, onChangedIndex
+// colorCode in between updateCategory
+// the old bug, the ondelete "category doesnt exist"
+// when updating cateogry, remain on category page not front page
+// do not  wrap around when there's less than 3 recipes
+//// if one or two recipes available only swip right
+////// singlechild scrollview direction horizontal
+// on recipe add photo, directly go to camera
+// make a state provider with all* the variables transversing the screens
+// look at read btn, on recipe lise
+// bonus: read on performance improvements
+// btn shows add recipe, when editing, after* we put a photo
+
 import 'dart:io';
 import 'package:delicat/providers/recipes.dart';
 import 'package:flutter/rendering.dart';
@@ -229,10 +243,10 @@ class _CameraScreenState extends State<CameraScreen> {
                   Center(
                     child: InkWell(
                       onTap: () {
-                        // _onImageButtonPressed(ImageSource.camera,
-                        //     context: context);
-                        _onImageButtonPressed(ImageSource.gallery,
+                        _onImageButtonPressed(ImageSource.camera,
                             context: context);
+                        // _onImageButtonPressed(ImageSource.gallery,
+                        // context: context);
                       },
                       child: Container(
                         height: 70,

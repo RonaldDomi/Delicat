@@ -85,6 +85,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // set the user in the localstorage
         // ###########
         prefs.setString('userId', newUser);
+        print("created new userId for you: newUser");
 
         Navigator.of(context)
             .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);
