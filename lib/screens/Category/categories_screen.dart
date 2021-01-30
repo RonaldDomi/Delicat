@@ -1,10 +1,10 @@
+import 'package:delicat/providers/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/category.dart';
 import '../../providers/categories.dart';
 import '../../routeNames.dart';
-import '../../helpers/db_helper.dart';
 
 import '../../widgets/categories_item.dart';
 import '../other/screen_scaffold.dart';
@@ -61,7 +61,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     ),
                     RaisedButton(
                       onPressed: () {
-                        Provider.of<Categories>(context)
+                        Provider.of<AppState>(context)
                             .setIsOngoingCategoryNew(true);
                         Navigator.of(context)
                             .pushNamed(RouterNames.NewCategoryScreen);

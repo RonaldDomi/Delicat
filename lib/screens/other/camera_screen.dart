@@ -13,6 +13,7 @@
 // btn shows add recipe, when editing, after* we put a photo
 
 import 'dart:io';
+import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
@@ -71,7 +72,7 @@ class _CameraScreenState extends State<CameraScreen> {
       return;
     }
     String newPhoto = _imageFile.path;
-    Provider.of<Recipes>(context).setCurrentNewRecipePhoto(newPhoto);
+    Provider.of<AppState>(context).setCurrentNewRecipePhoto(newPhoto);
     Navigator.of(context).pushNamed(
       RouterNames.NewRecipeScreen,
       arguments: [widget.name, widget.colorCode, widget.catId],

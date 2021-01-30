@@ -16,9 +16,10 @@ class User with ChangeNotifier {
     _currentUserId = newId;
   }
 
-  Future<String> createAndSetNewUser() async {
+  void createAndSetNewUser() async {
     const url = 'http://54.195.158.131/user';
     String username = Uuid().v4();
+    username = username.split("-").join("");
     Map<String, String> headers = {"Content-type": "application/json"};
     String body = json.encode({
       "username": username,

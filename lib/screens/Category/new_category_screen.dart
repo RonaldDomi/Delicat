@@ -1,5 +1,6 @@
 import 'package:delicat/other/colorHelperFunctions.dart';
 import 'package:delicat/other/imagesHelperFunctions.dart';
+import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,9 +66,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   void didChangeDependencies() {
-    postedImage = Provider.of<Categories>(context).getCurrentNewCategoryPhoto();
-    category = Provider.of<Categories>(context).getOngoingCategory();
-    _isNew = Provider.of<Categories>(context).getIsOngoingCategoryNew();
+    postedImage = Provider.of<AppState>(context).currentNewCategoryPhoto;
+    category = Provider.of<AppState>(context).ongoingCategory;
+    _isNew = Provider.of<AppState>(context).isOngoingCategoryNew;
     _colorCodeController.text = colorToHex(Colors.red);
     if (postedImage == "" && category.photo != null) {
       postedImage = category.photo;
@@ -189,8 +190,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
       _imageFilePath = "";
       postedImage = "";
-      Provider.of<Categories>(context).zeroCurrentPhoto();
-      Provider.of<Categories>(context).zeroOngoingCategory();
+      Provider.of<AppState>(context).zeroCurrentCategoryPhoto();
+      Provider.of<AppState>(context).zeroOngoingCategory();
       _nameController.text = "";
 
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
@@ -216,8 +217,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       _imageFilePath = "";
       postedImage = "";
       _nameController.text = "";
-      Provider.of<Categories>(context).zeroCurrentPhoto();
-      Provider.of<Categories>(context).zeroOngoingCategory();
+      Provider.of<AppState>(context).zeroCurrentCategoryPhoto();
+      Provider.of<AppState>(context).zeroOngoingCategory();
 
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
@@ -343,8 +344,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                             RaisedButton(
                               onPressed: () {
                                 setState(() {
-                                  Provider.of<Categories>(context)
-                                      .zeroCurrentPhoto();
+                                  Provider.of<AppState>(context)
+                                      .zeroCurrentCategoryPhoto();
                                   postedImage = "";
                                 });
                               },
@@ -416,7 +417,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                               name: _nameController.text,
                               colorCode: _colorCodeController.text,
                               id: category.id);
-                          Provider.of<Categories>(context)
+                          Provider.of<AppState>(context)
                               .setOngoingCategory(ongoingCategory);
 
                           Navigator.of(context)

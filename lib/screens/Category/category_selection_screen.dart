@@ -1,3 +1,4 @@
+import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/user.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -47,7 +48,7 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     // the button functionaily is over, so change the variable
     // #############
     if (isFirstTime) {
-      Provider.of<Categories>(context).setFirstTime(false);
+      Provider.of<AppState>(context).setFirstTime(false);
       isFirstTime = false;
     }
 
@@ -78,7 +79,7 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   }
 
   void didChangeDependencies() async {
-    isFirstTime = Provider.of<Categories>(context).getFirstTime();
+    isFirstTime = Provider.of<AppState>(context).firstTime;
     if (!isFirstTime) {
       showButton = true;
     }

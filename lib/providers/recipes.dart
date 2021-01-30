@@ -5,10 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
-// import 'dart:math';
-// import '../other/colorHelperFunctions.dart';
-// import '../models/category.dart';
-import '../helpers/db_helper.dart';
 import '../models/recipe.dart';
 
 import 'package:http/http.dart' as http;
@@ -16,10 +12,6 @@ import 'package:http/http.dart' as http;
 class Recipes with ChangeNotifier {
   List<Recipe> _recipes = [];
   List<Recipe> _favoriteRecipes = [];
-
-  bool _isOngoingRecipeNew;
-  String _currentNewRecipePhoto = "";
-  Recipe _ongoingRecipe = Recipe();
 
   List<Recipe> get recipes {
     return [..._recipes];
@@ -29,54 +21,21 @@ class Recipes with ChangeNotifier {
     return [..._favoriteRecipes];
   }
 
-  void setIsNew(bool isNew) {
-    _isOngoingRecipeNew = isNew;
-  }
-
-  bool getIsNew() {
-    return _isOngoingRecipeNew;
-    // return true;
-  }
-
-  String setCurrentNewRecipePhoto(String newPhoto) {
-    _currentNewRecipePhoto = newPhoto;
-  }
-
-  String getCurrentNewRecipePhoto() {
-    return _currentNewRecipePhoto;
-  }
-
-  void zeroCurrentPhoto() {
-    _currentNewRecipePhoto = "";
-  }
-
-  void setOngoingRecipe(Recipe recipe) {
-    _ongoingRecipe = recipe;
-  }
-
-  Recipe getOngoingRecipe() {
-    return _ongoingRecipe;
-  }
-
-  void zeroOngoingRecipe() {
-    _ongoingRecipe = Recipe();
-  }
-
   void toggleFavorite(String recipeId) {
     final existingIndex =
         _favoriteRecipes.indexWhere((recipe) => recipe.id == recipeId);
     if (existingIndex >= 0) {
       _favoriteRecipes.removeAt(existingIndex);
       getRecipeById(recipeId).isFavorite = false;
-      DBHelper.edit('recipe', recipeId, {
-        // "id": editedCategory.id,
-        // "name": editedCategory.name,
-        // "photo": editedCategory.photo.path,
-        // "photo": editedCategory.photo,
-        // "color_code": editedCategory.colorCode,
-        // "color_code_light": editedCategory.colorLightCode,
-        "is_favorite": 0,
-      });
+      // DBHelper.edit('recipe', recipeId, {
+      // "id": editedCategory.id,
+      // "name": editedCategory.name,
+      // "photo": editedCategory.photo.path,
+      // "photo": editedCategory.photo,
+      // "color_code": editedCategory.colorCode,
+      // "color_code_light": editedCategory.colorLightCode,
+      //   "is_favorite": 0,
+      // });
     } else {
       _favoriteRecipes.add(
         _recipes.firstWhere((recipe) => recipe.id == recipeId),

@@ -1,4 +1,5 @@
 import 'package:delicat/models/category.dart';
+import 'package:delicat/providers/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // ###########
 
     //TODO: understand how to wait for function to finish before moving on. understand more general concepts about async in dart/flutter
+
     Future.delayed(Duration(seconds: 1), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool firstTime = prefs.getBool('firstTime');
@@ -39,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
       if (firstTime != null && !firstTime) {
         // set the button functionality variable to false
         // ###########
-        Provider.of<Categories>(context).setFirstTime(false);
+        Provider.of<AppState>(context).setFirstTime(false);
 
         // get the current user
         // ###########
@@ -76,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // provider variable, for the functionality of the button
         // the button should be shown when at least one predefined category is selected
         // ###########
-        Provider.of<Categories>(context).setFirstTime(true);
+        Provider.of<AppState>(context).setFirstTime(true);
 
         // create a new user in the backend
         // ###########
@@ -85,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen> {
         // set the user in the localstorage
         // ###########
         prefs.setString('userId', newUser);
-        print("created new userId for you: newUser");
+        print("created new userId for you: $newUser");
 
         Navigator.of(context)
             .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);

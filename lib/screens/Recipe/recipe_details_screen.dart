@@ -1,4 +1,5 @@
 import 'package:delicat/other/colorHelperFunctions.dart';
+import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,8 +28,9 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
         Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
 
     void onEdit() {
-      Provider.of<Recipes>(context, listen: false).setOngoingRecipe(recipe);
-      Provider.of<Recipes>(context, listen: false).setIsNew(false);
+      Provider.of<AppState>(context, listen: false).setOngoingRecipe(recipe);
+      Provider.of<AppState>(context, listen: false)
+          .setIsOngoingRecipeNew(false);
 
       Navigator.of(context).pushNamed(
         RouterNames.NewRecipeScreen,

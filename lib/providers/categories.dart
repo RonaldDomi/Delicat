@@ -1,9 +1,5 @@
 import 'dart:convert';
 
-// import 'package:delicat/providers/user.dart';
-// import 'package:provider/provider.dart';
-// import 'package:uuid/uuid.dart';
-
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
@@ -12,16 +8,10 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 
-// import '../helpers/db_helper.dart';
 import '../other/colorHelperFunctions.dart';
 import '../models/category.dart';
 
 class Categories with ChangeNotifier {
-  Category ongoingCategory = Category();
-  String _currentNewCategoryPhoto = "";
-  bool _isOngoingCategoryNew;
-  bool _firstTime;
-
   List<Category> _categories = [];
 
   List<Category> _predefinedCategories = [];
@@ -30,52 +20,8 @@ class Categories with ChangeNotifier {
     return [..._categories];
   }
 
-  String get currentNewCategoryPhoto {
-    return _currentNewCategoryPhoto;
-  }
-
-  void setCurrentNewCategoryPhoto(String newPhoto) {
-    _currentNewCategoryPhoto = newPhoto;
-  }
-
-  String getCurrentNewCategoryPhoto() {
-    return _currentNewCategoryPhoto;
-  }
-
-  void setIsOngoingCategoryNew(bool isNew) {
-    _isOngoingCategoryNew = isNew;
-  }
-
-  void setFirstTime(bool firstTime) {
-    _firstTime = firstTime;
-  }
-
   void setCategories(categories) {
     _categories = categories;
-  }
-
-  bool getFirstTime() {
-    return _firstTime;
-  }
-
-  bool getIsOngoingCategoryNew() {
-    return _isOngoingCategoryNew;
-  }
-
-  void zeroCurrentPhoto() {
-    _currentNewCategoryPhoto = "";
-  }
-
-  void setOngoingCategory(Category category) {
-    ongoingCategory = category;
-  }
-
-  Category getOngoingCategory() {
-    return ongoingCategory;
-  }
-
-  void zeroOngoingCategory() {
-    ongoingCategory = Category();
   }
 
   List<Category> get predefinedCategories {

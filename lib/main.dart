@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './router.dart' as MyRouter;
 import './providers/recipes.dart';
 import './providers/categories.dart';
+import 'providers/app_state.dart';
 import './providers/user.dart';
 // import 'screens/splash_screen.dart';
 
@@ -22,6 +23,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: User(),
+        ),
+        ChangeNotifierProvider.value(
+          value: AppState(),
         ),
       ],
       child: MaterialApp(

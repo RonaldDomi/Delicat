@@ -1,3 +1,4 @@
+import 'package:delicat/providers/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
@@ -69,9 +70,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          Provider.of<Categories>(context)
+                          Provider.of<AppState>(context)
                               .setIsOngoingCategoryNew(false);
-                          Provider.of<Categories>(context)
+                          Provider.of<AppState>(context)
                               .setOngoingCategory(category);
                           Navigator.of(context).pushNamed(
                             RouterNames.NewCategoryScreen,
@@ -93,8 +94,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      Provider.of<Recipes>(context, listen: false)
-                          .setIsNew(true);
+                      Provider.of<AppState>(context, listen: false)
+                          .setIsOngoingRecipeNew(true);
                       Navigator.of(context).pushNamed(
                         RouterNames.NewRecipeScreen,
                         arguments: [
@@ -126,8 +127,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       children: <Widget>[
                         RawMaterialButton(
                           onPressed: () {
-                            Provider.of<Recipes>(context, listen: false)
-                                .setIsNew(true);
+                            Provider.of<AppState>(context, listen: false)
+                                .setIsOngoingRecipeNew(true);
                             Navigator.of(context).pushNamed(
                               RouterNames.NewRecipeScreen,
                               arguments: [

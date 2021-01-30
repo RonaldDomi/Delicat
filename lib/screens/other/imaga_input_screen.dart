@@ -1,3 +1,4 @@
+import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
@@ -95,7 +96,7 @@ class _ImageScreenState extends State<ImageScreen> {
                     child: Text('Next'),
                     onPressed: () {
                       String newPhoto = items[currentIndex].toString();
-                      Provider.of<Categories>(context)
+                      Provider.of<AppState>(context)
                           .setCurrentNewCategoryPhoto(newPhoto);
                       Navigator.of(context).pushNamed(
                         RouterNames.NewCategoryScreen,

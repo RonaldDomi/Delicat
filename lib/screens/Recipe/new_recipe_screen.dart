@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:delicat/other/colorHelperFunctions.dart';
+import 'package:delicat/providers/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
@@ -35,9 +36,9 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
   @override
   void didChangeDependencies() async {
-    imageFilePath = Provider.of<Recipes>(context).getCurrentNewRecipePhoto();
-    isNew = await Provider.of<Recipes>(context).getIsNew();
-    recipe = Provider.of<Recipes>(context).getOngoingRecipe();
+    imageFilePath = Provider.of<AppState>(context).currentNewRecipePhoto;
+    isNew = await Provider.of<AppState>(context).isOngoingRecipeNew;
+    recipe = Provider.of<AppState>(context).ongoingRecipe;
     if (isNew == false || recipe != Recipe()) {
       if (imageFilePath == null) {
         imageFilePath = '';
@@ -66,7 +67,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     if (isNew == false) {
       ongoingRecipe.id = recipe.id;
     }
-    Provider.of<Recipes>(context).setOngoingRecipe(ongoingRecipe);
+    Provider.of<AppState>(context).setOngoingRecipe(ongoingRecipe);
 
     Navigator.of(context).pushNamed(
       RouterNames.CameraScreen,
@@ -104,8 +105,8 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       Provider.of<Recipes>(context, listen: false)
           .addRecipe(newRecipe, widget.categoryId);
     }
-    Provider.of<Recipes>(context).zeroCurrentPhoto();
-    Provider.of<Recipes>(context).zeroOngoingRecipe();
+    Provider.of<AppState>(context).zeroCurrentRecipePhoto();
+    Provider.of<AppState>(context).zeroOngoingRecipe();
     imageFilePath = '';
     _nameController.text = "";
     _descriptionController.text = "";
