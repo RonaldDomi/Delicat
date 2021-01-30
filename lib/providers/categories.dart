@@ -1,39 +1,42 @@
-import 'dart:convert';
+import 'package:delicat/models/category.dart';
+import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/constants.dart' as constants;
 
+import 'dart:convert';
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 
-import '../other/colorHelperFunctions.dart';
-import '../models/category.dart';
-
 class Categories with ChangeNotifier {
+  // ################################ VARIABLES ################################ //
   List<Category> _categories = [];
-
   List<Category> _predefinedCategories = [];
 
+  // ################################ GETTERS ################################ //
   List<Category> get categories {
     return [..._categories];
-  }
-
-  void setCategories(categories) {
-    _categories = categories;
   }
 
   List<Category> get predefinedCategories {
     return [..._predefinedCategories];
   }
 
+  // ################################ SETTERS ################################ //
+  void setCategories(categories) {
+    _categories = categories;
+  }
+
   void setUserCategories(userCategories) {
     _categories = userCategories;
   }
 
+  // ################################ FUNCTIONS ################################ //
+
   void fetchAndSetPredefinedCategories() async {
-    const url = 'http://54.195.158.131/categories/default';
+    String url = constants.url + "/Categories/default";
     try {
       final response = await http.get(url);
       for (var category in json.decode(response.body)) {
@@ -55,7 +58,7 @@ class Categories with ChangeNotifier {
   }
 
   void fetchAndSetCategories(String userId) async {
-    const url = 'http://54.195.158.131/categories';
+    String url = constants.url + "/Categories";
     try {
       final response = await http.get(url);
       for (var category in json.decode(response.body)) {
@@ -79,59 +82,6 @@ class Categories with ChangeNotifier {
     }
   }
 
-  void commentedFunctions() {
-    /*
-    Future<List<Category>> getAllCategories() async {
-      // AWS should try and give us something of the shape:
-      // [
-      //   { 'uid' : 'x',
-      //   'name' : 'x',
-      //   'photo' : 'x',
-      //   'colorCode' : 'x',
-      //   'recipes' : [{}{}]
-      //   },
-      //  { another cateogry object ... }
-      // ]
-      const url = '/category/all';
-
-      try {
-        final response = await http.get(url);
-
-        for (var category in json.decode(response.body)) {
-          //purge existing categories
-          _categories = [];
-          //then load again with data coming from server
-
-          //now we create a Category model object from the json data
-          var categoryToAdd =
-              Category(name: category.name, colorCode: category.colorCode);
-
-          //finally we add each parsed category object to our master list
-          _categories.add(categoryToAdd);
-        }
-        notifyListeners();
-      } catch (error) {
-        //if we have erorr with our request
-        // throw error;
-
-        final dataList = await DBHelper.getData('category');
-        _categories = dataList
-            .map(
-              (item) => Category(
-                id: item['id'],
-                colorCode: item['color_code'],
-                colorLightCode: item['color_code_light'],
-                name: item['name'],
-                photo: item['photo'],
-              ),
-            )
-            .toList();
-        return _categories;
-      }
-    }
-  */
-  }
-
   Category getCategoryById(String catId) {
     //Here we rely solely on the memory data. We take for granted that _categories is already loaded with the up-to-date
     //data from the server. For our app, this should work as intended.
@@ -142,7 +92,7 @@ class Categories with ChangeNotifier {
   }
 
   Future<void> removeCategory(String id) async {
-    var url = 'http://54.195.158.131/Categories/$id';
+    String url = constants.url + "/Categories/$id";
     _categories.removeWhere((item) => item.id == id);
     await http.delete(url);
     notifyListeners();
@@ -150,7 +100,7 @@ class Categories with ChangeNotifier {
 
   Future<Category> editCategory(Category editedCategory, String userId) async {
     //TODO: extract IP as constant on top of file (when server changes etc)
-    String url = 'http://54.195.158.131/Categories/';
+    String url = constants.url + "/Categories";
     url = url + editedCategory.id;
 
     FormData formData;
@@ -179,20 +129,20 @@ class Categories with ChangeNotifier {
     }
     try {
       var response = await Dio().patch(url, data: formData);
-      Category new_category = Category.fromMap(response.data);
+      Category newCategory = Category.fromMap(response.data);
 
       final existingCategoryIndex =
           _categories.indexWhere((element) => element.id == editedCategory.id);
-      _categories[existingCategoryIndex] = new_category;
+      _categories[existingCategoryIndex] = newCategory;
       notifyListeners();
-      return new_category;
+      return newCategory;
     } catch (error) {
       print("error: $error");
     }
   }
 
   Future<Category> createCategory(Category category, String userId) async {
-    const url = 'http://54.195.158.131/Categories';
+    String url = constants.url + "/Categories";
     final mimeTypeData =
         lookupMimeType(category.photo, headerBytes: [0xFF, 0xD8]).split('/');
 
@@ -221,7 +171,8 @@ class Categories with ChangeNotifier {
   }
 
   void addCategory(Category category, String userId) async {
-    const url = 'http://54.195.158.131/Categories';
+    String url = constants.url + "/Categories";
+
     FormData formData = FormData.fromMap({
       "userId": userId,
       "name": category.name,
@@ -233,7 +184,6 @@ class Categories with ChangeNotifier {
       response.data['default'] = false;
       response.data['userId'] = userId;
       Category category = Category.fromMap(response.data);
-      print(category);
       _categories.add(category);
       notifyListeners();
     } catch (error) {

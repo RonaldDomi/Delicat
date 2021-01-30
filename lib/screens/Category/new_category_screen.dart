@@ -1,7 +1,11 @@
-import 'package:delicat/other/colorHelperFunctions.dart';
-import 'package:delicat/other/imagesHelperFunctions.dart';
+import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/helpers/imagesHelperFunctions.dart';
+import 'package:delicat/models/category.dart';
 import 'package:delicat/providers/app_state.dart';
+import 'package:delicat/providers/categories.dart';
 import 'package:delicat/providers/user.dart';
+import 'package:delicat/routeNames.dart';
+import 'package:delicat/screens/widgets/screen_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -9,16 +13,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:image_downloader/image_downloader.dart';
 import 'dart:io';
-import 'dart:convert';
-// import 'package:delicat/screens/categories_screen.dart';
-// import 'package:path_provider/path_provider.dart';
-
-import '../../routeNames.dart';
-import '../../models/category.dart';
-import '../../providers/categories.dart';
-import '../other/screen_scaffold.dart';
 
 const List<Color> _availableColors = [
   Colors.red,
@@ -421,7 +416,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                               .setOngoingCategory(ongoingCategory);
 
                           Navigator.of(context)
-                              .pushNamed(RouterNames.ImageScreen);
+                              .pushNamed(RouterNames.UnsplashScreen);
                         },
                         color: hexToColor("#F6C2A4"),
                         shape: RoundedRectangleBorder(

@@ -31,10 +31,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Delicat',
         theme: ThemeData(
-          // todo: think about how to properly use theme data to have a central design
-          // -- see yt video
+          // TODO: think about how to properly use theme data to have a central design -- see yt video
           primarySwatch: Colors.blue,
-          // accentColor: Colors.deepOrange[200],
         ),
         // navigatorObservers: [MyNavigatorObserver()],
         initialRoute: "/",
@@ -44,6 +42,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// -------------- NOT USED -----------------
 class MyNavigatorObserver extends NavigatorObserver {
   List<Route<dynamic>> routeStack = List();
 

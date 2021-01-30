@@ -1,18 +1,16 @@
+import 'package:delicat/helpers/imagesHelperFunctions.dart';
 import 'package:delicat/providers/app_state.dart';
-import 'package:delicat/providers/categories.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
 
-import '../../other/imagesHelperFunctions.dart';
-
-class ImageScreen extends StatefulWidget {
+class UnsplashScreen extends StatefulWidget {
   @override
-  _ImageScreenState createState() => _ImageScreenState();
+  _UnsplashnState createState() => _UnsplashnState();
 }
 
-class _ImageScreenState extends State<ImageScreen> {
+class _UnsplashnState extends State<UnsplashScreen> {
   List<String> items = [];
   bool isLoading = false;
   bool showSelectedImage = false;

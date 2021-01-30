@@ -1,16 +1,14 @@
+import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/routeNames.dart';
 import 'package:delicat/providers/app_state.dart';
+import 'package:delicat/providers/categories.dart';
+import 'package:delicat/providers/recipes.dart';
+import 'package:delicat/screens/Recipe/components/recipe_list_item.dart';
+import 'package:delicat/screens/widgets/screen_scaffold.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
-
-// import '../models/category.dart';
-import '../../providers/categories.dart';
-import '../../providers/recipes.dart';
-import '../../routeNames.dart';
-import '../other/screen_scaffold.dart';
-import '../../widgets/recipe_list_item.dart';
-
-import '../../other/colorHelperFunctions.dart';
 
 class RecipeListScreen extends StatefulWidget {
   final String categoryId;

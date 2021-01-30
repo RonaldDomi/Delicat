@@ -23,7 +23,9 @@ class _SplashScreenState extends State<SplashScreen> {
     // await Provider.of<Recipes>(context).fetchAndSetAllRecipes();
     // await Provider.of<Recipes>(context).fetchAndSetFavoriteRecipes();
     // Provider.of<Categories>(context).fetchAndSetCategories();
+    print('getting?');
     await Provider.of<Categories>(context).fetchAndSetPredefinedCategories();
+    print('done this');
     // ###########
     // when you open the app, either if it is the first time or not, we should get the predefined categories
     // -- when it is the first time, to let the user chose
@@ -47,7 +49,6 @@ class _SplashScreenState extends State<SplashScreen> {
         // ###########
         String userId = prefs.getString('userId');
         Provider.of<User>(context).setCurrentUserId(userId);
-        print("current_user: $userId");
         // get all categories, then set only the user categories
         // ###########
         await Provider.of<Categories>(context).fetchAndSetCategories(userId);

@@ -1,9 +1,8 @@
+import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/models/recipe.dart';
+import 'package:delicat/providers/recipes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
-import '../other/colorHelperFunctions.dart';
-import '../models/recipe.dart';
-import '../providers/recipes.dart';
 
 class RecipeListItem extends StatelessWidget {
   Recipe recipe;

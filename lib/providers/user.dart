@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:delicat/constants.dart' as constants;
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
@@ -17,7 +18,7 @@ class User with ChangeNotifier {
   }
 
   void createAndSetNewUser() async {
-    const url = 'http://54.195.158.131/user';
+    String url = constants.url + '/user';
     String username = Uuid().v4();
     username = username.split("-").join("");
     Map<String, String> headers = {"Content-type": "application/json"};

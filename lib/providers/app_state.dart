@@ -15,6 +15,9 @@ class AppState with ChangeNotifier {
   bool _firstTime;
 
   // ################################ SETTERS ################################ //
+  // ################################ SETTERS ################################ //
+  // ################################ SETTERS ################################ //
+
   void setCurrentNewCategoryPhoto(String newCategoryPhoto) {
     _currentNewCategoryPhoto = newCategoryPhoto;
   }
@@ -60,6 +63,9 @@ class AppState with ChangeNotifier {
   }
 
   // ################################ GETTERS ################################ //
+  // ################################ GETTERS ################################ //
+  // ################################ GETTERS ################################ //
+
   String get currentNewCategoryPhoto {
     return _currentNewCategoryPhoto;
   }

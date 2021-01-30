@@ -1,7 +1,6 @@
 import 'package:delicat/routeNames.dart';
+import 'package:delicat/screens/widgets/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-
-import '../../widgets/bottom_navigation_bar.dart';
 
 class ScreenScaffold extends StatelessWidget {
   Widget child;

@@ -1,12 +1,11 @@
-import 'dart:convert';
+import 'package:delicat/models/recipe.dart';
+import 'package:delicat/constants.dart' as constants;
 
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
-
-import '../models/recipe.dart';
-
 import 'package:http/http.dart' as http;
 
 class Recipes with ChangeNotifier {
@@ -54,9 +53,9 @@ class Recipes with ChangeNotifier {
   }
 
   void getSetRecipesByCategory(String categoryId) async {
-    const url = 'http://54.195.158.131/recipes/byCategoryId/';
+    String url = constants.url + '/recipes/byCategoryId/$categoryId';
     try {
-      final response = await http.get(url + categoryId);
+      final response = await http.get(url);
       for (var recipe in json.decode(response.body)) {
         var recipeToAdd = Recipe(
           id: recipe["_id"],
@@ -74,7 +73,7 @@ class Recipes with ChangeNotifier {
   }
 
   void addRecipe(Recipe recipe, String categoryId) async {
-    const url = 'http://54.195.158.131/Recipes';
+    String url = constants.url + '/Recipes';
     final mimeTypeData =
         lookupMimeType(recipe.photo, headerBytes: [0xFF, 0xD8]).split('/');
     print("${recipe.photo}");
@@ -104,15 +103,15 @@ class Recipes with ChangeNotifier {
   }
 
   void removeRecipe(String id) async {
-    _recipes.removeWhere((item) => item.id == id);
-    var url = 'http://54.195.158.131/Recipes/$id';
+    String url = constants.url + '/Recipes/$id';
     await http.delete(url);
+    _recipes.removeWhere((item) => item.id == id);
     notifyListeners();
   }
 
   void editRecipe(Recipe editedRecipe) async {
     //TODO: extract IP as constant on top of file (when server changes etc)
-    String url = 'http://54.195.158.131/Recipes/';
+    String url = constants.url + '/Recipes';
     url = url + editedRecipe.id;
 
     final mimeTypeData =

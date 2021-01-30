@@ -1,13 +1,11 @@
+import 'package:delicat/models/category.dart';
 import 'package:delicat/providers/app_state.dart';
+import 'package:delicat/providers/categories.dart';
+import 'package:delicat/routeNames.dart';
+import 'package:delicat/screens/Category/components/categories_item.dart';
+import 'package:delicat/screens/widgets/screen_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../models/category.dart';
-import '../../providers/categories.dart';
-import '../../routeNames.dart';
-
-import '../../widgets/categories_item.dart';
-import '../other/screen_scaffold.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -109,10 +107,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         ),
                       ),
                     ),
-              // RaisedButton(
-              //   child: Text("Drop user_categories table"),
-              //   onPressed: clearTableData,
-              // ),
             ],
           ),
         ),

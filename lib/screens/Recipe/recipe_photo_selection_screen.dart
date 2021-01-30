@@ -17,7 +17,7 @@ import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:delicat/other/colorHelperFunctions.dart';
+import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -27,17 +27,19 @@ import 'package:provider/provider.dart';
 
 import '../../routeNames.dart';
 
-class CameraScreen extends StatefulWidget {
+class RecipePhotoSelectionScreen extends StatefulWidget {
   final String colorCode;
   final String name;
   final String catId;
-  CameraScreen(this.colorCode, this.name, this.catId);
+  RecipePhotoSelectionScreen(this.colorCode, this.name, this.catId);
 
   @override
-  _CameraScreenState createState() => _CameraScreenState();
+  _RecipePhotoSelectionScreenState createState() =>
+      _RecipePhotoSelectionScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _RecipePhotoSelectionScreenState
+    extends State<RecipePhotoSelectionScreen> {
   File _imageFile;
   final ImagePicker _picker = ImagePicker();
   dynamic _pickImageError;

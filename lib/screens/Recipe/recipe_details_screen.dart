@@ -1,4 +1,4 @@
-import 'package:delicat/other/colorHelperFunctions.dart';
+import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';

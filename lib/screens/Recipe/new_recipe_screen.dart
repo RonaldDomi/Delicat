@@ -1,16 +1,14 @@
-import 'dart:convert';
-
-import 'package:delicat/other/colorHelperFunctions.dart';
+import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/routeNames.dart';
+import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/app_state.dart';
+import 'package:delicat/providers/recipes.dart';
+import 'package:delicat/screens/widgets/screen_scaffold.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:math';
 import 'dart:io';
-
-import '../../routeNames.dart';
-import '../other/screen_scaffold.dart';
-import '../../providers/recipes.dart';
-import '../../models/recipe.dart';
 
 class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
@@ -70,7 +68,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     Provider.of<AppState>(context).setOngoingRecipe(ongoingRecipe);
 
     Navigator.of(context).pushNamed(
-      RouterNames.CameraScreen,
+      RouterNames.RecipePhotoSelectionScreen,
       arguments: [
         widget.categoryColorCode,
         widget.categoryName,

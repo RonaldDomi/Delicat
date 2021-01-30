@@ -1,8 +1,6 @@
 import 'package:delicat/models/category.dart';
 import 'package:flutter/material.dart';
 
-import '../models/category.dart';
-
 class PredefinedCategoryItem extends StatefulWidget {
   final Category category;
   final Function addCategoryToSelection;

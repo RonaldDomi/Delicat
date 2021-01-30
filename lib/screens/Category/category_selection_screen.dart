@@ -1,13 +1,12 @@
+import 'package:delicat/models/category.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/user.dart';
+import 'package:delicat/routeNames.dart';
+import 'package:delicat/screens/Category/components/predefined_categoy_item.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:provider/provider.dart';
-
-import '../../routeNames.dart';
-import '../../models/category.dart';
-import '../../widgets/predefined_categoy_item.dart';
 
 class CatSelectionScreen extends StatefulWidget {
   const CatSelectionScreen({Key key}) : super(key: key);

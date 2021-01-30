@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:delicat/models/recipe.dart';
-import 'package:delicat/other/colorHelperFunctions.dart';
+import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:tinycolor/tinycolor.dart';
 

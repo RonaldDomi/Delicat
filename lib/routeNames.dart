@@ -10,6 +10,6 @@ class RouterNames {
   static const FavoritesScreen = '/favorites-screen';
   static const SearchScreen = '/search-screen';
   static const MealDetailsScreen = '/meal-details';
-  static const ImageScreen = '/image-screen';
-  static const CameraScreen = '/camera-screen';
+  static const UnsplashScreen = '/unsplash-screen';
+  static const RecipePhotoSelectionScreen = '/recipe-photo-selection-screen';
 }

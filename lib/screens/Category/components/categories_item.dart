@@ -1,9 +1,8 @@
+import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
-import '../other/colorHelperFunctions.dart';
-import '../models/category.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'dart:io';
 
 class CategoryItem extends StatelessWidget {
   final Category category;
