@@ -25,11 +25,13 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     var existingItem = selectedCategories.firstWhere(
         (itemToCheck) => itemToCheck.id == category.id,
         orElse: () => null);
+
     if (existingItem == null) {
       selectedCategories.add(category);
     } else {
       selectedCategories.removeWhere((item) => item.id == category.id);
     }
+
     if (isFirstTime) {
       if (selectedCategories.length == 0) {
         setState(() {

@@ -26,15 +26,7 @@ class Recipes with ChangeNotifier {
     if (existingIndex >= 0) {
       _favoriteRecipes.removeAt(existingIndex);
       getRecipeById(recipeId).isFavorite = false;
-      // DBHelper.edit('recipe', recipeId, {
-      // "id": editedCategory.id,
-      // "name": editedCategory.name,
-      // "photo": editedCategory.photo.path,
-      // "photo": editedCategory.photo,
-      // "color_code": editedCategory.colorCode,
-      // "color_code_light": editedCategory.colorLightCode,
-      //   "is_favorite": 0,
-      // });
+      // TODO: Patch recipe with flipped isFavorite
     } else {
       _favoriteRecipes.add(
         _recipes.firstWhere((recipe) => recipe.id == recipeId),
@@ -57,14 +49,7 @@ class Recipes with ChangeNotifier {
     try {
       final response = await http.get(url);
       for (var recipe in json.decode(response.body)) {
-        var recipeToAdd = Recipe(
-          id: recipe["_id"],
-          categoryId: recipe["categoryId"],
-          isFavorite: recipe["isFavorite"],
-          name: recipe["name"],
-          photo: recipe["photo"],
-          description: recipe["text"],
-        );
+        var recipeToAdd = Recipe.fromMap(recipe);
         _recipes.add(recipeToAdd);
       }
     } catch (error) {
@@ -76,8 +61,6 @@ class Recipes with ChangeNotifier {
     String url = constants.url + '/Recipes';
     final mimeTypeData =
         lookupMimeType(recipe.photo, headerBytes: [0xFF, 0xD8]).split('/');
-    print("${recipe.photo}");
-    print("${recipe.isFavorite}");
     FormData formData = FormData.fromMap({
       "categoryId": categoryId,
       "name": recipe.name,
@@ -152,6 +135,12 @@ class Recipes with ChangeNotifier {
     }
   }
 
+  void fetchAndSetFavoriteRecipes() async {
+    _favoriteRecipes =
+        _recipes.where((recipe) => recipe.isFavorite == true).toList();
+    notifyListeners();
+  }
+
   List<Recipe> getRecipesByCategoryId(String categoryId) {
     // print("all recipes: $_recipes");
     var catRecps =
@@ -159,17 +148,7 @@ class Recipes with ChangeNotifier {
     return catRecps;
   }
 
-  notifyListeners();
-
-  void fetchAndSetFavoriteRecipes() async {
-    // print("recipes: $_recipes");
-    _favoriteRecipes =
-        _recipes.where((recipe) => recipe.isFavorite == true).toList();
-  }
-
   Recipe getRecipeById(String recipeId) {
-    //Here we rely solely on the memory data. We take for granted that _recipes is already loaded with the up-to-date
-    //data from the server. For our app, this should work as intended.
     return _recipes.singleWhere((element) => element.id == recipeId);
   }
 }

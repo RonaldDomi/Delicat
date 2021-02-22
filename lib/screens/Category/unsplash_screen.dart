@@ -49,7 +49,7 @@ class _UnsplashnState extends State<UnsplashScreen> {
                     ? Container(
                         height: MediaQuery.of(context).size.height * 0.4,
                         child: Swiper(
-                          onTap: (index) {
+                          onIndexChanged: (index) {
                             setState(() {
                               showSelectedImage = true;
                               currentIndex = index;
@@ -95,7 +95,7 @@ class _UnsplashnState extends State<UnsplashScreen> {
                     onPressed: () {
                       String newPhoto = items[currentIndex].toString();
                       Provider.of<AppState>(context)
-                          .setCurrentNewCategoryPhoto(newPhoto);
+                          .setCurrentUnsplashPhoto(newPhoto);
                       Navigator.of(context).pushNamed(
                         RouterNames.NewCategoryScreen,
                       );

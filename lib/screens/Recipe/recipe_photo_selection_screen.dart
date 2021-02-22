@@ -1,5 +1,4 @@
 // whatsup type photo pickers, whatsupp style
-// update photo on unsplash, onChangedIndex
 // colorCode in between updateCategory
 // the old bug, the ondelete "category doesnt exist"
 // when updating cateogry, remain on category page not front page
@@ -14,16 +13,12 @@
 
 import 'dart:io';
 import 'package:delicat/providers/app_state.dart';
-import 'package:delicat/providers/recipes.dart';
 import 'package:flutter/rendering.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-// import 'package:delicat/providers/recipes.dart';
-// import 'package:delicat/models/recipe.dart';
-// import 'package:provider/provider.dart';
 
 import '../../routeNames.dart';
 

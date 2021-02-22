@@ -1,12 +1,10 @@
 import 'package:delicat/models/category.dart';
-import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/constants.dart' as constants;
 
 import 'dart:convert';
 import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
-import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,16 +38,7 @@ class Categories with ChangeNotifier {
     try {
       final response = await http.get(url);
       for (var category in json.decode(response.body)) {
-        var categoryToAdd = Category(
-          recipes: [],
-          id: category["_id"],
-          name: category["name"],
-          photo: category["photo"],
-          colorCode: category["colorCode"],
-          colorLightCode: colorToHex(TinyColor(
-            hexToColor("${category["colorCode"]}"),
-          ).brighten(14).color),
-        );
+        var categoryToAdd = Category.fromMap(category);
         _predefinedCategories.add(categoryToAdd);
       }
     } catch (error) {
@@ -63,17 +52,7 @@ class Categories with ChangeNotifier {
       final response = await http.get(url);
       for (var category in json.decode(response.body)) {
         if (category["userId"] == userId) {
-          var categoryToAdd = Category(
-            recipes: [],
-            id: category["_id"],
-            userId: category["userId"],
-            name: category["name"],
-            photo: category["photo"],
-            colorCode: category["colorCode"],
-            colorLightCode: colorToHex(TinyColor(
-              hexToColor("${category["colorCode"]}"),
-            ).brighten(14).color),
-          );
+          var categoryToAdd = Category.fromMap(category);
           _categories.add(categoryToAdd);
         }
       }
@@ -83,9 +62,6 @@ class Categories with ChangeNotifier {
   }
 
   Category getCategoryById(String catId) {
-    //Here we rely solely on the memory data. We take for granted that _categories is already loaded with the up-to-date
-    //data from the server. For our app, this should work as intended.
-
     final cat = _categories.singleWhere((element) => element.id == catId);
     //When we will have the option to share recipes online, we will have to implement this with api, but only for recipes. This version is MVP 1 consistent
     return cat;

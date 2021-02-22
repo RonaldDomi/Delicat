@@ -35,7 +35,7 @@ class Recipe {
       id: map['_id'],
       categoryId: map['categoryId'],
       name: map['name'],
-      description: "",
+      description: map['text'],
       photo: map['photo'],
       isFavorite: map['isFavorite'],
     );

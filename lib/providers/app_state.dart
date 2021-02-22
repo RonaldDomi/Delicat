@@ -6,7 +6,7 @@ class AppState with ChangeNotifier {
   Category _ongoingCategory = Category();
   Recipe _ongoingRecipe = Recipe();
 
-  String _currentNewCategoryPhoto = "";
+  String _currentUnsplashPhoto = "";
   String _currentNewRecipePhoto = "";
 
   bool _isOngoingRecipeNew;
@@ -18,8 +18,8 @@ class AppState with ChangeNotifier {
   // ################################ SETTERS ################################ //
   // ################################ SETTERS ################################ //
 
-  void setCurrentNewCategoryPhoto(String newCategoryPhoto) {
-    _currentNewCategoryPhoto = newCategoryPhoto;
+  void setCurrentUnsplashPhoto(String newCategoryPhoto) {
+    _currentUnsplashPhoto = newCategoryPhoto;
   }
 
   void setCurrentNewRecipePhoto(String newRecipePhoto) {
@@ -43,7 +43,7 @@ class AppState with ChangeNotifier {
   }
 
   void zeroCurrentCategoryPhoto() {
-    _currentNewCategoryPhoto = "";
+    _currentUnsplashPhoto = "";
   }
 
   void zeroCurrentRecipePhoto() {
@@ -67,7 +67,7 @@ class AppState with ChangeNotifier {
   // ################################ GETTERS ################################ //
 
   String get currentNewCategoryPhoto {
-    return _currentNewCategoryPhoto;
+    return _currentUnsplashPhoto;
   }
 
   String get currentNewRecipePhoto {

@@ -6,37 +6,15 @@ import 'package:delicat/providers/categories.dart';
 import 'package:delicat/providers/user.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/widgets/screen_scaffold.dart';
+import 'package:delicat/constants.dart' as constants;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:tinycolor/tinycolor.dart';
-
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
-const List<Color> _availableColors = [
-  Colors.red,
-  Colors.pink,
-  Colors.purple,
-  Colors.deepPurple,
-  Colors.indigo,
-  Colors.blue,
-  Colors.lightBlue,
-  Colors.cyan,
-  Colors.teal,
-  Colors.green,
-  Colors.lightGreen,
-  Colors.lime,
-  Colors.yellow,
-  Colors.amber,
-  Colors.orange,
-  Colors.deepOrange,
-  Colors.brown,
-  Colors.grey,
-  Colors.blueGrey,
-  Colors.black,
-];
 
 class NewCategoryScreen extends StatefulWidget {
   @override
@@ -45,13 +23,13 @@ class NewCategoryScreen extends StatefulWidget {
 
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _form = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _colorCodeController = TextEditingController();
+
   Color pickerColor = Colors.red;
   bool _isNew;
   Category category;
-  // bool _isEdited = false;
 
-  final _nameController = TextEditingController();
-  final _colorCodeController = TextEditingController();
   Color currentColor = Color(0xff443a49);
 
   String postedImage = "";
@@ -89,43 +67,12 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   }
 
   void _onImageButtonPressed(ImageSource source) async {
-    // var file = await _picker.getImage(source: source);
-    // _imageFilePath = file.path;
     final pickedFile = await _picker.getImage(
       source: source,
     );
     setState(() {
       _imageFilePath = pickedFile.path;
     });
-  }
-
-  Future<void> _displayPickImageDialog(BuildContext context, onPick) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Choose a photo from your phone'),
-            actions: <Widget>[
-              FlatButton(
-                child: const Text('No, Actually skip'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                  child: const Text('Yes'),
-                  onPressed: () {
-                    FocusScopeNode currentFocus = FocusScope.of(context);
-
-                    if (!currentFocus.hasPrimaryFocus) {
-                      currentFocus.unfocus();
-                    }
-                    onPick();
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          );
-        });
   }
 
   Future<void> _saveForm() async {
@@ -222,9 +169,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // if (_imageFilePath != "") {
-    // print("imageFilePath = $_imageFilePath");
-    // }
     return ScreenScaffold(
       child: Container(
         color: Color(0xffF1EBE8),
@@ -453,7 +397,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                         height: 150,
                         child: BlockPicker(
                           pickerColor: pickerColor,
-                          availableColors: _availableColors,
+                          availableColors: constants.availableColors,
                           onColorChanged: changeColor,
                         ),
                       ),
