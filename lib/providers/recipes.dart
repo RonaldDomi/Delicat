@@ -94,7 +94,7 @@ class Recipes with ChangeNotifier {
 
   void editRecipe(Recipe editedRecipe) async {
     //TODO: extract IP as constant on top of file (when server changes etc)
-    String url = constants.url + '/Recipes';
+    String url = constants.url + '/Recipes/';
     url = url + editedRecipe.id;
 
     final mimeTypeData =

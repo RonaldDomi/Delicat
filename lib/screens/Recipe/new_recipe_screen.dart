@@ -22,7 +22,7 @@ class NewRecipeScreen extends StatefulWidget {
 
 class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _form = GlobalKey<FormState>();
-  var rng = new Random();
+  int _buttonState = 0;
 
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -77,6 +77,38 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     );
   }
 
+  Widget setUpButtonChild() {
+    if (_buttonState == 0) {
+      return new Text(
+        (!isNew) ? "Update recipe" : "Add a recipe",
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+        ),
+      );
+    } else if (_buttonState == 1) {
+      return CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      );
+    } else {
+      return Icon(Icons.check, color: Colors.white);
+    }
+  }
+
+  void animateButton() {
+    setState(() {
+      _buttonState = 1;
+    });
+
+    _saveForm();
+
+    // Timer(Duration(milliseconds: 3300), () {
+    //   setState(() {
+    //     _buttonState = 2;
+    //   });
+    // });
+  }
+
   void _saveForm() async {
     final isValid = _form.currentState.validate();
     if (!isValid) {
@@ -100,7 +132,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       newRecipe.id = recipe.id;
       Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
     } else if (isNew) {
-      Provider.of<Recipes>(context, listen: false)
+      await Provider.of<Recipes>(context, listen: false)
           .addRecipe(newRecipe, widget.categoryId);
     }
     Provider.of<AppState>(context).zeroCurrentRecipePhoto();
@@ -321,19 +353,17 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                       ),
                       SizedBox(height: 21),
                       RaisedButton(
-                        onPressed: _saveForm,
+                        onPressed: () {
+                          if (_buttonState != 1) {
+                            animateButton();
+                          }
+                        },
                         color: hexToColor("#F6C2A4"),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(19.0),
                         ),
                         elevation: 6,
-                        child: Text(
-                          (!isNew) ? "Update recipe" : "Add a recipe",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        ),
+                        child: setUpButtonChild(),
                       ),
                       SizedBox(height: 21),
                     ],

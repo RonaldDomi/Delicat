@@ -70,13 +70,13 @@ class Categories with ChangeNotifier {
   Future<void> removeCategory(String id) async {
     String url = constants.url + "/Categories/$id";
     _categories.removeWhere((item) => item.id == id);
-    await http.delete(url);
     notifyListeners();
+    await http.delete(url);
   }
 
   Future<Category> editCategory(Category editedCategory, String userId) async {
     //TODO: extract IP as constant on top of file (when server changes etc)
-    String url = constants.url + "/Categories";
+    String url = constants.url + "/Categories/";
     url = url + editedCategory.id;
 
     FormData formData;
@@ -86,7 +86,7 @@ class Categories with ChangeNotifier {
         "userId": userId,
         "name": editedCategory.name,
         "colorCode": editedCategory.colorCode,
-        "photo_url": editedCategory.photo,
+        "photo": editedCategory.photo,
       });
     } else {
       final mimeTypeData =

@@ -217,17 +217,23 @@ class _RecipePhotoSelectionScreenState
                 : Container(
                     height: MediaQuery.of(context).size.height * 0.5,
                     child: Center(
-                      child: Container(
-                        height: 300,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: hexToColor("#E4E4E4"),
-                          border: Border.all(
-                            color: hexToColor("#EEDA76"),
-                            width: 5,
+                      child: GestureDetector(
+                        onTap: () {
+                          _onImageButtonPressed(ImageSource.camera,
+                              context: context);
+                        },
+                        child: Container(
+                          height: 300,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: hexToColor("#E4E4E4"),
+                            border: Border.all(
+                              color: hexToColor("#EEDA76"),
+                              width: 5,
+                            ),
                           ),
+                          child: null,
                         ),
-                        child: null,
                       ),
                     ),
                   ),
@@ -243,8 +249,6 @@ class _RecipePhotoSelectionScreenState
                       onTap: () {
                         _onImageButtonPressed(ImageSource.camera,
                             context: context);
-                        // _onImageButtonPressed(ImageSource.gallery,
-                        // context: context);
                       },
                       child: Container(
                         height: 70,
@@ -280,40 +284,16 @@ class _RecipePhotoSelectionScreenState
                 ],
               ),
             ),
-            InkWell(
-              onTap: () async {
-                final dirPath = await getApplicationDocumentsDirectory();
-                var ourFile = File(_imageFile.path);
-                String localPath = "${dirPath.path}/assets/photos/image1.png";
-                File saveDestinationFile = File('$localPath');
-                // print("our file: ${ourFile}");
-                // print("saveDestinationFile: ${saveDestinationFile.path}");
-
-                final File newImage =
-                    await ourFile.copy('${saveDestinationFile.path}');
-                // final File newImage =
-                //     await saveDestinationFile.copy('${ourFile.path}');
-
-                // final AssetBundle rootBundle = _initRootBundle();
-                // final imageBytes = await rootBundle.load(path);
-                // final buffer = imageBytes.buffer;
-                // await file.writeAsBytes(buffer.asUint8List(
-                //     imageBytes.offsetInBytes, imageBytes.lengthInBytes));
-
-                // Provider.of<Recipes>(context)
-                //     .setCurrentNewRecipePhoto(newImage.path);
-              },
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.1,
-                padding: EdgeInsets.symmetric(horizontal: 75),
-                child: Center(
-                  child: Text(
-                    "Make sure you fill the circle",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: hexToColor("#F6C2A4"),
-                    ),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.1,
+              padding: EdgeInsets.symmetric(horizontal: 75),
+              child: Center(
+                child: Text(
+                  "Make sure you fill the circle",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: hexToColor("#F6C2A4"),
                   ),
                 ),
               ),

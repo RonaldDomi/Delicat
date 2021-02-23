@@ -25,6 +25,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("Screen recipe list");
     final category =
         Provider.of<Categories>(context).getCategoryById(widget.categoryId);
     final recipes =
@@ -49,10 +50,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       RaisedButton(
-                        onPressed: () {
-                          Provider.of<Categories>(context)
-                              .removeCategory(category.id);
+                        onPressed: () async {
+                          print('before pop');
                           Navigator.of(context).pop();
+                          print('after? pop');
+                          await Provider.of<Categories>(context)
+                              .removeCategory(category.id);
                         },
                         color: Colors.white,
                         elevation: 6,

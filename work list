@@ -1,0 +1,2 @@
+-- if you delete a category with recipes in it, it will delete the category without first cleaning the recipes inside 
+if you edit a recipe, you need to reeneter a photo 

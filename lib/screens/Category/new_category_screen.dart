@@ -26,6 +26,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _nameController = TextEditingController();
   final _colorCodeController = TextEditingController();
 
+  int _buttonState = 0;
   Color pickerColor = Colors.red;
   bool _isNew;
   Category category;
@@ -64,6 +65,35 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         });
     final currentColorCode = colorToHex(color);
     _colorCodeController.text = currentColorCode;
+  }
+
+  void animateButton() {
+    setState(() {
+      _buttonState = 1;
+    });
+
+    _saveForm();
+    setState(() {
+      _buttonState = 2;
+    });
+  }
+
+  Widget setUpButtonChild() {
+    if (_buttonState == 0) {
+      return new Text(
+        (!_isNew) ? "Update Category" : "Submit form",
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 20.0,
+        ),
+      );
+    } else if (_buttonState == 1) {
+      return CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+      );
+    } else {
+      return Icon(Icons.check, color: Colors.white);
+    }
   }
 
   void _onImageButtonPressed(ImageSource source) async {
@@ -403,19 +433,19 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                       ),
                       SizedBox(height: 21),
                       RaisedButton(
-                        onPressed: _saveForm,
+                        onPressed: () {
+                          setState(() {
+                            if (_buttonState == 0) {
+                              animateButton();
+                            }
+                          });
+                        },
                         color: hexToColor("#F6C2A4"),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(19.0),
                         ),
                         elevation: 6,
-                        child: Text(
-                          (!_isNew) ? "Update Category" : "Submit form",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                        ),
+                        child: setUpButtonChild(),
                       ),
                       SizedBox(height: 21),
                     ],
