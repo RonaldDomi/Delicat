@@ -56,6 +56,13 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           ? hexToColor(category.colorCode)
           : Colors.red;
     }
+    if (_isNew) {
+      _imageFilePath = "";
+      postedImage = "";
+      _nameController.text = "";
+      Provider.of<AppState>(context).zeroCurrentCategoryPhoto();
+      Provider.of<AppState>(context).zeroOngoingCategory();
+    }
     super.didChangeDependencies();
   }
 

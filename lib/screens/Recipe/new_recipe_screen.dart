@@ -37,6 +37,14 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     imageFilePath = Provider.of<AppState>(context).currentNewRecipePhoto;
     isNew = await Provider.of<AppState>(context).isOngoingRecipeNew;
     recipe = Provider.of<AppState>(context).ongoingRecipe;
+    if (isNew) {
+      Provider.of<AppState>(context).zeroCurrentRecipePhoto();
+      Provider.of<AppState>(context).zeroOngoingRecipe();
+      imageFilePath = '';
+      _nameController.text = "";
+      _descriptionController.text = "";
+    }
+
     if (isNew == false || recipe != Recipe()) {
       if (imageFilePath == null) {
         imageFilePath = '';

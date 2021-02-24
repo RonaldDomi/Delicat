@@ -51,11 +51,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () async {
-                          print('before pop');
-                          Navigator.of(context).pop();
-                          print('after? pop');
+                          // print('before pop');
+                          // print('after? pop');
                           await Provider.of<Categories>(context)
                               .removeCategory(category.id);
+                          Navigator.of(context).pop();
+                          // selfRestartState();
                         },
                         color: Colors.white,
                         elevation: 6,
