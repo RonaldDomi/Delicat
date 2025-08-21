@@ -1,3 +1,4 @@
+import 'package:delicat/helpers/image_helper.dart';
 import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/models/category.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class CategoryItem extends StatelessWidget {
                   image: DecorationImage(
                     fit: BoxFit.cover,
                     // image: FileImage(File(category.photo)),
-                    image: NetworkImage(category.photo),
+                    image: ImageHelper.getImageProvider(category.photo),
                   ),
                 ),
               ),

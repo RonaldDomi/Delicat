@@ -22,76 +22,50 @@ class _SplashScreenState extends State<SplashScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    // await Provider.of<Recipes>(context).fetchAndSetAllRecipes();
-    // await Provider.of<Recipes>(context).fetchAndSetFavoriteRecipes();
-    // Provider.of<Categories>(context).fetchAndSetCategories();
-    await Provider.of<Categories>(context, listen: false).fetchAndSetPredefinedCategories();
-    // ###########
-    // when you open the app, either if it is the first time or not, we should get the predefined categories
-    // -- when it is the first time, to let the user chose
-    // -- when it is not, to let the user create a new category, choosing one the predefined
-    // ###########
+    // Load predefined categories (hardcoded, no server call)
+    await Provider.of<Categories>(context, listen: false).loadPredefinedCategories();
 
     //TODO: understand how to wait for function to finish before moving on. understand more general concepts about async in dart/flutter
 
     Future.delayed(const Duration(seconds: 1), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool? firstTime = prefs.getBool('firstTime'); // Made nullable
-      //
-      //
-      // firstTime = null;
+      bool? firstTime = prefs.getBool('firstTime');
+
       if (firstTime != null && !firstTime) {
-        // set the button functionality variable to false
-        // ###########
+        // NOT first time - load existing local data
         Provider.of<AppState>(context, listen: false).setFirstTime(false);
 
-        // get the current user
-        // ###########
-        String? userId = prefs.getString('userId'); // Made nullable
-        if (userId != null) { // Added null check
-          Provider.of<User>(context, listen: false).setCurrentUserId(userId);
-          // get all categories, then set only the user categories
-          // ###########
-          await Provider.of<Categories>(context, listen: false).fetchAndSetCategories(userId);
-          List<Category> myCategories =
-              Provider.of<Categories>(context, listen: false).categories;
+        // Load local user
+        await Provider.of<User>(context, listen: false).loadLocalUser();
 
-          //TODO: may be interesting to call all category recipes at once, and wait until they're finish in parallel, instead of having sequential
-          // execution. understand more async behavior in dart
-          for (Category myCat in myCategories) {
-            // Fixed: getSetRecipesByCategory returns void, so we don't await its result
-            Provider.of<Recipes>(context, listen: false).getSetRecipesByCategory(myCat.id);
-          }
+        // Load user's categories from local database
+        await Provider.of<Categories>(context, listen: false).loadCategoriesFromLocal();
+        List<Category> myCategories =
+            Provider.of<Categories>(context, listen: false).categories;
 
-          // var _recipes = Provider.of<Recipes>(context).recipes;
-          // print("all recipes: $_recipes");
-
-          Navigator.of(context)
-              .pushReplacementNamed(RouterNames.CategoriesScreen);
+        // Load recipes for each category from local database
+        for (Category myCat in myCategories) {
+          await Provider.of<Recipes>(context, listen: false).loadRecipesByCategory(myCat.id);
         }
-        //
-        //
+
+        // Load favorite recipes
+        await Provider.of<Recipes>(context, listen: false).loadFavoriteRecipes();
+
+        Navigator.of(context)
+            .pushReplacementNamed(RouterNames.CategoriesScreen);
+
       } else if (firstTime == null) {
-        // ###########
-        // it is the first time, we should update the localstorage for the next time
-        //TODO: it may be better to set the flag after successfully loading the page. In this case,
-        // if we have an error the flag is already set
-        // ###########
+        // FIRST time - set up new local user
         prefs.setBool('firstTime', false);
 
-        // provider variable, for the functionality of the button
-        // the button should be shown when at least one predefined category is selected
-        // ###########
+        // Set provider variable for button functionality
         Provider.of<AppState>(context, listen: false).setFirstTime(true);
 
-        // create a new user in the backend
-        // ###########
+        // Create a new local user (no server call)
         await Provider.of<User>(context, listen: false).createAndSetNewUser();
         String newUser = Provider.of<User>(context, listen: false).getCurrentUserId;
-        // set the user in the localstorage
-        // ###########
-        prefs.setString('userId', newUser);
-        print("created new userId for you: $newUser");
+
+        print("created new local userId for you: $newUser");
 
         Navigator.of(context)
             .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);

@@ -1,7 +1,9 @@
 import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/helpers/image_helper.dart';
 import 'package:delicat/models/category.dart';
 import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/categories.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -61,7 +63,7 @@ class FavoriteItem extends StatelessWidget {
     }
 
     if (photo.startsWith('http')) {
-      return NetworkImage(photo);
+      return ImageHelper.getImageProvider(photo);
     } else if (photo.startsWith('assets/')) {
       return AssetImage(photo);
     } else {

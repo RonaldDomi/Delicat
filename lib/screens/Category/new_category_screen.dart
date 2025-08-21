@@ -8,6 +8,8 @@ import 'package:delicat/providers/user.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/widgets/screen_scaffold.dart';
 import 'package:delicat/constants.dart' as constants;
+import 'package:delicat/helpers/image_storage_helper.dart';
+import 'package:delicat/helpers/image_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -110,8 +112,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       // Fixed: Use pickImage correctly
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
+        String localImagePath = await ImageStorageHelper.saveImageLocally(pickedFile);
         setState(() {
-          _imageFilePath = pickedFile.path;
+          _imageFilePath = localImagePath;
         });
       }
     } catch (e) {
@@ -185,7 +188,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       String userId = Provider.of<User>(context, listen: false).getCurrentUserId;
 
       await Provider.of<Categories>(context, listen: false)
-          .editCategory(editedCategory, userId);
+          .editCategory(editedCategory);
 
       _resetForm();
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
@@ -214,7 +217,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       );
       String userId = Provider.of<User>(context, listen: false).getCurrentUserId;
       await Provider.of<Categories>(context, listen: false)
-          .createCategory(newCategory, userId);
+          .createCategory(newCategory);
 
       _resetForm();
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
@@ -334,7 +337,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: NetworkImage(postedImage),
+                                  image: ImageHelper.getImageProvider(postedImage),
                                 ),
                               ),
                             ),
@@ -382,9 +385,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: (_imageFilePath.startsWith("http"))
-                                      ? NetworkImage(_imageFilePath) as ImageProvider
-                                      : FileImage(File(_imageFilePath)),
+                                  image: ImageHelper.getImageProvider(_imageFilePath)
                                 ),
                               ),
                             ),

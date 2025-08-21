@@ -1,17 +1,22 @@
 import 'package:delicat/models/category.dart';
-import 'package:delicat/constants.dart' as constants;
+// Remove these imports:
+// import 'package:delicat/constants.dart' as constants;
+// import 'dart:convert';
+// import 'package:http_parser/http_parser.dart';
+// import 'package:dio/dio.dart';
+// import 'package:mime/mime.dart';
+// import 'package:http/http.dart' as http;
 
-import 'dart:convert';
-import 'package:http_parser/http_parser.dart';
-import 'package:dio/dio.dart';
-import 'package:mime/mime.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:uuid/uuid.dart';
 
 class Categories with ChangeNotifier {
   // ################################ VARIABLES ################################ //
   List<Category> _categories = [];
   List<Category> _predefinedCategories = [];
+  Database? _database;
 
   // ################################ GETTERS ################################ //
   List<Category> get categories {
@@ -22,57 +27,97 @@ class Categories with ChangeNotifier {
     return [..._predefinedCategories];
   }
 
+  // ################################ DATABASE SETUP ################################ //
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
+
+  Future<Database> _initDatabase() async {
+    String path = join(await getDatabasesPath(), 'delicat_categories.db');
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE categories(id TEXT PRIMARY KEY, name TEXT, photo TEXT, colorCode TEXT, colorLightCode TEXT, createdAt INTEGER)',
+        );
+      },
+    );
+  }
+
   // ################################ SETTERS ################################ //
-  void setCategories(List<Category> categories) {  // Fixed parameter type
+  void setCategories(List<Category> categories) {
     _categories = categories;
     notifyListeners();
   }
 
-  void setUserCategories(List<Category> userCategories) {  // Fixed parameter type
+  void setUserCategories(List<Category> userCategories) {
     _categories = userCategories;
     notifyListeners();
   }
 
-  // ################################ FUNCTIONS ################################ //
+  // ################################ LOCAL FUNCTIONS ################################ //
 
-  Future<void> fetchAndSetPredefinedCategories() async {  // Added Future<void>
-    String url = constants.url + "/Categories/default";
-    try {
-      final response = await http.get(Uri.parse(url));  // Fixed: Added Uri.parse()
-      final List<dynamic> categoriesData = json.decode(response.body);
-
-      _predefinedCategories.clear(); // Clear existing data
-      for (var category in categoriesData) {
-        var categoryToAdd = Category.fromMap(category);
-        if (categoryToAdd != null) {  // Null check since fromMap can return null
-          _predefinedCategories.add(categoryToAdd);
-        }
-      }
-      notifyListeners();
-    } catch (error) {
-      print("error: $error");
-    }
+  Future<void> loadPredefinedCategories() async {
+    // Create hardcoded predefined categories instead of fetching from server
+    _predefinedCategories = [
+      Category(
+        id: 'breakfast',
+        userId: 'predefined',
+        recipes: [],
+        name: 'Breakfast',
+        photo: 'assets/photos/breakfast.jpg',
+        colorCode: '#FF6B6B',
+        colorLightCode: '#FFB3B3',
+      ),
+      Category(
+        id: 'lunch',
+        userId: 'predefined',
+        recipes: [],
+        name: 'Lunch',
+        photo: 'assets/photos/pasta.jpg',
+        colorCode: '#4ECDC4',
+        colorLightCode: '#A8E6E1',
+      ),
+      Category(
+        id: 'dinner',
+        userId: 'predefined',
+        recipes: [],
+        name: 'Dinner',
+        photo: 'assets/photos/meat.jpg',
+        colorCode: '#45B7D1',
+        colorLightCode: '#A2D5F2',
+      ),
+      Category(
+        id: 'dessert',
+        userId: 'predefined',
+        recipes: [],
+        name: 'Dessert',
+        photo: 'assets/photos/dessert-circle.png',
+        colorCode: '#F39C12',
+        colorLightCode: '#F8C471',
+      ),
+    ];
+    notifyListeners();
   }
 
-  Future<void> fetchAndSetCategories(String userId) async {  // Added Future<void>
-    String url = constants.url + "/Categories";
-    try {
-      final response = await http.get(Uri.parse(url));  // Fixed: Added Uri.parse()
-      final List<dynamic> categoriesData = json.decode(response.body);
+  Future<void> loadCategoriesFromLocal() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('categories');
 
-      _categories.clear(); // Clear existing data
-      for (var category in categoriesData) {
-        if (category["userId"] == userId) {
-          var categoryToAdd = Category.fromMap(category);
-          if (categoryToAdd != null) {  // Null check since fromMap can return null
-            _categories.add(categoryToAdd);
-          }
-        }
-      }
-      notifyListeners();
-    } catch (error) {
-      print("error: $error");
-    }
+    _categories = maps.map((map) => Category(
+      id: map['id'],
+      userId: 'local',
+      recipes: [], // Load recipes separately if needed
+      name: map['name'],
+      photo: map['photo'],
+      colorCode: map['colorCode'],
+      colorLightCode: map['colorLightCode'],
+    )).toList();
+
+    notifyListeners();
   }
 
   Category getCategoryById(String catId) {
@@ -80,131 +125,77 @@ class Categories with ChangeNotifier {
   }
 
   Future<void> removeCategory(String id) async {
-    String url = constants.url + "/Categories/$id";
+    final db = await database;
+    await db.delete('categories', where: 'id = ?', whereArgs: [id]);
     _categories.removeWhere((item) => item.id == id);
     notifyListeners();
-    try {
-      await http.delete(Uri.parse(url));  // Fixed: Added Uri.parse()
-    } catch (error) {
-      print("Error deleting category: $error");
-    }
   }
 
-  Future<Category?> editCategory(Category editedCategory, String userId) async {  // Made return type nullable
-    String url = constants.url + "/Categories/${editedCategory.id}";
+  Future<Category?> editCategory(Category editedCategory) async {
+    final db = await database;
 
-    FormData formData;
+    await db.update(
+      'categories',
+      {
+        'name': editedCategory.name,
+        'photo': editedCategory.photo,
+        'colorCode': editedCategory.colorCode,
+        'colorLightCode': editedCategory.colorLightCode,
+      },
+      where: 'id = ?',
+      whereArgs: [editedCategory.id],
+    );
 
-    // TODO: check if coming from server in a more robust way, probably extract this into a constant at top of file
-    if (editedCategory.photo.startsWith("https://delicat")) {
-      formData = FormData.fromMap({
-        "userId": userId,
-        "name": editedCategory.name,
-        "colorCode": editedCategory.colorCode,
-        "photo": editedCategory.photo,
-      });
-    } else {
-      // Fixed: Handle nullable mime type
-      final mimeType = lookupMimeType(editedCategory.photo, headerBytes: [0xFF, 0xD8]);
-      final mimeTypeData = mimeType?.split('/') ?? ['image', 'jpeg'];
-
-      formData = FormData.fromMap({
-        "userId": userId,
-        "name": editedCategory.name,
-        "colorCode": editedCategory.colorCode,
-        "photo": await MultipartFile.fromFile(
-          editedCategory.photo,
-          filename: editedCategory.photo.split("/").last,
-          contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
-        )
-      });
+    final existingCategoryIndex =
+        _categories.indexWhere((element) => element.id == editedCategory.id);
+    if (existingCategoryIndex != -1) {
+      _categories[existingCategoryIndex] = editedCategory;
     }
-
-    try {
-      var response = await Dio().patch(url, data: formData);
-      Category? newCategory = Category.fromMap(response.data);
-
-      if (newCategory != null) {
-        final existingCategoryIndex =
-            _categories.indexWhere((element) => element.id == editedCategory.id);
-        if (existingCategoryIndex != -1) {
-          _categories[existingCategoryIndex] = newCategory;
-        }
-        notifyListeners();
-        return newCategory;
-      }
-    } catch (error) {
-      print("error: $error");
-    }
-    return null;  // Return null on error
+    notifyListeners();
+    return editedCategory;
   }
 
-  Future<Category?> createCategory(Category category, String userId) async {  // Made return type nullable
-    String url = constants.url + "/Categories";
+  Future<Category?> createCategory(Category category) async {
+    final db = await database;
 
-    // Fixed: Handle nullable mime type
-    final mimeType = lookupMimeType(category.photo, headerBytes: [0xFF, 0xD8]);
-    final mimeTypeData = mimeType?.split('/') ?? ['image', 'jpeg'];
+    // Generate unique ID
+    final String id = const Uuid().v4();
+    final categoryWithId = Category(
+      id: id,
+      userId: 'local',
+      recipes: [],
+      name: category.name,
+      photo: category.photo,
+      colorCode: category.colorCode,
+      colorLightCode: category.colorLightCode,
+    );
 
-    FormData formData = FormData.fromMap({
-      "userId": userId,
-      "name": category.name,
-      "colorCode": category.colorCode,
-      "photo": await MultipartFile.fromFile(
-        category.photo,
-        filename: category.photo.split("/").last,
-        contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
-      )
+    await db.insert('categories', {
+      'id': categoryWithId.id,
+      'name': categoryWithId.name,
+      'photo': categoryWithId.photo,
+      'colorCode': categoryWithId.colorCode,
+      'colorLightCode': categoryWithId.colorLightCode,
+      'createdAt': DateTime.now().millisecondsSinceEpoch,
     });
 
-    try {
-      var response = await Dio().post(url, data: formData);
-      Category? newCategory = Category.fromMap(response.data);
-
-      if (newCategory != null) {
-        _categories.add(newCategory);
-        notifyListeners();
-        return newCategory;
-      }
-    } catch (error) {
-      // TODO: have toaster messages on the UI
-      // toaster.show('There was an issue creating the category');
-      print("error: $error");
-    }
-    return null;  // Return null on error
+    _categories.add(categoryWithId);
+    notifyListeners();
+    return categoryWithId;
   }
 
-  Future<void> addCategory(Category category, String userId) async {
-    String url = constants.url + "/Categories";
+  Future<void> addPredefinedCategory(Category category) async {
+    // Copy predefined category to user's categories
+    final newCategory = Category(
+      id: const Uuid().v4(),
+      userId: 'local',
+      recipes: [],
+      name: category.name,
+      photo: category.photo,
+      colorCode: category.colorCode,
+      colorLightCode: category.colorLightCode,
+    );
 
-    FormData formData = FormData.fromMap({
-      "userId": userId,
-      "name": category.name,
-      "colorCode": category.colorCode,
-      "photo_url": category.photo,
-    });
-
-    try {
-      var response = await Dio().post(url, data: formData);
-
-      // Add default properties to response data
-      final responseData = response.data as Map<String, dynamic>;
-      responseData['default'] = false;
-      responseData['userId'] = userId;
-
-      Category? newCategory = Category.fromMap(responseData);
-      if (newCategory != null) {
-        _categories.add(newCategory);
-        notifyListeners();
-      }
-    } catch (error) {
-      // Fixed: Handle Dio errors properly
-      if (error is DioException) {
-        print("Dio error: ${error.message}");
-        print("Dio error request: ${error.requestOptions.path}");
-      } else {
-        print("error: $error");
-      }
-    }
+    await createCategory(newCategory);
   }
 }

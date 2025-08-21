@@ -4,6 +4,7 @@ import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
+import 'package:delicat/helpers/image_helper.dart';
 
 import '../../providers/recipes.dart';
 import '../../providers/categories.dart';
@@ -137,7 +138,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(recipe.photo!),
+                  image: ImageHelper.getImageProvider(recipe.photo),
                 ),
               ),
             ),

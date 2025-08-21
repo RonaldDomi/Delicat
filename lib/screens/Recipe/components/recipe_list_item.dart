@@ -1,6 +1,7 @@
 import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/recipes.dart';
+import 'package:delicat/helpers/image_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +35,7 @@ class RecipeListItem extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image: NetworkImage(
+                  image: ImageHelper.getImageProvider(
                     recipe.photo!,
                   ),
                   // image: AssetImage(

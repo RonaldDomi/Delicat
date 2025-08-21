@@ -3,6 +3,7 @@ import 'package:delicat/routeNames.dart';
 import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/recipes.dart';
+import 'package:delicat/helpers/image_helper.dart';
 import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
@@ -288,9 +289,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: imageFilePath.startsWith('http')
-                                      ? NetworkImage(imageFilePath) as ImageProvider
-                                      : FileImage(File(imageFilePath)),
+                                  image: ImageHelper.getImageProvider(imageFilePath)
                                 ),
                               ),
                             ),

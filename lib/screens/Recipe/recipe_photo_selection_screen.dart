@@ -6,6 +6,8 @@ import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:delicat/helpers/image_storage_helper.dart';
+
 
 import '../../routeNames.dart';
 
@@ -36,8 +38,9 @@ class _RecipePhotoSelectionScreenState
       );
       
       if (pickedFile != null) {
+        String localImagePath = await ImageStorageHelper.saveImageLocally(pickedFile);
         setState(() {
-          _imageFile = File(pickedFile.path);
+          _imageFile = File(localImagePath);
         });
       }
     } catch (e) {

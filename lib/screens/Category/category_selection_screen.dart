@@ -73,10 +73,10 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
           }
         }
         if (!alreadyExists) {
-          Provider.of<Categories>(context).addCategory(cat, userId);
+          Provider.of<Categories>(context).addPredefinedCategory(cat);
         }
       } else {
-        Provider.of<Categories>(context).addCategory(cat, userId);
+        Provider.of<Categories>(context).addPredefinedCategory(cat);
       }
     }
     Navigator.of(context)
