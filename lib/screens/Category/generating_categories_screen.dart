@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:delicat/screens/Category/categories_screen.dart';
 
 class GeneratingCategoriesScreen extends StatefulWidget {
-  const GeneratingCategoriesScreen({Key key}) : super(key: key);
+  const GeneratingCategoriesScreen({Key? key}) : super(key: key);
 
   @override
   _GeneratingCategoriesScreenState createState() =>

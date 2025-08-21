@@ -49,7 +49,7 @@ class FavoritesScreen extends StatelessWidget {
                 ),
                 builder: (ctx, recipes, ch) => recipes.favoriteRecipes.length <=
                         0
-                    ? ch
+                    ? ch!
                     : GridView.builder(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200,

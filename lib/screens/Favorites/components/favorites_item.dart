@@ -9,7 +9,7 @@ import 'dart:io';
 class FavoriteItem extends StatelessWidget {
   final Recipe recipe;
 
-  FavoriteItem(this.recipe);
+  const FavoriteItem(this.recipe, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +37,8 @@ class FavoriteItem extends StatelessWidget {
               image: DecorationImage(
                   fit: BoxFit.cover,
                   // image: AssetImage(recipe.photo),
-                  image: (recipe.photo.substring(0, 1) == "a")
-                      ? AssetImage(recipe.photo)
-                      : FileImage(File(recipe.photo))),
+                  image: _getImageProvider(),
+              )
             ),
           ),
           Text(
@@ -53,5 +52,20 @@ class FavoriteItem extends StatelessWidget {
         ],
       ),
     );
+  }
+
+    ImageProvider _getImageProvider() {
+    final photo = recipe.photo;
+    if (photo == null || photo.isEmpty) {
+      return const AssetImage('assets/default_recipe.png'); // Fallback image
+    }
+
+    if (photo.startsWith('http')) {
+      return NetworkImage(photo);
+    } else if (photo.startsWith('assets/')) {
+      return AssetImage(photo);
+    } else {
+      return FileImage(File(photo));
+    }
   }
 }

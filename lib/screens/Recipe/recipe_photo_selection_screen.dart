@@ -1,16 +1,3 @@
-// whatsup type photo pickers, whatsupp style
-// colorCode in between updateCategory
-// the old bug, the ondelete "category doesnt exist"
-// when updating cateogry, remain on category page not front page
-// do not  wrap around when there's less than 3 recipes
-//// if one or two recipes available only swip right
-////// singlechild scrollview direction horizontal
-// on recipe add photo, directly go to camera
-// make a state provider with all* the variables transversing the screens
-// look at read btn, on recipe lise
-// bonus: read on performance improvements
-// btn shows add recipe, when editing, after* we put a photo
-
 import 'dart:io';
 import 'package:delicat/providers/app_state.dart';
 import 'package:flutter/rendering.dart';
@@ -26,7 +13,8 @@ class RecipePhotoSelectionScreen extends StatefulWidget {
   final String colorCode;
   final String name;
   final String catId;
-  RecipePhotoSelectionScreen(this.colorCode, this.name, this.catId);
+  
+  const RecipePhotoSelectionScreen(this.colorCode, this.name, this.catId, {Key? key}) : super(key: key);
 
   @override
   _RecipePhotoSelectionScreenState createState() =>
@@ -35,19 +23,23 @@ class RecipePhotoSelectionScreen extends StatefulWidget {
 
 class _RecipePhotoSelectionScreenState
     extends State<RecipePhotoSelectionScreen> {
-  File _imageFile;
+  File? _imageFile;                    // Made nullable
   final ImagePicker _picker = ImagePicker();
   dynamic _pickImageError;
-  String _retrieveDataError;
+  String? _retrieveDataError;          // Made nullable
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+  void _onImageButtonPressed(ImageSource source, {BuildContext? context}) async {
     try {
-      final pickedFile = await ImagePicker.pickImage(
+      // Fixed: Use pickImage method correctly
+      final XFile? pickedFile = await _picker.pickImage(
         source: source,
       );
-      setState(() async {
-        _imageFile = pickedFile;
-      });
+      
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
     } catch (e) {
       setState(() {
         _pickImageError = e;
@@ -55,9 +47,10 @@ class _RecipePhotoSelectionScreenState
     }
   }
 
-  Text _getRetrieveErrorWidget() {
+  Widget? _getRetrieveErrorWidget() {    // Made return type nullable
     if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError);
+      final String errorMessage = _retrieveDataError!; // Use ! operator after null check
+      final Widget result = Text(errorMessage);
       _retrieveDataError = null;
       return result;
     }
@@ -65,11 +58,11 @@ class _RecipePhotoSelectionScreenState
   }
 
   void submit() async {
-    if (_imageFile == null || _imageFile.path == null) {
+    if (_imageFile == null || _imageFile!.path.isEmpty) {
       return;
     }
-    String newPhoto = _imageFile.path;
-    Provider.of<AppState>(context).setCurrentNewRecipePhoto(newPhoto);
+    String newPhoto = _imageFile!.path;
+    Provider.of<AppState>(context, listen: false).setCurrentNewRecipePhoto(newPhoto);
     Navigator.of(context).pushNamed(
       RouterNames.NewRecipeScreen,
       arguments: [widget.name, widget.colorCode, widget.catId],
@@ -77,7 +70,7 @@ class _RecipePhotoSelectionScreenState
   }
 
   Widget _previewImage() {
-    final Text retrieveError = _getRetrieveErrorWidget();
+    final Widget? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -96,9 +89,7 @@ class _RecipePhotoSelectionScreenState
           ),
           child: CircleAvatar(
             radius: 150,
-            backgroundImage: new FileImage(
-              _imageFile,
-            ),
+            backgroundImage: FileImage(_imageFile!),
           ),
         ),
       );
@@ -115,28 +106,23 @@ class _RecipePhotoSelectionScreenState
     }
   }
 
-  Future<void> retrieveLostData() async {
-    final LostData response = await _picker.getLostData();
-    if (response.isEmpty) {
-      return;
-    }
-    _retrieveDataError = response.exception.code;
-  }
+  // Removed getLostData method as it's deprecated in newer image_picker versions
 
-  Future<void> _displayPickImageDialog(BuildContext context, onPick) async {
+  Future<void> _displayPickImageDialog(BuildContext context, VoidCallback onPick) async {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text('Add optional parameters'),
+            title: const Text('Add optional parameters'),
             actions: <Widget>[
-              FlatButton(
+              // Fixed: FlatButton is deprecated, use TextButton
+              TextButton(
                 child: const Text('CANCEL'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                   child: const Text('PICK'),
                   onPressed: () {
                     onPick();
@@ -162,18 +148,22 @@ class _RecipePhotoSelectionScreenState
                 children: <Widget>[
                   Text(
                     "${widget.name} Catalogue",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 23,
                     ),
                   ),
-                  RaisedButton(
-                    disabledTextColor: Color(0xffD6D6D6),
-                    disabledColor: Colors.white,
-                    disabledElevation: 6,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
+                  // Fixed: RaisedButton is deprecated, use ElevatedButton
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: const Color(0xffD6D6D6),
+                      backgroundColor: Colors.white,
+                      elevation: 6,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
                     ),
-                    child: Text(
+                    onPressed: null, // Disabled button
+                    child: const Text(
                       "add a new recipe",
                       style: TextStyle(
                         fontSize: 20,
@@ -184,36 +174,7 @@ class _RecipePhotoSelectionScreenState
               ),
             ),
             (_imageFile != null)
-                ? FutureBuilder<void>(
-                    future: retrieveLostData(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<void> snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.none:
-                        case ConnectionState.waiting:
-                          return const Text(
-                            'You have not yet picked an image.',
-                            textAlign: TextAlign.center,
-                          );
-                        case ConnectionState.done:
-                          return _previewImage();
-                        // return null;
-                        default:
-                          if (snapshot.hasError) {
-                            return Text(
-                              'Pick image/video error: ${snapshot.error}}',
-                              textAlign: TextAlign.center,
-                            );
-                          } else {
-                            // return const Text(
-                            //   'You have not yet picked an image.',
-                            //   textAlign: TextAlign.center,
-                            // );
-                            return null;
-                          }
-                      }
-                    },
-                  )
+                ? _previewImage() // Simplified - removed deprecated getLostData
                 : Container(
                     height: MediaQuery.of(context).size.height * 0.5,
                     child: Center(
@@ -232,7 +193,11 @@ class _RecipePhotoSelectionScreenState
                               width: 5,
                             ),
                           ),
-                          child: null,
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 80,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
                     ),
@@ -261,19 +226,27 @@ class _RecipePhotoSelectionScreenState
                             width: 5,
                           ),
                         ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 30,
+                        ),
                       ),
                     ),
                   ),
-                  RaisedButton(
+                  // Fixed: RaisedButton is deprecated, use ElevatedButton
+                  ElevatedButton(
                     onPressed: () async {
                       submit();
                     },
-                    color: hexToColor("#F6C2A4"),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(19.0),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: hexToColor("#F6C2A4"),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(19.0),
+                      ),
+                      elevation: 6,
                     ),
-                    elevation: 6,
-                    child: Text(
+                    child: const Text(
                       "Next",
                       style: TextStyle(
                         color: Colors.white,
@@ -286,7 +259,7 @@ class _RecipePhotoSelectionScreenState
             ),
             Container(
               height: MediaQuery.of(context).size.height * 0.1,
-              padding: EdgeInsets.symmetric(horizontal: 75),
+              padding: const EdgeInsets.symmetric(horizontal: 75),
               child: Center(
                 child: Text(
                   "Make sure you fill the circle",

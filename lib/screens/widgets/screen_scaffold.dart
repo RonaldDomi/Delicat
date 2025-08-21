@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ScreenScaffold extends StatelessWidget {
   Widget child;
 
-  ScreenScaffold({@required this.child});
+  ScreenScaffold({required this.child});
 
   void handleTap(int bottomNavIndex, BuildContext context) {
     switch (bottomNavIndex) {
@@ -29,9 +29,9 @@ class ScreenScaffold extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBarWidget(handleTap),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
-        child: IconButton(
-          icon: Image.asset("assets/logo/logo.png"),
-        ),
+        onPressed: () {},
+        child: Image.asset("assets/logo/logo.png"),
+
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

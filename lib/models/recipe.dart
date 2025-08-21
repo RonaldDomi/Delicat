@@ -3,19 +3,27 @@ import 'dart:convert';
 class Recipe {
   String id;
   String name;
-  String photo;
+  String? photo;
   String description;
   bool isFavorite;
   String categoryId;
 
   Recipe({
-    this.id,
-    this.name,
+    required this.id,
+    required this.name,
     this.photo,
-    this.isFavorite,
-    this.description,
-    this.categoryId,
+    this.description = '',
+    this.isFavorite = false,
+    required this.categoryId,
   });
+
+  Recipe.empty()
+    : id = '',
+      name = '',
+      photo = '',
+      description = '',
+      isFavorite = false,
+      categoryId = '';
 
   Map<String, dynamic> toMap() {
     return {
@@ -29,15 +37,15 @@ class Recipe {
   }
 
   factory Recipe.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
+    if (map == null) throw ArgumentError('Map cannot be null');
 
     return Recipe(
-      id: map['_id'],
-      categoryId: map['categoryId'],
-      name: map['name'],
-      description: map['text'],
-      photo: map['photo'],
-      isFavorite: map['isFavorite'],
+      id: map['_id'] as String? ?? '',
+      categoryId: map['categoryId'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      photo: map['photo'] as String?,
+      description: map['text'] as String? ?? '',
+      isFavorite: map['isFavorite'] as bool? ?? false,
     );
   }
 

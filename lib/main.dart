@@ -43,31 +43,31 @@ class MyApp extends StatelessWidget {
 }
 
 // -------------- NOT USED -----------------
-class MyNavigatorObserver extends NavigatorObserver {
-  List<Route<dynamic>> routeStack = List();
-
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    try {
-      print(
-          "navigator observer: from ${previousRoute.settings.name} to ${previousRoute.settings.name}");
-    } catch (FormatException) {
-      print("error on formating");
-    }
-    routeStack.add(route);
-  }
-
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    routeStack.removeLast();
-  }
-
-  @override
-  void didRemove(Route route, Route previousRoute) {
-    routeStack.removeLast();
-  }
-
-  @override
-  void didReplace({Route newRoute, Route oldRoute}) {
-    routeStack.removeLast();
-    routeStack.add(newRoute);
-  }
-}
+// class MyNavigatorObserver extends NavigatorObserver {
+//   List<Route<dynamic>> routeStack = <Route<dynamic>>[];
+//
+//   void didPush(Route<dynamic>? route, Route<dynamic>? previousRoute) {
+//     try {
+//       print(
+//           "navigator observer: from ${previousRoute.settings.name} to ${previousRoute.settings.name}");
+//     } catch (FormatException) {
+//       print("error on formating");
+//     }
+//     routeStack.add(route);
+//   }
+//
+//   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+//     routeStack.removeLast();
+//   }
+//
+//   @override
+//   void didRemove(Route route, Route previousRoute) {
+//     routeStack.removeLast();
+//   }
+//
+//   @override
+//   void didReplace({Route newRoute, Route oldRoute}) {
+//     routeStack.removeLast();
+//     routeStack.add(newRoute);
+//   }
+// }

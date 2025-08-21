@@ -8,110 +8,113 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CategoriesScreen extends StatefulWidget {
-  @override
-  _CategoriesScreenState createState() => _CategoriesScreenState();
+ const CategoriesScreen({Key? key}) : super(key: key);
+
+ @override
+ _CategoriesScreenState createState() => _CategoriesScreenState();
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  Future<bool> _onBackPressed() {
-    return showDialog(
-          context: context,
-          builder: (context) => new AlertDialog(
-            title: new Text('Are you sure?'),
-            content: new Text('Do you want to exit an App'),
-            actions: <Widget>[
-              new GestureDetector(
-                onTap: () => Navigator.of(context).pop(false),
-                child: Text("NO"),
-              ),
-              SizedBox(height: 16),
-              new GestureDetector(
-                onTap: () => Navigator.of(context).pop(true),
-                child: Text("YES"),
-              ),
-            ],
-          ),
-        ) ??
-        false;
-  }
+ Future<bool> _onBackPressed() async {
+   final result = await showDialog<bool>(
+         context: context,
+         builder: (context) => AlertDialog(
+           title: const Text('Are you sure?'),
+           content: const Text('Do you want to exit an App'),
+           actions: <Widget>[
+             GestureDetector(
+               onTap: () => Navigator.of(context).pop(false),
+               child: const Text("NO"),
+             ),
+             const SizedBox(height: 16),
+             GestureDetector(
+               onTap: () => Navigator.of(context).pop(true),
+               child: const Text("YES"),
+             ),
+           ],
+         ),
+       );
+   return result ?? false;
+ }
 
-  @override
-  Widget build(BuildContext context) {
-    print('screen categories screen');
-    List<Category> allCategories = Provider.of<Categories>(context).categories;
-    return ScreenScaffold(
-      child: WillPopScope(
-        onWillPop: _onBackPressed,
-        child: Container(
-          color: Color(0xffF1EBE8),
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      "Your Menu",
-                      style: TextStyle(
-                        fontSize: 23,
-                      ),
-                    ),
-                    RaisedButton(
-                      onPressed: () {
-                        Provider.of<AppState>(context)
-                            .setIsOngoingCategoryNew(true);
-                        Navigator.of(context)
-                            .pushNamed(RouterNames.NewCategoryScreen);
-                      },
-                      color: Colors.white,
-                      elevation: 6,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                      ),
-                      child: Text(
-                        "add a new cat",
-                        style: TextStyle(
-                          color: Color(0xffF6C2A4),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              (allCategories.length <= 0)
-                  ? Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Center(
-                        child: Text("you have no cats on your profile."),
-                      ),
-                    )
-                  : Expanded(
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 180,
-                          childAspectRatio: 2 / 2.6,
-                          crossAxisSpacing: 30,
-                          mainAxisSpacing: 30,
-                        ),
-                        padding: const EdgeInsets.all(30),
-                        itemCount: allCategories.length,
-                        itemBuilder: (ctx, i) => InkWell(
-                          onTap: () {
-                            // REROUTE TO RECIPELIST
-                            Navigator.of(context).pushNamed(
-                                RouterNames.RecipeListScreen,
-                                arguments: allCategories[i].id);
-                          },
-                          child: CategoryItem(allCategories[i]),
-                        ),
-                      ),
-                    ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+ @override
+ Widget build(BuildContext context) {
+   print('screen categories screen');
+   List<Category> allCategories = Provider.of<Categories>(context).categories;
+   return ScreenScaffold(
+     child: WillPopScope(
+       onWillPop: _onBackPressed,
+       child: Container(
+         color: const Color(0xffF1EBE8),
+         child: Column(
+           children: <Widget>[
+             SizedBox(
+               height: MediaQuery.of(context).size.height * 0.15,
+               child: Row(
+                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                 crossAxisAlignment: CrossAxisAlignment.end,
+                 children: <Widget>[
+                   const Text(
+                     "Your Menu",
+                     style: TextStyle(
+                       fontSize: 23,
+                     ),
+                   ),
+                   ElevatedButton(
+                     onPressed: () {
+                       Provider.of<AppState>(context, listen: false)
+                           .setIsOngoingCategoryNew(true);
+                       Navigator.of(context)
+                           .pushNamed(RouterNames.NewCategoryScreen);
+                     },
+                     style: ElevatedButton.styleFrom(
+                       backgroundColor: Colors.white,
+                       elevation: 6,
+                       shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.circular(18.0),
+                       ),
+                     ),
+                     child: const Text(
+                       "add a new cat",
+                       style: TextStyle(
+                         color: Color(0xffF6C2A4),
+                       ),
+                     ),
+                   )
+                 ],
+               ),
+             ),
+             (allCategories.isEmpty)
+                 ? SizedBox(
+                     width: MediaQuery.of(context).size.width,
+                     child: const Center(
+                       child: Text("you have no cats on your profile."),
+                     ),
+                   )
+                 : Expanded(
+                     child: GridView.builder(
+                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                         maxCrossAxisExtent: 180,
+                         childAspectRatio: 2 / 2.6,
+                         crossAxisSpacing: 30,
+                         mainAxisSpacing: 30,
+                       ),
+                       padding: const EdgeInsets.all(30),
+                       itemCount: allCategories.length,
+                       itemBuilder: (ctx, i) => InkWell(
+                         onTap: () {
+                           Navigator.of(context).pushNamed(
+                               RouterNames.RecipeListScreen,
+                               arguments: allCategories[i].id);
+                         },
+                         child: CategoryItem(allCategories[i]),
+                       ),
+                     ),
+                   ),
+           ],
+         ),
+       ),
+     ),
+   );
+ }
 }

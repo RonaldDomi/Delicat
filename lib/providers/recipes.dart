@@ -47,7 +47,7 @@ class Recipes with ChangeNotifier {
   void getSetRecipesByCategory(String categoryId) async {
     String url = constants.url + '/recipes/byCategoryId/$categoryId';
     try {
-      final response = await http.get(url);
+      final response = await http.get(Uri.parse(url));
       for (var recipe in json.decode(response.body)) {
         var recipeToAdd = Recipe.fromMap(recipe);
         _recipes.add(recipeToAdd);
@@ -59,16 +59,25 @@ class Recipes with ChangeNotifier {
 
   void addRecipe(Recipe recipe, String categoryId) async {
     String url = constants.url + '/Recipes';
+
+    final photo = recipe.photo;
+    if (photo == null || photo.isEmpty){
+      print("Error: Recipe photo is required for upload");
+      return;
+    }
+
+    final mimeType = lookupMimeType(photo, headerBytes: [0xFF, 0xD8]);
     final mimeTypeData =
-        lookupMimeType(recipe.photo, headerBytes: [0xFF, 0xD8]).split('/');
+        mimeType?.split('/') ?? ['image', 'jpeg'];
+
     FormData formData = FormData.fromMap({
       "categoryId": categoryId,
       "name": recipe.name,
       "text": recipe.description,
       "isFavorite": recipe.isFavorite,
       "photo": await MultipartFile.fromFile(
-        recipe.photo,
-        filename: recipe.photo.split("/").last,
+        photo,
+        filename: photo.split("/").last,
         contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
       )
     });
@@ -87,7 +96,7 @@ class Recipes with ChangeNotifier {
 
   void removeRecipe(String id) async {
     String url = constants.url + '/Recipes/$id';
-    await http.delete(url);
+    await http.delete(Uri.parse(url));
     _recipes.removeWhere((item) => item.id == id);
     notifyListeners();
   }
@@ -97,13 +106,18 @@ class Recipes with ChangeNotifier {
     String url = constants.url + '/Recipes/';
     url = url + editedRecipe.id;
 
-    final mimeTypeData =
-        lookupMimeType(editedRecipe.photo, headerBytes: [0xFF, 0xD8])
-            .split('/');
+    final photo = editedRecipe.photo;
+    if (photo == null){
+      print("Error: Recipe photo is null");
+      return;
+    }
+
+    final mimeType = lookupMimeType(photo, headerBytes: [0xFF, 0xD8]);
+    final mimeTypeData = mimeType?.split('/') ?? ['image', 'jpeg'];
 
     // TODO: check if coming from server in a more roboust way, probably extract this into a constant at top of file
     FormData formData;
-    if (editedRecipe.photo.startsWith("https://delicat")) {
+    if (photo.startsWith("https://delicat")) {
       formData = FormData.fromMap({
         "name": editedRecipe.name,
         "text": editedRecipe.description,
@@ -115,8 +129,8 @@ class Recipes with ChangeNotifier {
         "text": editedRecipe.description,
         "isFavorite": editedRecipe.isFavorite,
         "photo": await MultipartFile.fromFile(
-          editedRecipe.photo,
-          filename: editedRecipe.photo.split("/").last,
+          photo,
+          filename: photo.split("/").last,
           contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
         )
       });

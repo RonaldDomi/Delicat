@@ -7,12 +7,12 @@ import 'package:delicat/screens/Recipe/components/recipe_list_item.dart';
 import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:provider/provider.dart';
 
 class RecipeListScreen extends StatefulWidget {
   final String categoryId;
-  RecipeListScreen({this.categoryId});
+  const RecipeListScreen({Key? key, required this.categoryId}) : super(key: key);
 
   @override
   _RecipeListScreenState createState() => _RecipeListScreenState();
@@ -42,50 +42,51 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 children: <Widget>[
                   Text(
                     "${category.name} Catalogue",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 23,
                     ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      RaisedButton(
+                      ElevatedButton(
                         onPressed: () async {
-                          // print('before pop');
-                          // print('after? pop');
-                          await Provider.of<Categories>(context)
+                          await Provider.of<Categories>(context, listen: false)
                               .removeCategory(category.id);
                           Navigator.of(context).pop();
-                          // selfRestartState();
                         },
-                        color: Colors.white,
-                        elevation: 6,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 6,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
                         ),
-                        child: Text(
+                        child: const Text(
                           "Remove Category",
                           style: TextStyle(
                             color: Color(0xffF6C2A4),
                           ),
                         ),
                       ),
-                      RaisedButton(
+                      ElevatedButton(
                         onPressed: () {
-                          Provider.of<AppState>(context)
+                          Provider.of<AppState>(context, listen: false)
                               .setIsOngoingCategoryNew(false);
-                          Provider.of<AppState>(context)
+                          Provider.of<AppState>(context, listen: false)
                               .setOngoingCategory(category);
                           Navigator.of(context).pushNamed(
                             RouterNames.NewCategoryScreen,
                           );
                         },
-                        color: Colors.white,
-                        elevation: 6,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 6,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
                         ),
-                        child: Text(
+                        child: const Text(
                           "Edit Category",
                           style: TextStyle(
                             color: Color(0xffF6C2A4),
@@ -94,7 +95,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       ),
                     ],
                   ),
-                  RaisedButton(
+                  ElevatedButton(
                     onPressed: () {
                       Provider.of<AppState>(context, listen: false)
                           .setIsOngoingRecipeNew(true);
@@ -107,12 +108,14 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                         ],
                       );
                     },
-                    color: Colors.white,
-                    elevation: 6,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      elevation: 6,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
                     ),
-                    child: Text(
+                    child: const Text(
                       "add a new dish",
                       style: TextStyle(
                         color: Color(0xffF6C2A4),
@@ -122,7 +125,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 ],
               ),
             ),
-            (recipes.length <= 0)
+            (recipes.isEmpty)
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -141,23 +144,21 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             );
                           },
                           elevation: 2.0,
-                          // fillColor: Color(0xffF6C2A4),
+                          shape: const CircleBorder(),
                           child: Icon(
                             Icons.note_add,
                             size: MediaQuery.of(context).size.width * 0.4,
                             color: Colors.black54,
                           ),
-                          // padding: EdgeInsets.all(15.0),
-                          shape: CircleBorder(),
                         ),
-                        SizedBox(height: 20),
-                        Text("No Recipes Created",
+                        const SizedBox(height: 20),
+                        const Text("No Recipes Created",
                             style: TextStyle(
                               color: Colors.black54,
                               fontSize: 26,
                             )),
-                        SizedBox(height: 10),
-                        Text(
+                        const SizedBox(height: 10),
+                        const Text(
                             "Jot down a recipe or a dish, add images, describe the instruction and more.",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -170,25 +171,24 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                 : Column(
                     children: <Widget>[
                       _swiperBuilder(context, category, recipes),
-                      SizedBox(
-                        height: 50,
-                      ),
-                      RaisedButton(
+                      const SizedBox(height: 50),
+                      ElevatedButton(
                         onPressed: () {
                           // Navigator.of(context).pushNamed(
                           //   RouterNames.RecipeDetailsScreen,
                           //   arguments: recipes[index].id,
                           // );
-                          // ;
                         },
-                        padding: EdgeInsets.symmetric(vertical: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                          backgroundColor: hexToColor(category.colorCode),
                         ),
-                        color: hexToColor(category.colorCode),
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.6,
-                          child: Text(
+                          child: const Text(
                             "Read More",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -207,7 +207,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
   }
 
   Widget _swiperBuilder(BuildContext context, category, recipes) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: Swiper(
         onTap: (index) {

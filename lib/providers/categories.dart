@@ -23,64 +23,79 @@ class Categories with ChangeNotifier {
   }
 
   // ################################ SETTERS ################################ //
-  void setCategories(categories) {
+  void setCategories(List<Category> categories) {  // Fixed parameter type
     _categories = categories;
+    notifyListeners();
   }
 
-  void setUserCategories(userCategories) {
+  void setUserCategories(List<Category> userCategories) {  // Fixed parameter type
     _categories = userCategories;
+    notifyListeners();
   }
 
   // ################################ FUNCTIONS ################################ //
 
-  void fetchAndSetPredefinedCategories() async {
+  Future<void> fetchAndSetPredefinedCategories() async {  // Added Future<void>
     String url = constants.url + "/Categories/default";
     try {
-      final response = await http.get(url);
-      for (var category in json.decode(response.body)) {
+      final response = await http.get(Uri.parse(url));  // Fixed: Added Uri.parse()
+      final List<dynamic> categoriesData = json.decode(response.body);
+
+      _predefinedCategories.clear(); // Clear existing data
+      for (var category in categoriesData) {
         var categoryToAdd = Category.fromMap(category);
-        _predefinedCategories.add(categoryToAdd);
+        if (categoryToAdd != null) {  // Null check since fromMap can return null
+          _predefinedCategories.add(categoryToAdd);
+        }
       }
+      notifyListeners();
     } catch (error) {
       print("error: $error");
     }
   }
 
-  void fetchAndSetCategories(String userId) async {
+  Future<void> fetchAndSetCategories(String userId) async {  // Added Future<void>
     String url = constants.url + "/Categories";
     try {
-      final response = await http.get(url);
-      for (var category in json.decode(response.body)) {
+      final response = await http.get(Uri.parse(url));  // Fixed: Added Uri.parse()
+      final List<dynamic> categoriesData = json.decode(response.body);
+
+      _categories.clear(); // Clear existing data
+      for (var category in categoriesData) {
         if (category["userId"] == userId) {
           var categoryToAdd = Category.fromMap(category);
-          _categories.add(categoryToAdd);
+          if (categoryToAdd != null) {  // Null check since fromMap can return null
+            _categories.add(categoryToAdd);
+          }
         }
       }
+      notifyListeners();
     } catch (error) {
       print("error: $error");
     }
   }
 
   Category getCategoryById(String catId) {
-    final cat = _categories.singleWhere((element) => element.id == catId);
-    //When we will have the option to share recipes online, we will have to implement this with api, but only for recipes. This version is MVP 1 consistent
-    return cat;
+    return _categories.singleWhere((element) => element.id == catId);
   }
 
   Future<void> removeCategory(String id) async {
     String url = constants.url + "/Categories/$id";
     _categories.removeWhere((item) => item.id == id);
     notifyListeners();
-    await http.delete(url);
+    try {
+      await http.delete(Uri.parse(url));  // Fixed: Added Uri.parse()
+    } catch (error) {
+      print("Error deleting category: $error");
+    }
   }
 
-  Future<Category> editCategory(Category editedCategory, String userId) async {
-    //TODO: extract IP as constant on top of file (when server changes etc)
-    String url = constants.url + "/Categories/";
-    url = url + editedCategory.id;
+  Future<Category?> editCategory(Category editedCategory, String userId) async {  // Made return type nullable
+    String url = constants.url + "/Categories/${editedCategory.id}";
 
     FormData formData;
-    // TODO: check if coming from server in a more roboust way, probably extract this into a constant at top of file
+
+    // TODO: check if coming from server in a more robust way, probably extract this into a constant at top of file
     if (editedCategory.photo.startsWith("https://delicat")) {
       formData = FormData.fromMap({
         "userId": userId,
@@ -89,9 +104,10 @@ class Categories with ChangeNotifier {
         "photo": editedCategory.photo,
       });
     } else {
-      final mimeTypeData =
-          lookupMimeType(editedCategory.photo, headerBytes: [0xFF, 0xD8])
-              .split('/');
+      // Fixed: Handle nullable mime type
+      final mimeType = lookupMimeType(editedCategory.photo, headerBytes: [0xFF, 0xD8]);
+      final mimeTypeData = mimeType?.split('/') ?? ['image', 'jpeg'];
+
       formData = FormData.fromMap({
         "userId": userId,
         "name": editedCategory.name,
@@ -103,24 +119,32 @@ class Categories with ChangeNotifier {
         )
       });
     }
+
     try {
       var response = await Dio().patch(url, data: formData);
-      Category newCategory = Category.fromMap(response.data);
+      Category? newCategory = Category.fromMap(response.data);
 
-      final existingCategoryIndex =
-          _categories.indexWhere((element) => element.id == editedCategory.id);
-      _categories[existingCategoryIndex] = newCategory;
-      notifyListeners();
-      return newCategory;
+      if (newCategory != null) {
+        final existingCategoryIndex =
+            _categories.indexWhere((element) => element.id == editedCategory.id);
+        if (existingCategoryIndex != -1) {
+          _categories[existingCategoryIndex] = newCategory;
+        }
+        notifyListeners();
+        return newCategory;
+      }
     } catch (error) {
       print("error: $error");
     }
+    return null;  // Return null on error
   }
 
-  Future<Category> createCategory(Category category, String userId) async {
+  Future<Category?> createCategory(Category category, String userId) async {  // Made return type nullable
     String url = constants.url + "/Categories";
-    final mimeTypeData =
-        lookupMimeType(category.photo, headerBytes: [0xFF, 0xD8]).split('/');
+
+    // Fixed: Handle nullable mime type
+    final mimeType = lookupMimeType(category.photo, headerBytes: [0xFF, 0xD8]);
+    final mimeTypeData = mimeType?.split('/') ?? ['image', 'jpeg'];
 
     FormData formData = FormData.fromMap({
       "userId": userId,
@@ -132,21 +156,25 @@ class Categories with ChangeNotifier {
         contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
       )
     });
+
     try {
       var response = await Dio().post(url, data: formData);
+      Category? newCategory = Category.fromMap(response.data);
 
-      Category category = Category.fromMap(response.data);
-      _categories.add(category);
-      notifyListeners();
-      return category;
+      if (newCategory != null) {
+        _categories.add(newCategory);
+        notifyListeners();
+        return newCategory;
+      }
     } catch (error) {
       // TODO: have toaster messages on the UI
       // toaster.show('There was an issue creating the category');
       print("error: $error");
     }
+    return null;  // Return null on error
   }
 
-  void addCategory(Category category, String userId) async {
+  Future<void> addCategory(Category category, String userId) async {
     String url = constants.url + "/Categories";
 
     FormData formData = FormData.fromMap({
@@ -155,16 +183,28 @@ class Categories with ChangeNotifier {
       "colorCode": category.colorCode,
       "photo_url": category.photo,
     });
+
     try {
       var response = await Dio().post(url, data: formData);
-      response.data['default'] = false;
-      response.data['userId'] = userId;
-      Category category = Category.fromMap(response.data);
-      _categories.add(category);
-      notifyListeners();
+
+      // Add default properties to response data
+      final responseData = response.data as Map<String, dynamic>;
+      responseData['default'] = false;
+      responseData['userId'] = userId;
+
+      Category? newCategory = Category.fromMap(responseData);
+      if (newCategory != null) {
+        _categories.add(newCategory);
+        notifyListeners();
+      }
     } catch (error) {
-      print("error: ${error.message}");
-      print("error: ${error.request}");
+      // Fixed: Handle Dio errors properly
+      if (error is DioException) {
+        print("Dio error: ${error.message}");
+        print("Dio error request: ${error.requestOptions.path}");
+      } else {
+        print("error: $error");
+      }
     }
   }
 }

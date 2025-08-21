@@ -31,7 +31,7 @@ class Router {
       case RouterNames.UnsplashScreen:
         return MaterialPageRoute(builder: (_) => UnsplashScreen());
       case RouterNames.RecipePhotoSelectionScreen:
-        List<String> arguments = settings.arguments;
+        List<String> arguments = settings.arguments as List<String>? ?? <String>[];
         String colorCode = arguments[0];
         String name = arguments[1];
         String catId = arguments[2];
@@ -55,12 +55,12 @@ class Router {
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
 
       case RouterNames.RecipeListScreen:
-        String categoryId = settings.arguments;
+        String categoryId = settings.arguments as String? ?? '';
         return MaterialPageRoute(
             builder: (_) => RecipeListScreen(categoryId: categoryId));
         break;
       case RouterNames.NewRecipeScreen:
-        List arguments = settings.arguments;
+        List<String> arguments = settings.arguments as List<String>? ?? <String>[];
         String categoryName = arguments[0];
         String categoryColorCode = arguments[1];
         String categoryId = arguments[2];
@@ -71,7 +71,7 @@ class Router {
                   categoryId: categoryId,
                 ));
       case RouterNames.RecipeDetailsScreen:
-        String recipeId = settings.arguments;
+        String recipeId = settings.arguments as String? ?? '';
         return MaterialPageRoute(
           builder: (_) => RecipeDetailsScreen(recipeId: recipeId),
         );

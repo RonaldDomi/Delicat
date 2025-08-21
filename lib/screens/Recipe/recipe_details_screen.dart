@@ -13,7 +13,7 @@ import '../../models/recipe.dart';
 
 class RecipeDetailsScreen extends StatefulWidget {
   final String recipeId;
-  RecipeDetailsScreen({this.recipeId});
+  const RecipeDetailsScreen({Key? key, required this.recipeId}) : super(key: key);
 
   @override
   _RecipeDetailsScreenState createState() => _RecipeDetailsScreenState();
@@ -24,13 +24,11 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   Widget build(BuildContext context) {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
     recipe.isFavorite = false;
-    final category =
-        Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
+    final category = Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
 
     void onEdit() {
       Provider.of<AppState>(context, listen: false).setOngoingRecipe(recipe);
-      Provider.of<AppState>(context, listen: false)
-          .setIsOngoingRecipeNew(false);
+      Provider.of<AppState>(context, listen: false).setIsOngoingRecipeNew(false);
 
       Navigator.of(context).pushNamed(
         RouterNames.NewRecipeScreen,
@@ -45,11 +43,10 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Color(0x44000000),
+        backgroundColor: const Color(0x44000000),
         elevation: 0,
         actions: <Widget>[
           PopupMenuButton(
-            // child: Icon(Icons.more_horiz),
             color: Colors.transparent,
             itemBuilder: (context) {
               return [
@@ -60,14 +57,13 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                       onEdit();
                     },
                     elevation: 2.0,
-                    fillColor: Color(0xffF6C2A4),
-                    child: Icon(
+                    fillColor: const Color(0xffF6C2A4),
+                    shape: const CircleBorder(),
+                    child: const Icon(
                       Icons.edit,
                       size: 35.0,
                       color: Colors.black,
                     ),
-                    // padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
                   ),
                 ),
                 PopupMenuItem(
@@ -75,16 +71,13 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                   child: RawMaterialButton(
                     onPressed: () {},
                     elevation: 2.0,
-                    fillColor: Color(0xffF6C2A4),
+                    fillColor: const Color(0xffF6C2A4),
+                    shape: const CircleBorder(),
                     child: Icon(
-                      recipe.isFavorite
-                          ? Icons.favorite
-                          : Icons.favorite_border,
+                      recipe.isFavorite ? Icons.favorite : Icons.favorite_border,
                       size: 35.0,
                       color: Colors.white,
                     ),
-                    // padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
                   ),
                 ),
                 PopupMenuItem(
@@ -93,13 +86,12 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                     onPressed: () {},
                     elevation: 2.0,
                     fillColor: hexToColor(category.colorCode),
-                    child: Icon(
+                    shape: const CircleBorder(),
+                    child: const Icon(
                       Icons.receipt,
                       size: 35.0,
                       color: Colors.black,
                     ),
-                    // padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
                   ),
                 ),
                 PopupMenuItem(
@@ -108,13 +100,12 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                     onPressed: () {},
                     elevation: 2.0,
                     fillColor: hexToColor(category.colorCode),
-                    child: Icon(
+                    shape: const CircleBorder(),
+                    child: const Icon(
                       Icons.home,
                       size: 35.0,
                       color: Colors.black,
                     ),
-                    // padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
                   ),
                 ),
                 PopupMenuItem(
@@ -123,13 +114,12 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                     onPressed: () {},
                     elevation: 2.0,
                     fillColor: hexToColor(category.colorCode),
-                    child: Icon(
+                    shape: const CircleBorder(),
+                    child: const Icon(
                       Icons.share,
                       size: 35.0,
                       color: Colors.black,
                     ),
-                    // padding: EdgeInsets.all(15.0),
-                    shape: CircleBorder(),
                   ),
                 ),
               ];
@@ -147,17 +137,14 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  // image: AssetImage("assets/photos/veggies.jpg"),
-                  image: NetworkImage(
-                    recipe.photo,
-                  ),
+                  image: NetworkImage(recipe.photo!),
                 ),
               ),
             ),
           SlidingUpPanel(
             minHeight: 40,
             maxHeight: MediaQuery.of(context).size.height * 0.5,
-            borderRadius: BorderRadius.only(
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(18.0),
               topRight: Radius.circular(18.0),
             ),
@@ -174,7 +161,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
       removeTop: true,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(18.0),
             topRight: Radius.circular(18.0),
           ),
@@ -197,7 +184,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               padding: const EdgeInsets.all(30.0),
               child: Text(
                 recipe.description,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                 ),
               ),

@@ -35,7 +35,7 @@ class RecipeListItem extends StatelessWidget {
                 image: DecorationImage(
                   fit: BoxFit.cover,
                   image: NetworkImage(
-                    recipe.photo,
+                    recipe.photo!,
                   ),
                   // image: AssetImage(
                   //   recipe.photo,

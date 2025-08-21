@@ -14,7 +14,12 @@ class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
   final String categoryColorCode;
   final String categoryId;
-  NewRecipeScreen({this.categoryName, this.categoryColorCode, this.categoryId});
+  const NewRecipeScreen({
+    Key? key,
+    required this.categoryName,
+    required this.categoryColorCode,
+    required this.categoryId
+  }) : super(key: key);
 
   @override
   _NewRecipeScreenState createState() => _NewRecipeScreenState();
@@ -28,52 +33,47 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _descriptionController = TextEditingController();
   final _descriptionNode = FocusNode();
 
-  String imageFilePath;
-  Recipe recipe;
+  String imageFilePath = '';
+  Recipe? recipe;
   bool isNew = true;
 
   @override
   void didChangeDependencies() async {
-    imageFilePath = Provider.of<AppState>(context).currentNewRecipePhoto;
+    imageFilePath = Provider.of<AppState>(context).currentNewRecipePhoto ?? '';
     isNew = await Provider.of<AppState>(context).isOngoingRecipeNew;
     recipe = Provider.of<AppState>(context).ongoingRecipe;
+
     if (isNew) {
-      Provider.of<AppState>(context).zeroCurrentRecipePhoto();
-      Provider.of<AppState>(context).zeroOngoingRecipe();
+      Provider.of<AppState>(context, listen: false).zeroCurrentRecipePhoto();
+      Provider.of<AppState>(context, listen: false).zeroOngoingRecipe();
       imageFilePath = '';
       _nameController.text = "";
       _descriptionController.text = "";
     }
 
-    if (isNew == false || recipe != Recipe()) {
-      if (imageFilePath == null) {
+    if (isNew == false && recipe != null) {
+      if (imageFilePath.isEmpty) {
         imageFilePath = '';
       }
-      if (recipe.name != null) {
-        _nameController.text = recipe.name;
-      }
-      if (recipe.description != null) {
-        _descriptionController.text = recipe.description;
-      }
-      if (recipe.photo != null) {
-        imageFilePath = recipe.photo;
+      _nameController.text = recipe!.name;
+      _descriptionController.text = recipe!.description;
+      if (recipe!.photo != null) {
+        imageFilePath = recipe!.photo!;
       }
     }
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
   }
 
   void navigateToPhoto() {
     Recipe ongoingRecipe = Recipe(
+      id: isNew ? '' : (recipe?.id ?? ''),
       name: _nameController.text,
       description: _descriptionController.text,
       isFavorite: false,
       categoryId: widget.categoryId,
     );
-    if (isNew == false) {
-      ongoingRecipe.id = recipe.id;
-    }
-    Provider.of<AppState>(context).setOngoingRecipe(ongoingRecipe);
+
+    Provider.of<AppState>(context, listen: false).setOngoingRecipe(ongoingRecipe);
 
     Navigator.of(context).pushNamed(
       RouterNames.RecipePhotoSelectionScreen,
@@ -87,7 +87,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
   Widget setUpButtonChild() {
     if (_buttonState == 0) {
-      return new Text(
+      return Text(
         (!isNew) ? "Update recipe" : "Add a recipe",
         style: const TextStyle(
           color: Colors.white,
@@ -95,11 +95,11 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
         ),
       );
     } else if (_buttonState == 1) {
-      return CircularProgressIndicator(
+      return const CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
       );
     } else {
-      return Icon(Icons.check, color: Colors.white);
+      return const Icon(Icons.check, color: Colors.white);
     }
   }
 
@@ -107,51 +107,46 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     setState(() {
       _buttonState = 1;
     });
-
     _saveForm();
-
-    // Timer(Duration(milliseconds: 3300), () {
-    //   setState(() {
-    //     _buttonState = 2;
-    //   });
-    // });
   }
 
   void _saveForm() async {
-    final isValid = _form.currentState.validate();
+    final isValid = _form.currentState?.validate() ?? false;
     if (!isValid) {
       return;
     }
-    if (imageFilePath == "") {
+    if (imageFilePath.isEmpty) {
       return;
     }
+
     var recipeFavorite = false;
-    if (recipe.isFavorite) {
+    if (recipe?.isFavorite == true) {
       recipeFavorite = true;
     }
+
     Recipe newRecipe = Recipe(
+      id: isNew ? '' : (recipe?.id ?? ''),
       name: _nameController.text,
       description: _descriptionController.text,
       isFavorite: recipeFavorite,
       photo: imageFilePath,
       categoryId: widget.categoryId,
     );
+
     if (isNew == false) {
-      newRecipe.id = recipe.id;
       Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
     } else if (isNew) {
-      await Provider.of<Recipes>(context, listen: false)
-          .addRecipe(newRecipe, widget.categoryId);
+      Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe, widget.categoryId);
     }
-    Provider.of<AppState>(context).zeroCurrentRecipePhoto();
-    Provider.of<AppState>(context).zeroOngoingRecipe();
+
+    Provider.of<AppState>(context, listen: false).zeroCurrentRecipePhoto();
+    Provider.of<AppState>(context, listen: false).zeroOngoingRecipe();
     imageFilePath = '';
     _nameController.text = "";
     _descriptionController.text = "";
 
     Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
         arguments: newRecipe.categoryId);
-    return;
   }
 
   @override
@@ -173,20 +168,21 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                     children: <Widget>[
                       Text(
                         "${widget.categoryName} Catalogue",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 23,
                         ),
                       ),
-                      RaisedButton(
-                        disabledTextColor: Color(0xffD6D6D6),
-                        disabledColor: Colors.white,
-                        disabledElevation: 6,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: const Color(0xffD6D6D6),
+                          backgroundColor: Colors.white,
+                          elevation: 6,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
                         ),
-                        child: Text(
-                          "add a new recipe",
-                        ),
+                        onPressed: null,
+                        child: const Text("add a new recipe"),
                       )
                     ],
                   ),
@@ -195,13 +191,13 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                   width: MediaQuery.of(context).size.width * 0.8,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(29),
-                    color: Color(0xffF9F9F9),
+                    color: const Color(0xffF9F9F9),
                   ),
-                  padding: EdgeInsets.all(10),
-                  margin: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
                   child: Column(
                     children: <Widget>[
-                      Text(
+                      const Text(
                         "New Recipe",
                         style: TextStyle(
                           fontSize: 23,
@@ -212,42 +208,32 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         padding: const EdgeInsets.all(18.0),
                         child: Row(
                           children: <Widget>[
-                            Container(
-                              // width: 80.0,
-                              child: Text(
-                                "Recipe Name",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xff927C6C),
-                                ),
+                            const Text(
+                              "Recipe Name",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Color(0xff927C6C),
                               ),
                             ),
-                            SizedBox(width: 20),
-                            Container(
+                            const SizedBox(width: 20),
+                            SizedBox(
                               width: MediaQuery.of(context).size.width / 2.4,
                               child: TextFormField(
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: hexToColor("#F1EBE8"),
-                                  // contentPadding: const EdgeInsets.only(
-                                  //     left: 14.0, bottom: 9.0, top: 9.0),
-                                  // focusedBorder: OutlineInputBorder(
-                                  //   borderSide: BorderSide(color: Colors.white),
-                                  //   borderRadius: BorderRadius.circular(25.7),
-                                  // ),
                                   enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.white),
+                                    borderSide: const BorderSide(color: Colors.white),
                                     borderRadius: BorderRadius.circular(25.7),
                                   ),
                                 ),
                                 controller: _nameController,
                                 textInputAction: TextInputAction.next,
                                 onFieldSubmitted: (value) {
-                                  FocusScope.of(context)
-                                      .requestFocus(_descriptionNode);
+                                  FocusScope.of(context).requestFocus(_descriptionNode);
                                 },
                                 validator: (value) {
-                                  if (value.isEmpty) {
+                                  if (value?.isEmpty ?? true) {
                                     return 'Please provide a value.';
                                   }
                                   return null;
@@ -257,10 +243,8 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                           ],
                         ),
                       ),
-                      Divider(
-                        thickness: 3,
-                      ),
-                      Text(
+                      const Divider(thickness: 3),
+                      const Text(
                         "Details",
                         style: TextStyle(
                           fontSize: 25,
@@ -272,7 +256,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                           filled: true,
                           fillColor: hexToColor("#F1EBE8"),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
+                            borderSide: const BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(25.7),
                           ),
                         ),
@@ -281,22 +265,20 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         controller: _descriptionController,
                         focusNode: _descriptionNode,
                         validator: (value) {
-                          if (value.isEmpty) {
+                          if (value?.isEmpty ?? true) {
                             return 'Please provide a value.';
                           }
                           return null;
                         },
                       ),
-                      SizedBox(height: 21),
-                      Divider(
-                        thickness: 3,
-                      ),
-                      SizedBox(height: 21),
-                      if (imageFilePath == "")
-                        Center(
+                      const SizedBox(height: 21),
+                      const Divider(thickness: 3),
+                      const SizedBox(height: 21),
+                      if (imageFilePath.isEmpty)
+                        const Center(
                           child: Text("Please select one of the photos"),
                         ),
-                      if (imageFilePath != "")
+                      if (imageFilePath.isNotEmpty)
                         Row(
                           children: <Widget>[
                             Container(
@@ -306,26 +288,26 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: (isNew = true)
-                                      ? FileImage(File(imageFilePath))
-                                      : NetworkImage(imageFilePath),
-                                  // ? NetworkImage(imageFilePath)
-                                  // : FileImage(File(imageFilePath)),
+                                  image: imageFilePath.startsWith('http')
+                                      ? NetworkImage(imageFilePath) as ImageProvider
+                                      : FileImage(File(imageFilePath)),
                                 ),
                               ),
                             ),
-                            RaisedButton(
+                            ElevatedButton(
                               onPressed: () {
                                 setState(() {
                                   imageFilePath = "";
                                 });
                               },
-                              color: hexToColor("#F6C2A4"),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(19.0),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: hexToColor("#F6C2A4"),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(19.0),
+                                ),
+                                elevation: 6,
                               ),
-                              elevation: 6,
-                              child: Text(
+                              child: const Text(
                                 "Remove photo",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -335,16 +317,18 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                             ),
                           ],
                         ),
-                      RaisedButton(
+                      ElevatedButton(
                         onPressed: () {
                           navigateToPhoto();
                         },
-                        color: hexToColor("#F6C2A4"),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(19.0),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: hexToColor("#F6C2A4"),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(19.0),
+                          ),
+                          elevation: 6,
                         ),
-                        elevation: 6,
-                        child: Text(
+                        child: const Text(
                           "Choose Photo",
                           style: TextStyle(
                             color: Colors.white,
@@ -352,28 +336,26 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 21),
-                      Divider(
-                        thickness: 3,
-                      ),
-                      Divider(
-                        thickness: 3,
-                      ),
-                      SizedBox(height: 21),
-                      RaisedButton(
+                      const SizedBox(height: 21),
+                      const Divider(thickness: 3),
+                      const Divider(thickness: 3),
+                      const SizedBox(height: 21),
+                      ElevatedButton(
                         onPressed: () {
                           if (_buttonState != 1) {
                             animateButton();
                           }
                         },
-                        color: hexToColor("#F6C2A4"),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(19.0),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: hexToColor("#F6C2A4"),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(19.0),
+                          ),
+                          elevation: 6,
                         ),
-                        elevation: 6,
                         child: setUpButtonChild(),
                       ),
-                      SizedBox(height: 21),
+                      const SizedBox(height: 21),
                     ],
                   ),
                 ),

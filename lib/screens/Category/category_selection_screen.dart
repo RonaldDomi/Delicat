@@ -9,7 +9,7 @@ import 'package:delicat/providers/categories.dart';
 import 'package:provider/provider.dart';
 
 class CatSelectionScreen extends StatefulWidget {
-  const CatSelectionScreen({Key key}) : super(key: key);
+  const CatSelectionScreen({Key? key}) : super(key: key);
 
   @override
   _CatSelectionScreenState createState() => _CatSelectionScreenState();
@@ -18,13 +18,17 @@ class CatSelectionScreen extends StatefulWidget {
 class _CatSelectionScreenState extends State<CatSelectionScreen> {
   List<Category> selectedCategories = [];
 
-  bool isFirstTime;
+  bool isFirstTime = true;
   bool showButton = false;
 
   void addCategoryToSelection(Category category) {
-    var existingItem = selectedCategories.firstWhere(
-        (itemToCheck) => itemToCheck.id == category.id,
-        orElse: () => null);
+    Category? existingItem;
+    try{
+      var existingItem = selectedCategories.firstWhere(
+              (itemToCheck) => itemToCheck.id == category.id);
+    } catch (e) {
+      existingItem = null;
+    }
 
     if (existingItem == null) {
       selectedCategories.add(category);

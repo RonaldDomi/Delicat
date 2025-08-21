@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 class User with ChangeNotifier {
-  String _currentUserId;
+  String _currentUserId = '';
 
   String get getCurrentUserId {
     return _currentUserId;
@@ -17,7 +17,7 @@ class User with ChangeNotifier {
     _currentUserId = newId;
   }
 
-  void createAndSetNewUser() async {
+  Future<void> createAndSetNewUser() async {
     String url = constants.url + '/user';
     String username = Uuid().v4();
     username = username.split("-").join("");
@@ -27,7 +27,7 @@ class User with ChangeNotifier {
       "password": "password",
     });
     try {
-      var response = await http.post(url, headers: headers, body: body);
+      var response = await http.post(Uri.parse(url), headers: headers, body: body);
       _currentUserId = json.decode(response.body)["_id"];
     } catch (error) {
       print("error: $error");

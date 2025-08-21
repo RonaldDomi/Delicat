@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class BottomNavigationBarWidget extends StatelessWidget {
   final Function handleTap;
 
-  BottomNavigationBarWidget(this.handleTap);
+  const BottomNavigationBarWidget(this.handleTap, {Key? key}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +17,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
         BottomNavigationBarItem(
           backgroundColor: Color(0xffF6C2A4),
           icon: RawMaterialButton(
+            onPressed: () {},
             elevation: 3,
             padding: EdgeInsets.all(10),
             fillColor: Color(0xffF6C2A4),
@@ -26,7 +27,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             ),
             shape: CircleBorder(),
           ),
-          title: Text('Categories'),
+          label: 'Categories',
         ),
         BottomNavigationBarItem(
           backgroundColor: Theme.of(context).primaryColor,
@@ -38,9 +39,10 @@ class BottomNavigationBarWidget extends StatelessWidget {
               Icons.favorite_border,
               color: Colors.white,
             ),
+            onPressed: () {},
             shape: CircleBorder(),
           ),
-          title: Text('Favorites'),
+          label: 'Favorites',
         ),
         BottomNavigationBarItem(
           backgroundColor: Theme.of(context).primaryColor,
@@ -48,17 +50,19 @@ class BottomNavigationBarWidget extends StatelessWidget {
             elevation: 3,
             padding: EdgeInsets.all(10),
             fillColor: Color(0xffF6C2A4),
+            onPressed: () {},
             child: Icon(
               Icons.search,
               color: Colors.white,
             ),
             shape: CircleBorder(),
           ),
-          title: Text('Search'),
+          label: 'Search',
         ),
         BottomNavigationBarItem(
           backgroundColor: Theme.of(context).primaryColor,
           icon: RawMaterialButton(
+            onPressed: () {},
             elevation: 3,
             padding: EdgeInsets.all(10),
             fillColor: Color(0xffF6C2A4),
@@ -68,7 +72,7 @@ class BottomNavigationBarWidget extends StatelessWidget {
             ),
             shape: CircleBorder(),
           ),
-          title: Text('Search'),
+          label: 'Search',
         ),
       ],
     );

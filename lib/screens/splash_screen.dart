@@ -11,6 +11,8 @@ import '../providers/user.dart';
 import '../routeNames.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
@@ -23,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // await Provider.of<Recipes>(context).fetchAndSetAllRecipes();
     // await Provider.of<Recipes>(context).fetchAndSetFavoriteRecipes();
     // Provider.of<Categories>(context).fetchAndSetCategories();
-    await Provider.of<Categories>(context).fetchAndSetPredefinedCategories();
+    await Provider.of<Categories>(context, listen: false).fetchAndSetPredefinedCategories();
     // ###########
     // when you open the app, either if it is the first time or not, we should get the predefined categories
     // -- when it is the first time, to let the user chose
@@ -32,38 +34,41 @@ class _SplashScreenState extends State<SplashScreen> {
 
     //TODO: understand how to wait for function to finish before moving on. understand more general concepts about async in dart/flutter
 
-    Future.delayed(Duration(seconds: 1), () async {
+    Future.delayed(const Duration(seconds: 1), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool firstTime = prefs.getBool('firstTime');
+      bool? firstTime = prefs.getBool('firstTime'); // Made nullable
       //
       //
       // firstTime = null;
       if (firstTime != null && !firstTime) {
         // set the button functionality variable to false
         // ###########
-        Provider.of<AppState>(context).setFirstTime(false);
+        Provider.of<AppState>(context, listen: false).setFirstTime(false);
 
         // get the current user
         // ###########
-        String userId = prefs.getString('userId');
-        Provider.of<User>(context).setCurrentUserId(userId);
-        // get all categories, then set only the user categories
-        // ###########
-        await Provider.of<Categories>(context).fetchAndSetCategories(userId);
-        List<Category> myCategories =
-            Provider.of<Categories>(context).categories;
+        String? userId = prefs.getString('userId'); // Made nullable
+        if (userId != null) { // Added null check
+          Provider.of<User>(context, listen: false).setCurrentUserId(userId);
+          // get all categories, then set only the user categories
+          // ###########
+          await Provider.of<Categories>(context, listen: false).fetchAndSetCategories(userId);
+          List<Category> myCategories =
+              Provider.of<Categories>(context, listen: false).categories;
 
-        //TODO: may be interesting to call all category recipes at once, and wait until they're finish in parallel, instead of having sequential
-        // execution. understand more async behavior in dart
-        for (Category myCat in myCategories) {
-          await Provider.of<Recipes>(context).getSetRecipesByCategory(myCat.id);
+          //TODO: may be interesting to call all category recipes at once, and wait until they're finish in parallel, instead of having sequential
+          // execution. understand more async behavior in dart
+          for (Category myCat in myCategories) {
+            // Fixed: getSetRecipesByCategory returns void, so we don't await its result
+            Provider.of<Recipes>(context, listen: false).getSetRecipesByCategory(myCat.id);
+          }
+
+          // var _recipes = Provider.of<Recipes>(context).recipes;
+          // print("all recipes: $_recipes");
+
+          Navigator.of(context)
+              .pushReplacementNamed(RouterNames.CategoriesScreen);
         }
-
-        // var _recipes = Provider.of<Recipes>(context).recipes;
-        // print("all recipes: $_recipes");
-
-        Navigator.of(context)
-            .pushReplacementNamed(RouterNames.CategoriesScreen);
         //
         //
       } else if (firstTime == null) {
@@ -77,12 +82,12 @@ class _SplashScreenState extends State<SplashScreen> {
         // provider variable, for the functionality of the button
         // the button should be shown when at least one predefined category is selected
         // ###########
-        Provider.of<AppState>(context).setFirstTime(true);
+        Provider.of<AppState>(context, listen: false).setFirstTime(true);
 
         // create a new user in the backend
         // ###########
-        await Provider.of<User>(context).createAndSetNewUser();
-        String newUser = Provider.of<User>(context).getCurrentUserId;
+        await Provider.of<User>(context, listen: false).createAndSetNewUser();
+        String newUser = Provider.of<User>(context, listen: false).getCurrentUserId;
         // set the user in the localstorage
         // ###########
         prefs.setString('userId', newUser);
@@ -98,41 +103,37 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xffF1EBE8),
         ),
-        child: Container(
-          child: Row(
-            children: <Widget>[
-              CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: Container(
-                  child: Image(
-                    image: AssetImage("assets/logo/logo.png"),
+        child: Row(
+          children: <Widget>[
+            const CircleAvatar(
+              backgroundColor: Colors.transparent,
+              radius: 100.0,
+              child: Image(
+                image: AssetImage("assets/logo/logo.png"),
+              ),
+            ),
+            const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "delicacy",
+                  style: TextStyle(
+                    fontSize: 28,
                   ),
                 ),
-                radius: 100.0,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    "delicacy",
-                    style: TextStyle(
-                      fontSize: 28,
-                    ),
+                Text(
+                  "catalogue",
+                  style: TextStyle(
+                    fontSize: 28,
                   ),
-                  Text(
-                    "catalogue",
-                    style: TextStyle(
-                      fontSize: 28,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
+                ),
+              ],
+            )
+          ],
         ),
       ),
     );

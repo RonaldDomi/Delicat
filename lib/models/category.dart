@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:delicat/models/recipe.dart';
 import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/providers/recipes.dart';
-import 'package:tinycolor/tinycolor.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class Category {
   final String id;
@@ -14,14 +14,24 @@ class Category {
   final String colorLightCode;
 
   Category({
-    this.id,
-    this.userId,
-    this.recipes,
-    this.name,
-    this.photo,
-    this.colorCode,
-    this.colorLightCode,
+    required this.id,
+    required this.userId,
+    required this.recipes,
+    required this.name,
+    required this.photo,
+    required this.colorCode,
+    required this.colorLightCode,
   });
+
+  // Named constructor for empty category
+  Category.empty()
+      : id = '',
+        userId = '',
+        name = '',
+        recipes = <Recipe>[],
+        photo = '',
+        colorCode = '#000000',
+        colorLightCode = '#CCCCCC';
 
   Map<String, dynamic> toMap() {
     return {
@@ -36,18 +46,16 @@ class Category {
   }
 
   factory Category.fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-
     return Category(
-      id: map['_id'],
-      userId: map['userId'],
-      photo: map['photo'],
-      recipes: [],
-      name: map['name'],
-      colorCode: map['colorCode'],
-      colorLightCode: colorToHex(TinyColor(
-        hexToColor("${map["colorCode"]}"),
-      ).brighten(14).color),
+      id: map['_id'] as String? ?? '',
+      userId: map['userId'] as String? ?? '',
+      photo: map['photo'] as String? ?? '',
+      recipes: <Recipe>[],
+      name: map['name'] as String? ?? '',
+      colorCode: map['colorCode'] as String? ?? '#000000',
+      colorLightCode: colorToHex(TinyColor.fromColor(
+        hexToColor("${map["colorCode"] ?? '#000000'}"),
+      ).lighten(20).color),
     );
   }
 
@@ -58,7 +66,6 @@ class Category {
 
   @override
   String toString() {
-    // TODO: implement toString
-    return "{id: ${this.id}, userId: ${this.userId}, name: ${this.name}, color: ${this.colorCode}, photo: ${this.photo}, recipes: ${this.recipes}}";
+    return "{id: $id, userId: $userId, name: $name, color: $colorCode, photo: $photo, recipes: $recipes}";
   }
 }

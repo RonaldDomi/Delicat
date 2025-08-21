@@ -1,7 +1,7 @@
 import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/models/category.dart';
 import 'package:flutter/material.dart';
-import 'package:tinycolor/tinycolor.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class CategoryItem extends StatelessWidget {
@@ -42,7 +42,7 @@ class CategoryItem extends StatelessWidget {
           clipper: TitleClipper(),
           child: Container(
             decoration: BoxDecoration(
-              color: TinyColor(hexToColor(category.colorCode)).darken(14).color,
+              color: TinyColor.fromColor(hexToColor(category.colorCode)).darken(14).color,
               // color: Colors.red,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(24),

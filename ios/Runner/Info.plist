@@ -41,5 +41,15 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+
+	<key>NSCameraUsageDescription</key>
+    <string>This app needs camera access to take photos of your recipes</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>This app needs photo library access to select images for your recipes</string>
+
 </dict>
 </plist>

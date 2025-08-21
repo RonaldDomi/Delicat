@@ -3,16 +3,16 @@ import 'package:delicat/models/recipe.dart';
 import 'package:flutter/material.dart';
 
 class AppState with ChangeNotifier {
-  Category _ongoingCategory = Category();
-  Recipe _ongoingRecipe = Recipe();
+  Category _ongoingCategory = Category.empty();
+  Recipe _ongoingRecipe = Recipe.empty();
 
   String _currentUnsplashPhoto = "";
   String _currentNewRecipePhoto = "";
 
-  bool _isOngoingRecipeNew;
-  bool _isOngoingCategoryNew;
+  bool _isOngoingRecipeNew = true;
+  bool _isOngoingCategoryNew = true;
 
-  bool _firstTime;
+  bool _firstTime = true;
 
   // ################################ SETTERS ################################ //
   // ################################ SETTERS ################################ //
@@ -51,11 +51,11 @@ class AppState with ChangeNotifier {
   }
 
   void zeroOngoingCategory() {
-    _ongoingCategory = Category();
+    _ongoingCategory = Category.empty();
   }
 
   void zeroOngoingRecipe() {
-    _ongoingRecipe = Recipe();
+    _ongoingRecipe = Recipe.empty();
   }
 
   void setFirstTime(bool firstTime) {

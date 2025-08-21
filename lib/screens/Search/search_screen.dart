@@ -15,17 +15,17 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   TextEditingController editingController = TextEditingController();
-  var items = List<Recipe>();
+  var items = <Recipe>[];
 
   @override
   Widget build(BuildContext context) {
     List<Recipe> recipes = Provider.of<Recipes>(context).recipes;
 
     void filterSearchResults(String query) {
-      List<Recipe> dummySearchList = List<Recipe>();
+      List<Recipe> dummySearchList = <Recipe>[];
       dummySearchList.addAll(recipes);
       if (query.isNotEmpty) {
-        List<Recipe> dummyListData = List<Recipe>();
+        List<Recipe> dummyListData = <Recipe>[];
         dummySearchList.forEach((item) {
           if (item.name.contains(query)) {
             dummyListData.add(item);

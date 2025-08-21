@@ -2,7 +2,7 @@ import 'package:delicat/helpers/imagesHelperFunctions.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:provider/provider.dart';
 
 class UnsplashScreen extends StatefulWidget {
@@ -90,17 +90,17 @@ class _UnsplashnState extends State<UnsplashScreen> {
                       ),
                     ),
                   ),
-                  RaisedButton(
-                    child: Text('Next'),
-                    onPressed: () {
-                      String newPhoto = items[currentIndex].toString();
-                      Provider.of<AppState>(context)
-                          .setCurrentUnsplashPhoto(newPhoto);
-                      Navigator.of(context).pushNamed(
-                        RouterNames.NewCategoryScreen,
-                      );
-                    },
-                  ),
+                  // RaisedButton(
+                  //   child: Text('Next'),
+                  //   onPressed: () {
+                  //     String newPhoto = items[currentIndex].toString();
+                  //     Provider.of<AppState>(context)
+                  //         .setCurrentUnsplashPhoto(newPhoto);
+                  //     Navigator.of(context).pushNamed(
+                  //       RouterNames.NewCategoryScreen,
+                  //     );
+                  //   },
+                  // ),
                 ],
               )
           ],

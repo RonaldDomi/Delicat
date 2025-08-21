@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-String url = 'http://80.240.26.139';
+// String url = 'http://80.240.26.139';
 const List<Color> availableColors = [
   Colors.red,
   Colors.pink,
