@@ -42,8 +42,16 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
    print('screen categories screen');
    List<Category> allCategories = Provider.of<Categories>(context).categories;
    return ScreenScaffold(
-     child: WillPopScope(
-       onWillPop: _onBackPressed,
+     child: PopScope(
+       canPop: false,
+       onPopInvokedWithResult: (didPop, result) async {
+         if (!didPop) {
+           final shouldPop = await _onBackPressed();
+           if (shouldPop && context.mounted) {
+             Navigator.of(context).pop();
+           }
+         }
+       },
        child: Container(
          color: const Color(0xffF1EBE8),
          child: Column(

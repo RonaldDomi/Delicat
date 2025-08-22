@@ -121,14 +121,25 @@ class Categories with ChangeNotifier {
   }
 
   Category getCategoryById(String catId) {
-    return _categories.singleWhere((element) => element.id == catId);
+    try {
+      return _categories.singleWhere(
+        (element) => element.id == catId,
+        orElse: () => throw Exception('Category with id $catId not found'),
+      );
+    } catch (e) {
+      throw Exception('Error finding category: $e');
+    }
   }
 
   Future<void> removeCategory(String id) async {
-    final db = await database;
-    await db.delete('categories', where: 'id = ?', whereArgs: [id]);
-    _categories.removeWhere((item) => item.id == id);
-    notifyListeners();
+    try {
+      final db = await database;
+      await db.delete('categories', where: 'id = ?', whereArgs: [id]);
+      _categories.removeWhere((item) => item.id == id);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to remove category: $e');
+    }
   }
 
   Future<Category?> editCategory(Category editedCategory) async {
@@ -156,32 +167,36 @@ class Categories with ChangeNotifier {
   }
 
   Future<Category?> createCategory(Category category) async {
-    final db = await database;
+    try {
+      final db = await database;
 
-    // Generate unique ID
-    final String id = const Uuid().v4();
-    final categoryWithId = Category(
-      id: id,
-      userId: 'local',
-      recipes: [],
-      name: category.name,
-      photo: category.photo,
-      colorCode: category.colorCode,
-      colorLightCode: category.colorLightCode,
-    );
+      // Generate unique ID
+      final String id = const Uuid().v4();
+      final categoryWithId = Category(
+        id: id,
+        userId: 'local',
+        recipes: [],
+        name: category.name,
+        photo: category.photo,
+        colorCode: category.colorCode,
+        colorLightCode: category.colorLightCode,
+      );
 
-    await db.insert('categories', {
-      'id': categoryWithId.id,
-      'name': categoryWithId.name,
-      'photo': categoryWithId.photo,
-      'colorCode': categoryWithId.colorCode,
-      'colorLightCode': categoryWithId.colorLightCode,
-      'createdAt': DateTime.now().millisecondsSinceEpoch,
-    });
+      await db.insert('categories', {
+        'id': categoryWithId.id,
+        'name': categoryWithId.name,
+        'photo': categoryWithId.photo,
+        'colorCode': categoryWithId.colorCode,
+        'colorLightCode': categoryWithId.colorLightCode,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      });
 
-    _categories.add(categoryWithId);
-    notifyListeners();
-    return categoryWithId;
+      _categories.add(categoryWithId);
+      notifyListeners();
+      return categoryWithId;
+    } catch (e) {
+      throw Exception('Failed to create category: $e');
+    }
   }
 
   Future<void> addPredefinedCategory(Category category) async {

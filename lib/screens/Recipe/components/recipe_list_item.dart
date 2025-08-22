@@ -10,7 +10,7 @@ class RecipeListItem extends StatelessWidget {
   String categoryColorCode;
   Function restartParent;
 
-  RecipeListItem(@required this.recipe, @required this.categoryColorCode,
+  RecipeListItem(this.recipe, this.categoryColorCode,
       this.restartParent);
 
   @override

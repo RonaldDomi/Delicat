@@ -24,8 +24,10 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   void addCategoryToSelection(Category category) {
     Category? existingItem;
     try{
-      var existingItem = selectedCategories.firstWhere(
-              (itemToCheck) => itemToCheck.id == category.id);
+      existingItem = selectedCategories.firstWhere(
+        (itemToCheck) => itemToCheck.id == category.id,
+        orElse: () => throw Exception('Category not found'),
+      );
     } catch (e) {
       existingItem = null;
     }

@@ -52,9 +52,11 @@ class Recipes with ChangeNotifier {
       _favoriteRecipes.removeAt(existingIndex);
       getRecipeById(recipeId).isFavorite = false;
     } else {
-      _favoriteRecipes.add(
-        _recipes.firstWhere((recipe) => recipe.id == recipeId),
+      final recipe = _recipes.firstWhere(
+        (recipe) => recipe.id == recipeId,
+        orElse: () => throw Exception('Recipe with id $recipeId not found'),
       );
+      _favoriteRecipes.add(recipe);
       getRecipeById(recipeId).isFavorite = true;
     }
 
@@ -109,39 +111,47 @@ class Recipes with ChangeNotifier {
   }
 
   Future<void> addRecipe(Recipe recipe, String categoryId) async {
-    final db = await database;
+    try {
+      final db = await database;
 
-    // Generate unique ID
-    final String id = const Uuid().v4();
-    final recipeWithId = Recipe(
-      id: id,
-      name: recipe.name,
-      photo: recipe.photo,
-      description: recipe.description,
-      isFavorite: recipe.isFavorite,
-      categoryId: categoryId,
-    );
+      // Generate unique ID
+      final String id = const Uuid().v4();
+      final recipeWithId = Recipe(
+        id: id,
+        name: recipe.name,
+        photo: recipe.photo,
+        description: recipe.description,
+        isFavorite: recipe.isFavorite,
+        categoryId: categoryId,
+      );
 
-    await db.insert('recipes', {
-      'id': recipeWithId.id,
-      'name': recipeWithId.name,
-      'photo': recipeWithId.photo,
-      'description': recipeWithId.description,
-      'isFavorite': recipeWithId.isFavorite ? 1 : 0,
-      'categoryId': categoryId,
-      'createdAt': DateTime.now().millisecondsSinceEpoch,
-    });
+      await db.insert('recipes', {
+        'id': recipeWithId.id,
+        'name': recipeWithId.name,
+        'photo': recipeWithId.photo,
+        'description': recipeWithId.description,
+        'isFavorite': recipeWithId.isFavorite ? 1 : 0,
+        'categoryId': categoryId,
+        'createdAt': DateTime.now().millisecondsSinceEpoch,
+      });
 
-    _recipes.add(recipeWithId);
-    notifyListeners();
+      _recipes.add(recipeWithId);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to add recipe: $e');
+    }
   }
 
   Future<void> removeRecipe(String id) async {
-    final db = await database;
-    await db.delete('recipes', where: 'id = ?', whereArgs: [id]);
-    _recipes.removeWhere((item) => item.id == id);
-    _favoriteRecipes.removeWhere((item) => item.id == id);
-    notifyListeners();
+    try {
+      final db = await database;
+      await db.delete('recipes', where: 'id = ?', whereArgs: [id]);
+      _recipes.removeWhere((item) => item.id == id);
+      _favoriteRecipes.removeWhere((item) => item.id == id);
+      notifyListeners();
+    } catch (e) {
+      throw Exception('Failed to remove recipe: $e');
+    }
   }
 
   Future<void> editRecipe(Recipe editedRecipe) async {
@@ -194,6 +204,13 @@ class Recipes with ChangeNotifier {
   }
 
   Recipe getRecipeById(String recipeId) {
-    return _recipes.singleWhere((element) => element.id == recipeId);
+    try {
+      return _recipes.singleWhere(
+        (element) => element.id == recipeId,
+        orElse: () => throw Exception('Recipe with id $recipeId not found'),
+      );
+    } catch (e) {
+      throw Exception('Error finding recipe: $e');
+    }
   }
 }

@@ -14,7 +14,7 @@ import 'package:delicat/helpers/image_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -467,9 +467,14 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                       ),
                       SizedBox(
                         height: 150,
-                        child: BlockPicker(
-                          pickerColor: pickerColor,
-                          availableColors: constants.availableColors,
+                        child: ColorPicker(
+                          color: pickerColor,
+                          pickersEnabled: const <ColorPickerType, bool>{
+                            ColorPickerType.primary: false,
+                            ColorPickerType.accent: false,
+                            ColorPickerType.wheel: false,
+                            ColorPickerType.custom: true,
+                          },
                           onColorChanged: changeColor,
                         ),
                       ),

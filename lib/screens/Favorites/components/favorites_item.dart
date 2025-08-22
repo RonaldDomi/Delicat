@@ -21,7 +21,7 @@ class FavoriteItem extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            hexToColor(category.colorCode).withOpacity(0.7),
+            hexToColor(category.colorCode).withValues(alpha: 0.7),
             hexToColor(category.colorCode),
           ],
           begin: Alignment.topLeft,
