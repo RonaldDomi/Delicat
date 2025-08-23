@@ -50,7 +50,6 @@ class Router {
         return MaterialPageRoute(
           builder: (_) => NewCategoryScreen(),
         );
-        break;
       case RouterNames.CategoriesSelectionScreen:
         return MaterialPageRoute(builder: (_) => CatSelectionScreen());
 
@@ -58,7 +57,6 @@ class Router {
         String categoryId = settings.arguments as String? ?? '';
         return MaterialPageRoute(
             builder: (_) => RecipeListScreen(categoryId: categoryId));
-        break;
       case RouterNames.NewRecipeScreen:
         List<String> arguments = settings.arguments as List<String>? ?? <String>[];
         String categoryName = arguments[0];

@@ -1,11 +1,4 @@
 import 'package:delicat/models/category.dart';
-// Remove these imports:
-// import 'package:delicat/constants.dart' as constants;
-// import 'dart:convert';
-// import 'package:http_parser/http_parser.dart';
-// import 'package:dio/dio.dart';
-// import 'package:mime/mime.dart';
-// import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -61,7 +54,7 @@ class Categories with ChangeNotifier {
   // ################################ LOCAL FUNCTIONS ################################ //
 
   Future<void> loadPredefinedCategories() async {
-    // Create hardcoded predefined categories instead of fetching from server
+    // Load hardcoded predefined categories for the app
     _predefinedCategories = [
       Category(
         id: 'breakfast',
@@ -200,7 +193,7 @@ class Categories with ChangeNotifier {
   }
 
   Future<void> addPredefinedCategory(Category category) async {
-    // Copy predefined category to user's categories
+    // Add a predefined category to user's personal categories
     final newCategory = Category(
       id: const Uuid().v4(),
       userId: 'local',

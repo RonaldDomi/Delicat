@@ -1,9 +1,6 @@
 import 'package:delicat/helpers/imagesHelperFunctions.dart';
-import 'package:delicat/providers/app_state.dart';
-import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
-import 'package:provider/provider.dart';
 
 class UnsplashScreen extends StatefulWidget {
   @override

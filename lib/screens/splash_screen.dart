@@ -25,7 +25,6 @@ class _SplashScreenState extends State<SplashScreen> {
     // Load predefined categories (hardcoded, no server call)
     await Provider.of<Categories>(context, listen: false).loadPredefinedCategories();
 
-    //TODO: understand how to wait for function to finish before moving on. understand more general concepts about async in dart/flutter
 
     Future.delayed(const Duration(seconds: 1), () async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -63,9 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
         // Create a new local user (no server call)
         await Provider.of<User>(context, listen: false).createAndSetNewUser();
-        String newUser = Provider.of<User>(context, listen: false).getCurrentUserId;
 
-        print("created new local userId for you: $newUser");
 
         Navigator.of(context)
             .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);

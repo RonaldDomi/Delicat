@@ -25,7 +25,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("Screen recipe list");
     final category =
         Provider.of<Categories>(context).getCategoryById(widget.categoryId);
     final recipes =

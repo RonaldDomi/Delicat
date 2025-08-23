@@ -1,11 +1,4 @@
 import 'package:delicat/models/recipe.dart';
-// Remove these imports:
-// import 'package:delicat/constants.dart' as constants;
-// import 'dart:convert';
-// import 'package:dio/dio.dart';
-// import 'package:mime/mime.dart';
-// import 'package:http_parser/http_parser.dart';
-// import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';

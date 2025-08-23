@@ -4,15 +4,12 @@ import 'package:delicat/models/category.dart';
 import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/categories.dart';
-import 'package:delicat/providers/user.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/widgets/screen_scaffold.dart';
-import 'package:delicat/constants.dart' as constants;
 import 'package:delicat/helpers/image_storage_helper.dart';
 import 'package:delicat/helpers/image_helper.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:tinycolor2/tinycolor2.dart';
@@ -45,7 +42,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   void didChangeDependencies() {
-    postedImage = Provider.of<AppState>(context).currentNewCategoryPhoto ?? '';
+    postedImage = Provider.of<AppState>(context).currentNewCategoryPhoto;
     category = Provider.of<AppState>(context).ongoingCategory;
     _isNew = Provider.of<AppState>(context).isOngoingCategoryNew;
     _colorCodeController.text = colorHelper.colorToHex(Colors.red);
@@ -122,15 +119,13 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     }
   }
 
-  // Placeholder for saveImageFromWeb - you'll need to implement this
+  /// Placeholder for image download functionality  
+  /// Currently disabled as Unsplash integration is not active
   Future<File> saveImageFromWeb(String imageUrl) async {
-    // TODO: Implement image download functionality
-    // For now, return a dummy file or throw an error
     throw UnimplementedError('Image download functionality not implemented yet');
   }
 
   Future<void> _saveForm() async {
-    print("submitting, with postedImage : $postedImage");
 
     // Fixed: Null-safe form validation
     final isValid = _form.currentState?.validate() ?? false;
@@ -185,7 +180,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         colorLightCode: colorHelper.colorToHex(newCodeLight),
         photo: img,
       );
-      String userId = Provider.of<User>(context, listen: false).getCurrentUserId;
 
       await Provider.of<Categories>(context, listen: false)
           .editCategory(editedCategory);
@@ -215,7 +209,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         photo: finalImagePath,
         colorLightCode: colorHelper.colorToHex(newCodeLight),
       );
-      String userId = Provider.of<User>(context, listen: false).getCurrentUserId;
       await Provider.of<Categories>(context, listen: false)
           .createCategory(newCategory);
 

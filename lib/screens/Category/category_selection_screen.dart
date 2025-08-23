@@ -1,6 +1,5 @@
 import 'package:delicat/models/category.dart';
 import 'package:delicat/providers/app_state.dart';
-import 'package:delicat/providers/user.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/Category/components/predefined_categoy_item.dart';
 import 'package:flutter/material.dart';
@@ -63,8 +62,6 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     // add it to our user
     // #############
     var myCats = Provider.of<Categories>(context).categories;
-    String userId = Provider.of<User>(context).getCurrentUserId;
-    print('at least i have a userId: $userId');
     // add what category is not in our list
     for (Category cat in selectedCategories) {
       if (myCats.length != 0) {
@@ -85,7 +82,9 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
         .pushReplacementNamed(RouterNames.GeneratingCategoriesScreen);
   }
 
+  @override
   void didChangeDependencies() async {
+    super.didChangeDependencies();
     isFirstTime = Provider.of<AppState>(context).firstTime;
     if (!isFirstTime) {
       showButton = true;

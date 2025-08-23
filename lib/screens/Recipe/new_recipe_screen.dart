@@ -8,8 +8,6 @@ import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
-import 'dart:io';
 
 class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
@@ -40,7 +38,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
   @override
   void didChangeDependencies() async {
-    imageFilePath = Provider.of<AppState>(context).currentNewRecipePhoto ?? '';
+    imageFilePath = Provider.of<AppState>(context).currentNewRecipePhoto;
     isNew = await Provider.of<AppState>(context).isOngoingRecipeNew;
     recipe = Provider.of<AppState>(context).ongoingRecipe;
 

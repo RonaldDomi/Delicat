@@ -3,7 +3,7 @@ import 'package:delicat/screens/widgets/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
 class ScreenScaffold extends StatelessWidget {
-  Widget child;
+  final Widget child;
 
   ScreenScaffold({required this.child});
 

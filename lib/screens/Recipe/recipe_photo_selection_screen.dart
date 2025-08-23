@@ -1,7 +1,5 @@
 import 'dart:io';
 import 'package:delicat/providers/app_state.dart';
-import 'package:flutter/rendering.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -107,33 +105,6 @@ class _RecipePhotoSelectionScreenState
         textAlign: TextAlign.center,
       );
     }
-  }
-
-  // Removed getLostData method as it's deprecated in newer image_picker versions
-
-  Future<void> _displayPickImageDialog(BuildContext context, VoidCallback onPick) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Add optional parameters'),
-            actions: <Widget>[
-              // Fixed: FlatButton is deprecated, use TextButton
-              TextButton(
-                child: const Text('CANCEL'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                  child: const Text('PICK'),
-                  onPressed: () {
-                    onPick();
-                    Navigator.of(context).pop();
-                  }),
-            ],
-          );
-        });
   }
 
   @override

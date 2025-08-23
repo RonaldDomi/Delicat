@@ -37,8 +37,6 @@ class Recipe {
   }
 
   factory Recipe.fromMap(Map<String, dynamic> map) {
-    if (map == null) throw ArgumentError('Map cannot be null');
-
     return Recipe(
       id: map['_id'] as String? ?? '',
       categoryId: map['categoryId'] as String? ?? '',
@@ -55,7 +53,6 @@ class Recipe {
 
   @override
   String toString() {
-    // TODO: implement toString
-    return "{id: ${this.id}, name: ${this.name}, photo: ${this.photo}, description: ${this.description}, isFavorite: ${this.isFavorite}, categoryid: ${this.categoryId}}";
+    return "{id: $id, name: $name, photo: $photo, description: $description, isFavorite: $isFavorite, categoryId: $categoryId}";
   }
 }

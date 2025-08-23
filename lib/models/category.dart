@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:delicat/models/recipe.dart';
 import 'package:delicat/helpers/colorHelperFunctions.dart';
-import 'package:delicat/providers/recipes.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
 class Category {

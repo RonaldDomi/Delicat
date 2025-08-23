@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class PredefinedCategoryItem extends StatefulWidget {
   final Category category;
   final Function addCategoryToSelection;
-  bool isSelected;
+  final bool isSelected;
 
   PredefinedCategoryItem(
       this.category, this.addCategoryToSelection, this.isSelected) {}
@@ -14,10 +14,18 @@ class PredefinedCategoryItem extends StatefulWidget {
 }
 
 class _PredefinedCategoryItemState extends State<PredefinedCategoryItem> {
+  late bool _isSelected;
+
+  @override
+  void initState() {
+    super.initState();
+    _isSelected = widget.isSelected;
+  }
+
   selectCategory() {
     setState(() {
       widget.addCategoryToSelection(widget.category);
-      widget.isSelected = !widget.isSelected;
+      _isSelected = !_isSelected;
     });
   }
 
@@ -36,7 +44,7 @@ class _PredefinedCategoryItemState extends State<PredefinedCategoryItem> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: widget.isSelected ? Color(0xffF6C2A4) : Colors.white,
+                color: _isSelected ? Color(0xffF6C2A4) : Colors.white,
               ),
             ),
           )),

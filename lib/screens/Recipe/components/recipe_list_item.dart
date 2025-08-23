@@ -6,19 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RecipeListItem extends StatelessWidget {
-  Recipe recipe;
-  String categoryColorCode;
-  Function restartParent;
+  final Recipe recipe;
+  final String categoryColorCode;
+  final Function restartParent;
 
   RecipeListItem(this.recipe, this.categoryColorCode,
       this.restartParent);
 
   @override
   Widget build(BuildContext context) {
-    // recipe = Recipe();
     final isFavorite =
         Provider.of<Recipes>(context).isRecipeFavorite(recipe.id);
-    // final isFavorite = false;
     return Card(
       elevation: 6,
       color: hexToColor(categoryColorCode),
@@ -106,6 +104,5 @@ class RecipeListItem extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

@@ -3,7 +3,6 @@ import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 import 'package:delicat/helpers/image_helper.dart';
 
 import '../../providers/recipes.dart';
