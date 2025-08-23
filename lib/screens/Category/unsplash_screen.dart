@@ -1,4 +1,5 @@
 import 'package:delicat/helpers/imagesHelperFunctions.dart';
+import 'package:delicat/helpers/message_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
 
@@ -25,11 +26,22 @@ class _UnsplashnState extends State<UnsplashScreen> {
                 setState(() {
                   isLoading = true;
                 });
-                var photos = await searchImage(value);
-                setState(() {
-                  isLoading = false;
-                  items = photos;
-                });
+                try {
+                  var photos = await searchImage(value);
+                  setState(() {
+                    isLoading = false;
+                    items = photos;
+                  });
+                  if (photos.isEmpty) {
+                    MessageHelper.showInfo(context, 'No images found for "$value"');
+                  }
+                } catch (e) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                  MessageHelper.showError(context, 'Failed to search images. Please check your connection.');
+                  print('Error searching images: $e');
+                }
               },
               decoration: InputDecoration(
                 filled: true,
@@ -105,4 +117,5 @@ class _UnsplashnState extends State<UnsplashScreen> {
       ),
     );
   }
+
 }

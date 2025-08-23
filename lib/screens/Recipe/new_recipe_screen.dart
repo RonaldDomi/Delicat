@@ -4,6 +4,7 @@ import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:delicat/helpers/image_helper.dart';
+import 'package:delicat/helpers/message_helper.dart';
 import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
@@ -64,24 +65,39 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
   }
 
   void navigateToPhoto() {
-    Recipe ongoingRecipe = Recipe(
-      id: isNew ? '' : (recipe?.id ?? ''),
-      name: _nameController.text,
-      description: _descriptionController.text,
-      isFavorite: false,
-      categoryId: widget.categoryId,
-    );
+    try {
+      // Validate form before navigation
+      if (_nameController.text.trim().isEmpty) {
+        MessageHelper.showError(context, 'Please enter a recipe name');
+        return;
+      }
+      if (_descriptionController.text.trim().isEmpty) {
+        MessageHelper.showError(context, 'Please enter a recipe description');
+        return;
+      }
 
-    Provider.of<AppState>(context, listen: false).setOngoingRecipe(ongoingRecipe);
+      Recipe ongoingRecipe = Recipe(
+        id: isNew ? '' : (recipe?.id ?? ''),
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        isFavorite: false,
+        categoryId: widget.categoryId,
+      );
 
-    Navigator.of(context).pushNamed(
-      RouterNames.RecipePhotoSelectionScreen,
-      arguments: [
-        widget.categoryColorCode,
-        widget.categoryName,
-        widget.categoryId
-      ],
-    );
+      Provider.of<AppState>(context, listen: false).setOngoingRecipe(ongoingRecipe);
+
+      Navigator.of(context).pushNamed(
+        RouterNames.RecipePhotoSelectionScreen,
+        arguments: [
+          widget.categoryColorCode,
+          widget.categoryName,
+          widget.categoryId
+        ],
+      );
+    } catch (e) {
+      MessageHelper.showError(context, 'Failed to proceed. Please try again.');
+      print('Error navigating to photo selection: $e');
+    }
   }
 
   Widget setUpButtonChild() {
@@ -110,33 +126,40 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
   }
 
   void _saveForm() async {
-    final isValid = _form.currentState?.validate() ?? false;
-    if (!isValid) {
-      return;
-    }
-    if (imageFilePath.isEmpty) {
-      return;
-    }
+    try {
+      final isValid = _form.currentState?.validate() ?? false;
+      if (!isValid) {
+        setState(() { _buttonState = 0; });
+        MessageHelper.showError(context, 'Please fill in all required fields');
+        return;
+      }
+      if (imageFilePath.isEmpty) {
+        setState(() { _buttonState = 0; });
+        MessageHelper.showError(context, 'Please select a photo for your recipe');
+        return;
+      }
 
-    var recipeFavorite = false;
-    if (recipe?.isFavorite == true) {
-      recipeFavorite = true;
-    }
+      var recipeFavorite = false;
+      if (recipe?.isFavorite == true) {
+        recipeFavorite = true;
+      }
 
-    Recipe newRecipe = Recipe(
-      id: isNew ? '' : (recipe?.id ?? ''),
-      name: _nameController.text,
-      description: _descriptionController.text,
-      isFavorite: recipeFavorite,
-      photo: imageFilePath,
-      categoryId: widget.categoryId,
-    );
+      Recipe newRecipe = Recipe(
+        id: isNew ? '' : (recipe?.id ?? ''),
+        name: _nameController.text.trim(),
+        description: _descriptionController.text.trim(),
+        isFavorite: recipeFavorite,
+        photo: imageFilePath,
+        categoryId: widget.categoryId,
+      );
 
-    if (isNew == false) {
-      Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
-    } else if (isNew) {
-      Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe, widget.categoryId);
-    }
+      if (isNew == false) {
+        await Provider.of<Recipes>(context, listen: false).editRecipe(newRecipe);
+        MessageHelper.showSuccess(context, 'Recipe updated successfully!');
+      } else if (isNew) {
+        await Provider.of<Recipes>(context, listen: false).addRecipe(newRecipe, widget.categoryId);
+        MessageHelper.showSuccess(context, 'Recipe created successfully!');
+      }
 
     Provider.of<AppState>(context, listen: false).zeroCurrentRecipePhoto();
     Provider.of<AppState>(context, listen: false).zeroOngoingRecipe();
@@ -144,9 +167,19 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     _nameController.text = "";
     _descriptionController.text = "";
 
-    Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
-        arguments: newRecipe.categoryId);
+      setState(() { _buttonState = 2; });
+      
+      Future.delayed(const Duration(seconds: 1), () {
+        Navigator.of(context).pushReplacementNamed(RouterNames.RecipeListScreen,
+            arguments: newRecipe.categoryId);
+      });
+    } catch (e) {
+      setState(() { _buttonState = 0; });
+      MessageHelper.showError(context, 'Failed to save recipe. Please try again.');
+      print('Error saving recipe: $e');
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -22,13 +22,14 @@ class _SplashScreenState extends State<SplashScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    // Load predefined categories (hardcoded, no server call)
-    await Provider.of<Categories>(context, listen: false).loadPredefinedCategories();
+    try {
+      // Load predefined categories (hardcoded, no server call)
+      await Provider.of<Categories>(context, listen: false).loadPredefinedCategories();
 
-
-    Future.delayed(const Duration(seconds: 1), () async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      bool? firstTime = prefs.getBool('firstTime');
+      Future.delayed(const Duration(seconds: 1), () async {
+        try {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          bool? firstTime = prefs.getBool('firstTime');
 
       if (firstTime != null && !firstTime) {
         // NOT first time - load existing local data
@@ -67,7 +68,21 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.of(context)
             .pushReplacementNamed(RouterNames.CategoriesSelectionScreen);
       }
-    });
+        } catch (e) {
+          // Handle initialization errors gracefully
+          print('Error during app initialization: $e');
+          // Navigate to main screen anyway, app can function without perfect initialization
+          Navigator.of(context)
+              .pushReplacementNamed(RouterNames.CategoriesScreen);
+        }
+      });
+    } catch (e) {
+      // Handle category loading errors
+      print('Error loading categories: $e');
+      // Continue anyway - app can function without predefined categories
+      Navigator.of(context)
+          .pushReplacementNamed(RouterNames.CategoriesScreen);
+    }
   }
 
   @override

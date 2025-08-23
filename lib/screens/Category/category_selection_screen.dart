@@ -2,6 +2,7 @@ import 'package:delicat/models/category.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/Category/components/predefined_categoy_item.dart';
+import 'package:delicat/helpers/message_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:delicat/providers/categories.dart';
@@ -51,12 +52,13 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
   }
 
   void submitCategories(context) {
-    // the button functionaily is over, so change the variable
-    // #############
-    if (isFirstTime) {
-      Provider.of<AppState>(context).setFirstTime(false);
-      isFirstTime = false;
-    }
+    try {
+      // the button functionaily is over, so change the variable
+      // #############
+      if (isFirstTime) {
+        Provider.of<AppState>(context).setFirstTime(false);
+        isFirstTime = false;
+      }
 
     // get our cats and our userId
     // add it to our user
@@ -80,7 +82,12 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     }
     Navigator.of(context)
         .pushReplacementNamed(RouterNames.GeneratingCategoriesScreen);
+    } catch (e) {
+      MessageHelper.showError(context, 'Failed to setup categories. Please try again.');
+      print('Error setting up categories: $e');
+    }
   }
+
 
   @override
   void didChangeDependencies() async {

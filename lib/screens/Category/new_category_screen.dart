@@ -8,6 +8,7 @@ import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/widgets/screen_scaffold.dart';
 import 'package:delicat/helpers/image_storage_helper.dart';
 import 'package:delicat/helpers/image_helper.dart';
+import 'package:delicat/helpers/message_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -106,15 +107,24 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   void _onImageButtonPressed(ImageSource source) async {
     try {
+      MessageHelper.showLoading(context, 'Selecting image...');
+      
       // Fixed: Use pickImage correctly
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
+        MessageHelper.showLoading(context, 'Saving image...');
         String localImagePath = await ImageStorageHelper.saveImageLocally(pickedFile);
         setState(() {
           _imageFilePath = localImagePath;
         });
+        MessageHelper.hideLoading(context);
+        MessageHelper.showSuccess(context, 'Image selected successfully!');
+      } else {
+        MessageHelper.hideLoading(context);
       }
     } catch (e) {
+      MessageHelper.hideLoading(context);
+      MessageHelper.showError(context, 'Failed to select image. Please try again.');
       print('Error picking image: $e');
     }
   }
@@ -126,19 +136,22 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   }
 
   Future<void> _saveForm() async {
-
-    // Fixed: Null-safe form validation
-    final isValid = _form.currentState?.validate() ?? false;
-    if (!isValid) {
-      return;
-    }
-    if (_imageFilePath.isNotEmpty && postedImage.isNotEmpty) {
-      return;
-    }
-    if (_imageFilePath.isEmpty && postedImage.isEmpty && _isNew == true) {
-      return;
-    }
-    _form.currentState?.save();
+    try {
+      // Fixed: Null-safe form validation
+      final isValid = _form.currentState?.validate() ?? false;
+      if (!isValid) {
+        MessageHelper.showError(context, 'Please fill in all required fields');
+        return;
+      }
+      if (_imageFilePath.isNotEmpty && postedImage.isNotEmpty) {
+        MessageHelper.showError(context, 'Please select only one image source');
+        return;
+      }
+      if (_imageFilePath.isEmpty && postedImage.isEmpty && _isNew == true) {
+        MessageHelper.showError(context, 'Please select an image for your category');
+        return;
+      }
+      _form.currentState?.save();
 
     // colorCode
     var newCodeLight = TinyColor.fromColor(
@@ -184,6 +197,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       await Provider.of<Categories>(context, listen: false)
           .editCategory(editedCategory);
 
+      MessageHelper.showSuccess(context, 'Category updated successfully!');
       _resetForm();
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
@@ -212,11 +226,18 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       await Provider.of<Categories>(context, listen: false)
           .createCategory(newCategory);
 
+      MessageHelper.showSuccess(context, 'Category created successfully!');
       _resetForm();
       Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
       return;
     }
+    } catch (e) {
+      MessageHelper.showError(context, 'Failed to save category. Please try again.');
+      print('Error saving category: $e');
+    }
   }
+
+
 
   void _resetForm() {
     _imageFilePath = "";
