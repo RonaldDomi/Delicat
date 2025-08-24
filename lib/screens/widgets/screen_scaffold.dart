@@ -18,6 +18,9 @@ class ScreenScaffold extends StatelessWidget {
       case 2:
         Navigator.of(context).pushNamed(RouterNames.SearchScreen);
         break;
+      case 3:
+        Navigator.of(context).pushNamed(RouterNames.CategoriesScreen);
+        break;
       default:
     }
   }
@@ -29,9 +32,10 @@ class ScreenScaffold extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBarWidget(handleTap),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.white,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).pushNamed(RouterNames.CategoriesScreen);
+        },
         child: Image.asset("assets/logo/logo.png"),
-
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );

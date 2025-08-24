@@ -23,7 +23,6 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
-    recipe.isFavorite = false;
     final category = Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
 
     void onEdit() {
@@ -69,7 +68,11 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                 PopupMenuItem(
                   value: 2,
                   child: RawMaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Provider.of<Recipes>(context, listen: false).toggleFavorite(widget.recipeId);
+                      setState(() {});
+                      Navigator.pop(context);
+                    },
                     elevation: 2.0,
                     fillColor: const Color(0xffF6C2A4),
                     shape: const CircleBorder(),
@@ -83,7 +86,9 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                 PopupMenuItem(
                   value: 3,
                   child: RawMaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     elevation: 2.0,
                     fillColor: hexToColor(category.colorCode),
                     shape: const CircleBorder(),
@@ -97,7 +102,12 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                 PopupMenuItem(
                   value: 4,
                   child: RawMaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        RouterNames.CategoriesScreen,
+                        (route) => false,
+                      );
+                    },
                     elevation: 2.0,
                     fillColor: hexToColor(category.colorCode),
                     shape: const CircleBorder(),
@@ -109,9 +119,11 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                   ),
                 ),
                 PopupMenuItem(
-                  value: 4,
+                  value: 5,
                   child: RawMaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     elevation: 2.0,
                     fillColor: hexToColor(category.colorCode),
                     shape: const CircleBorder(),

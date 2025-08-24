@@ -16,63 +16,23 @@ class BottomNavigationBarWidget extends StatelessWidget {
       items: [
         BottomNavigationBarItem(
           backgroundColor: Color(0xffF6C2A4),
-          icon: RawMaterialButton(
-            onPressed: () {},
-            elevation: 3,
-            padding: EdgeInsets.all(10),
-            fillColor: Color(0xffF6C2A4),
-            child: Icon(
-              Icons.home,
-              color: Colors.white,
-            ),
-            shape: CircleBorder(),
-          ),
+          icon: Icon(Icons.home, color: Color(0xffF6C2A4)),
           label: 'Categories',
         ),
         BottomNavigationBarItem(
           backgroundColor: Theme.of(context).primaryColor,
-          icon: RawMaterialButton(
-            elevation: 3,
-            padding: EdgeInsets.all(10),
-            fillColor: Color(0xffF6C2A4),
-            child: Icon(
-              Icons.favorite_border,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-            shape: CircleBorder(),
-          ),
+          icon: Icon(Icons.favorite_border, color: Color(0xffF6C2A4)),
           label: 'Favorites',
         ),
         BottomNavigationBarItem(
           backgroundColor: Theme.of(context).primaryColor,
-          icon: RawMaterialButton(
-            elevation: 3,
-            padding: EdgeInsets.all(10),
-            fillColor: Color(0xffF6C2A4),
-            onPressed: () {},
-            child: Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
-            shape: CircleBorder(),
-          ),
+          icon: Icon(Icons.search, color: Color(0xffF6C2A4)),
           label: 'Search',
         ),
         BottomNavigationBarItem(
           backgroundColor: Theme.of(context).primaryColor,
-          icon: RawMaterialButton(
-            onPressed: () {},
-            elevation: 3,
-            padding: EdgeInsets.all(10),
-            fillColor: Color(0xffF6C2A4),
-            child: Icon(
-              Icons.apps,
-              color: Colors.white,
-            ),
-            shape: CircleBorder(),
-          ),
-          label: 'Search',
+          icon: Icon(Icons.apps, color: Color(0xffF6C2A4)),
+          label: 'Apps',
         ),
       ],
     );

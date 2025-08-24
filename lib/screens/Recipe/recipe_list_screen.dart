@@ -19,6 +19,8 @@ class RecipeListScreen extends StatefulWidget {
 }
 
 class _RecipeListScreenState extends State<RecipeListScreen> {
+  int _currentRecipeIndex = 0;
+  
   void selfRestartState() {
     setState(() {});
   }
@@ -173,10 +175,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       const SizedBox(height: 50),
                       ElevatedButton(
                         onPressed: () {
-                          // Navigator.of(context).pushNamed(
-                          //   RouterNames.RecipeDetailsScreen,
-                          //   arguments: recipes[index].id,
-                          // );
+                          if (recipes.isNotEmpty) {
+                            Navigator.of(context).pushNamed(
+                              RouterNames.RecipeDetailsScreen,
+                              arguments: recipes[_currentRecipeIndex].id,
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 6),
@@ -209,6 +213,11 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: Swiper(
+        onIndexChanged: (index) {
+          setState(() {
+            _currentRecipeIndex = index;
+          });
+        },
         onTap: (index) {
           Navigator.of(context).pushNamed(
             RouterNames.RecipeDetailsScreen,
