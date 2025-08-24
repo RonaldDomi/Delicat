@@ -103,10 +103,7 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                   value: 4,
                   child: RawMaterialButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamedAndRemoveUntil(
-                        RouterNames.CategoriesScreen,
-                        (route) => false,
-                      );
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     elevation: 2.0,
                     fillColor: hexToColor(category.colorCode),

@@ -1,4 +1,3 @@
-import 'package:delicat/screens/Category/categories_screen.dart';
 import 'package:delicat/screens/Category/category_selection_screen.dart';
 import 'package:delicat/screens/Category/generating_categories_screen.dart';
 import 'package:delicat/screens/Category/new_category_screen.dart';
@@ -10,6 +9,7 @@ import 'package:delicat/screens/Recipe/recipe_details_screen.dart';
 import 'package:delicat/screens/Recipe/recipe_list_screen.dart';
 import 'package:delicat/screens/Search/search_screen.dart';
 import 'package:delicat/screens/splash_screen.dart';
+import 'package:delicat/screens/widgets/tab_navigation_scaffold.dart';
 import 'package:delicat/routeNames.dart';
 
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class Router {
         );
       case RouterNames.CategoriesScreen:
         return MaterialPageRoute(
-          builder: (_) => CategoriesScreen(),
+          builder: (_) => TabNavigationScaffold(),
           settings: RouteSettings(name: RouterNames.CategoriesScreen),
         );
 
@@ -38,13 +38,19 @@ class Router {
         return MaterialPageRoute(
             builder: (_) => RecipePhotoSelectionScreen(colorCode, name, catId));
       case RouterNames.FavoritesScreen:
-        return MaterialPageRoute(builder: (_) => FavoritesScreen());
+        return MaterialPageRoute(
+          builder: (_) => FavoritesScreen(),
+          settings: RouteSettings(name: RouterNames.FavoritesScreen),
+        );
       case RouterNames.GeneratingCategoriesScreen:
         return MaterialPageRoute(builder: (_) => GeneratingCategoriesScreen());
       case RouterNames.SplashScreen:
         return MaterialPageRoute(builder: (_) => SplashScreen());
       case RouterNames.SearchScreen:
-        return MaterialPageRoute(builder: (_) => SearchScreen());
+        return MaterialPageRoute(
+          builder: (_) => SearchScreen(),
+          settings: RouteSettings(name: RouterNames.SearchScreen),
+        );
 
       case RouterNames.NewCategoryScreen:
         return MaterialPageRoute(

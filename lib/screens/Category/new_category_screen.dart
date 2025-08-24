@@ -5,7 +5,6 @@ import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:delicat/routeNames.dart';
-import 'package:delicat/screens/widgets/screen_scaffold.dart';
 import 'package:delicat/helpers/image_storage_helper.dart';
 import 'package:delicat/helpers/image_helper.dart';
 import 'package:delicat/helpers/message_helper.dart';
@@ -199,7 +198,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
       MessageHelper.showSuccess(context, 'Category updated successfully!');
       _resetForm();
-      Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
+      Navigator.of(context).popUntil((route) => route.isFirst);
       return;
     } else if (_isNew == true) {
       String finalImagePath = _imageFilePath;
@@ -228,7 +227,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
       MessageHelper.showSuccess(context, 'Category created successfully!');
       _resetForm();
-      Navigator.of(context).pushReplacementNamed(RouterNames.CategoriesScreen);
+      Navigator.of(context).popUntil((route) => route.isFirst);
       return;
     }
     } catch (e) {
@@ -249,8 +248,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenScaffold(
-      child: Container(
+    return Container(
         color: const Color(0xffF1EBE8),
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
@@ -552,7 +550,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
           ),
         ),
-      ),
     );
   }
 }

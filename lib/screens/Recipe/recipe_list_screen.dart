@@ -4,7 +4,6 @@ import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:delicat/screens/Recipe/components/recipe_list_item.dart';
-import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -31,8 +30,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         Provider.of<Categories>(context).getCategoryById(widget.categoryId);
     final recipes =
         Provider.of<Recipes>(context).getRecipesByCategoryId(widget.categoryId);
-    return ScreenScaffold(
-      child: Container(
+    return Container(
         color: hexToColor(category.colorLightCode),
         child: Column(
           children: <Widget>[
@@ -205,7 +203,6 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   ),
           ],
         ),
-      ),
     );
   }
 

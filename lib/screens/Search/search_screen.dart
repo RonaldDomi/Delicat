@@ -3,7 +3,6 @@ import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/Favorites/components/favorites_item.dart';
-import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,8 +43,7 @@ class _SearchScreenState extends State<SearchScreen> {
       }
     }
 
-    return ScreenScaffold(
-      child: Container(
+    return Container(
         color: hexToColor("#BB9982"),
         width: MediaQuery.of(context).size.width,
         child: Column(
@@ -123,7 +121,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
           ],
         ),
-      ),
     );
   }
 }

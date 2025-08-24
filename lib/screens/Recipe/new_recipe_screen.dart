@@ -5,7 +5,6 @@ import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:delicat/helpers/image_helper.dart';
 import 'package:delicat/helpers/message_helper.dart';
-import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -183,8 +182,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScreenScaffold(
-      child: Container(
+    return Container(
         height: MediaQuery.of(context).size.height,
         color: hexToColor(widget.categoryColorCode),
         child: SingleChildScrollView(
@@ -393,7 +391,6 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
             ),
           ),
         ),
-      ),
     );
   }
 }

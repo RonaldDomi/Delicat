@@ -3,7 +3,6 @@ import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/Favorites/components/favorites_item.dart';
-import 'package:delicat/screens/widgets/screen_scaffold.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,15 +13,11 @@ class FavoritesScreen extends StatelessWidget {
     List<Recipe> favoriteRecipes =
         Provider.of<Recipes>(context).favoriteRecipes;
     if (favoriteRecipes.isEmpty) {
-      return ScreenScaffold(
-        child: Center(
-          child: Text('You have no favorites yet - start adding some!'),
-        ),
+      return Center(
+        child: Text('You have no favorites yet - start adding some!'),
       );
     }
-    ;
-    return ScreenScaffold(
-      child: Container(
+    return Container(
         height: MediaQuery.of(context).size.height,
         color: hexToColor("#EED0BE"),
         child: Column(
@@ -72,7 +67,6 @@ class FavoritesScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }

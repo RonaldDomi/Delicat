@@ -3,7 +3,6 @@ import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:delicat/routeNames.dart';
 import 'package:delicat/screens/Category/components/categories_item.dart';
-import 'package:delicat/screens/widgets/screen_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -40,8 +39,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
  @override
  Widget build(BuildContext context) {
    List<Category> allCategories = Provider.of<Categories>(context).categories;
-   return ScreenScaffold(
-     child: PopScope(
+   return PopScope(
        canPop: false,
        onPopInvokedWithResult: (didPop, result) async {
          if (!didPop) {
@@ -121,7 +119,6 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
            ],
          ),
        ),
-     ),
    );
  }
 }
