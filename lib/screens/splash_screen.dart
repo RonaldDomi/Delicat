@@ -19,12 +19,14 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void didChangeDependencies() async {
+  void didChangeDependencies() {
     super.didChangeDependencies();
 
-    try {
-      // Load predefined categories (hardcoded, no server call)
-      await Provider.of<Categories>(context, listen: false).loadPredefinedCategories();
+    // Use post-frame callback to avoid setState during build
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        // Load predefined categories (hardcoded, no server call)
+        await Provider.of<Categories>(context, listen: false).loadPredefinedCategories();
 
       Future.delayed(const Duration(seconds: 1), () async {
         try {
@@ -76,13 +78,14 @@ class _SplashScreenState extends State<SplashScreen> {
               .pushReplacementNamed(RouterNames.CategoriesScreen);
         }
       });
-    } catch (e) {
-      // Handle category loading errors
-      print('Error loading categories: $e');
-      // Continue anyway - app can function without predefined categories
-      Navigator.of(context)
-          .pushReplacementNamed(RouterNames.CategoriesScreen);
-    }
+      } catch (e) {
+        // Handle category loading errors
+        print('Error loading categories: $e');
+        // Continue anyway - app can function without predefined categories
+        Navigator.of(context)
+            .pushReplacementNamed(RouterNames.CategoriesScreen);
+      }
+    });
   }
 
   @override
