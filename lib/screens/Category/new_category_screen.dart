@@ -154,7 +154,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   Widget setUpButtonChild() {
     if (_buttonState == 0) {
       return Text(
-        (!_isNew) ? "Update Category" : "Submit form",
+        (!_isNew) ? "Update Catalog" : "Submit form",
         style: const TextStyle(
           color: Colors.white,
           fontSize: 20.0,
@@ -254,7 +254,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         return false;
       }
       if (_imageFilePath.isEmpty && postedImage.isEmpty && _isNew == true) {
-        MessageHelper.showError(context, 'Please select an image for your category');
+        MessageHelper.showError(context, 'Please select an image for your catalog');
         return false;
       }
       _form.currentState?.save();
@@ -311,7 +311,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       await Provider.of<Categories>(context, listen: false)
           .editCategory(editedCategory);
 
-      MessageHelper.showSuccess(context, 'Category updated successfully!');
+      MessageHelper.showSuccess(context, 'Catalog updated successfully!');
       _resetForm();
       Navigator.of(context).popUntil((route) => route.isFirst);
       return true;
@@ -348,7 +348,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       await Provider.of<Categories>(context, listen: false)
           .createCategory(newCategory);
 
-      MessageHelper.showSuccess(context, 'Category created successfully!');
+      MessageHelper.showSuccess(context, 'Catalog created successfully!');
       _resetForm();
       Navigator.of(context).popUntil((route) => route.isFirst);
       return true;
@@ -395,7 +395,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                   child: Column(
                     children: <Widget>[
                       Text(
-                        (!_isNew) ? "Update Category" : "New Category",
+                        (!_isNew) ? "Update Catalog" : "New Catalog",
                         style: const TextStyle(
                           fontSize: 23,
                           color: Color(0xffBB9982),
@@ -407,7 +407,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             const Text(
-                              "Cat Name",
+                              "Catalog Name",
                               style: TextStyle(
                                 fontSize: 20,
                                 color: Color(0xff927C6C),
@@ -657,7 +657,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                         child: Column(
                           children: [
                             const Text(
-                              "Choose Category Color",
+                              "Choose Catalog Color",
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Color(0xffBB9982),

@@ -112,7 +112,7 @@ class _TabNavigationScaffoldState extends State<TabNavigationScaffold> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home, color: Color(0xffF6C2A4)),
-              label: 'Categories',
+              label: 'Catalogs',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite_border, color: Color(0xffF6C2A4)),

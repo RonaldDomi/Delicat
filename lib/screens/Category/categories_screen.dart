@@ -151,7 +151,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             size: 20,
                           ),
                           label: const Text(
-                            "New Category",
+                            "New Catalog",
                             style: TextStyle(
                               color: Color(0xffF6C2A4),
                               fontWeight: FontWeight.w600,
@@ -194,7 +194,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             ),
                             const SizedBox(height: 30),
                             const Text(
-                              "No Categories Yet",
+                              "No Catalogs Yet",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -203,7 +203,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                             ),
                             const SizedBox(height: 15),
                             const Text(
-                              "Start building your recipe collection\nby creating your first category",
+                              "Start building your recipe collection\nby creating your first catalog",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 16,

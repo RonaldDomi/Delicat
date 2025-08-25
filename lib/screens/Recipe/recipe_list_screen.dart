@@ -29,7 +29,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Remove Category'),
+        title: const Text('Remove Catalog'),
         content: Text('Are you sure you want to remove "${category.name}"? This will delete all recipes in this category.'),
         actions: <Widget>[
           TextButton(
@@ -140,7 +140,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                   size: 20,
                                 ),
                                 const SizedBox(width: 12),
-                                const Text('Edit Category'),
+                                const Text('Edit Catalog'),
                               ],
                             ),
                           ),
@@ -156,7 +156,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                                 ),
                                 SizedBox(width: 12),
                                 Text(
-                                  'Remove Category',
+                                  'Remove Catalog',
                                   style: TextStyle(color: Colors.red),
                                 ),
                               ],

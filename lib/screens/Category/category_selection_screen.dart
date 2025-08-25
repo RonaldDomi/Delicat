@@ -83,8 +83,8 @@ class _CatSelectionScreenState extends State<CatSelectionScreen> {
     Navigator.of(context)
         .pushReplacementNamed(RouterNames.GeneratingCategoriesScreen);
     } catch (e) {
-      MessageHelper.showError(context, 'Failed to setup categories. Please try again.');
-      print('Error setting up categories: $e');
+      MessageHelper.showError(context, 'Failed to setup catalogs. Please try again.');
+      print('Error setting up catalogs: $e');
     }
   }
 
