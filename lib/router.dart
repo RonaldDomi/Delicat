@@ -53,7 +53,7 @@ class Router {
         return MaterialPageRoute(
             builder: (_) => RecipeListScreen(categoryId: categoryId));
       case RouterNames.NewRecipeScreen:
-        List<String> arguments = settings.arguments as List<String>? ?? <String>[];
+        List<String> arguments = (settings.arguments as List<dynamic>?)?.cast<String>() ?? <String>[];
         String categoryName = arguments[0];
         String categoryColorCode = arguments[1];
         String categoryId = arguments[2];

@@ -138,6 +138,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
             children: [
               Expanded(
                 child: TextFormField(
+                  textCapitalization: TextCapitalization.words,
                   controller: _ingredientControllers[i],
                   focusNode: _ingredientNodes[i],
                   decoration: InputDecoration(
@@ -396,6 +397,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width / 2.4,
                               child: TextFormField(
+                                textCapitalization: TextCapitalization.words,
                                 decoration: InputDecoration(
                                   filled: true,
                                   fillColor: hexToColor("#F1EBE8"),
@@ -429,6 +431,7 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         ),
                       ),
                       TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: hexToColor("#F1EBE8"),

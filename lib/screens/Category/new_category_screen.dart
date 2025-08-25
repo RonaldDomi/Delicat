@@ -415,6 +415,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                             ),
                             const SizedBox(height: 10),
                             TextFormField(
+                              textCapitalization: TextCapitalization.words,
                               initialValue: _nameController.text,
                               decoration: InputDecoration(
                                 filled: true,
