@@ -8,16 +8,11 @@ import 'package:uuid/uuid.dart';
 class Categories with ChangeNotifier {
   // ################################ VARIABLES ################################ //
   List<Category> _categories = [];
-  List<Category> _predefinedCategories = [];
   Database? _database;
 
   // ################################ GETTERS ################################ //
   List<Category> get categories {
     return [..._categories];
-  }
-
-  List<Category> get predefinedCategories {
-    return [..._predefinedCategories];
   }
 
   // ################################ DATABASE SETUP ################################ //
@@ -52,49 +47,6 @@ class Categories with ChangeNotifier {
   }
 
   // ################################ LOCAL FUNCTIONS ################################ //
-
-  Future<void> loadPredefinedCategories() async {
-    // Load hardcoded predefined categories for the app
-    _predefinedCategories = [
-      Category(
-        id: 'breakfast',
-        userId: 'predefined',
-        recipes: [],
-        name: 'Breakfast',
-        photo: 'assets/photos/breakfast.jpg',
-        colorCode: '#FF6B6B',
-        colorLightCode: '#FFB3B3',
-      ),
-      Category(
-        id: 'lunch',
-        userId: 'predefined',
-        recipes: [],
-        name: 'Lunch',
-        photo: 'assets/photos/pasta.jpg',
-        colorCode: '#4ECDC4',
-        colorLightCode: '#A8E6E1',
-      ),
-      Category(
-        id: 'dinner',
-        userId: 'predefined',
-        recipes: [],
-        name: 'Dinner',
-        photo: 'assets/photos/meat.jpg',
-        colorCode: '#45B7D1',
-        colorLightCode: '#A2D5F2',
-      ),
-      Category(
-        id: 'dessert',
-        userId: 'predefined',
-        recipes: [],
-        name: 'Dessert',
-        photo: 'assets/photos/dessert-circle.png',
-        colorCode: '#F39C12',
-        colorLightCode: '#F8C471',
-      ),
-    ];
-    notifyListeners();
-  }
 
   Future<void> loadCategoriesFromLocal() async {
     final db = await database;
@@ -192,18 +144,4 @@ class Categories with ChangeNotifier {
     }
   }
 
-  Future<void> addPredefinedCategory(Category category) async {
-    // Add a predefined category to user's personal categories
-    final newCategory = Category(
-      id: const Uuid().v4(),
-      userId: 'local',
-      recipes: [],
-      name: category.name,
-      photo: category.photo,
-      colorCode: category.colorCode,
-      colorLightCode: category.colorLightCode,
-    );
-
-    await createCategory(newCategory);
-  }
 }

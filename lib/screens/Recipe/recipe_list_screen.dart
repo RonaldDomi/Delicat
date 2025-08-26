@@ -3,6 +3,7 @@ import 'package:delicat/routeNames.dart';
 import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/categories.dart';
 import 'package:delicat/providers/recipes.dart';
+import 'package:delicat/models/category.dart';
 import 'package:delicat/screens/Recipe/components/recipe_list_item.dart';
 
 import 'package:flutter/material.dart';
@@ -26,12 +27,26 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final category =
-        Provider.of<Categories>(context).getCategoryById(widget.categoryId);
+    Category? category;
+    try {
+      category = Provider.of<Categories>(context).getCategoryById(widget.categoryId);
+    } catch (e) {
+      // Category was deleted, navigate back to dashboard
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      });
+      // Return a simple loading widget while navigating
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    
     final recipes =
         Provider.of<Recipes>(context).getRecipesByCategoryId(widget.categoryId);
     return Container(
-        color: hexToColor(category.colorLightCode),
+        color: hexToColor(category!.colorLightCode),
         child: Column(
           children: <Widget>[
             SizedBox(
@@ -51,8 +66,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       ElevatedButton(
                         onPressed: () async {
                           await Provider.of<Categories>(context, listen: false)
-                              .removeCategory(category.id);
-                          Navigator.of(context).pop();
+                              .removeCategory(category!.id);
+                          // Navigate back to dashboard after deletion
+                          Navigator.of(context).popUntil((route) => route.isFirst);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
@@ -73,7 +89,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                           Provider.of<AppState>(context, listen: false)
                               .setIsOngoingCategoryNew(false);
                           Provider.of<AppState>(context, listen: false)
-                              .setOngoingCategory(category);
+                              .setOngoingCategory(category!);
                           Navigator.of(context).pushNamed(
                             RouterNames.NewCategoryScreen,
                           );
@@ -101,9 +117,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       Navigator.of(context).pushNamed(
                         RouterNames.NewRecipeScreen,
                         arguments: [
-                          category.name,
-                          category.colorLightCode,
-                          category.id,
+                          category!.name,
+                          category!.colorLightCode,
+                          category!.id,
                         ],
                       );
                     },
@@ -136,9 +152,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                             Navigator.of(context).pushNamed(
                               RouterNames.NewRecipeScreen,
                               arguments: [
-                                category.name,
-                                category.colorLightCode,
-                                category.id,
+                                category!.name,
+                                category!.colorLightCode,
+                                category!.id,
                               ],
                             );
                           },

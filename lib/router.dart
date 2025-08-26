@@ -1,4 +1,3 @@
-import 'package:delicat/screens/Category/category_selection_screen.dart';
 import 'package:delicat/screens/Category/generating_categories_screen.dart';
 import 'package:delicat/screens/Category/new_category_screen.dart';
 import 'package:delicat/screens/Category/unsplash_screen.dart';
@@ -56,9 +55,6 @@ class Router {
         return MaterialPageRoute(
           builder: (_) => NewCategoryScreen(),
         );
-      case RouterNames.CategoriesSelectionScreen:
-        return MaterialPageRoute(builder: (_) => CatSelectionScreen());
-
       case RouterNames.RecipeListScreen:
         String categoryId = settings.arguments as String? ?? '';
         return MaterialPageRoute(

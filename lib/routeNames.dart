@@ -3,7 +3,6 @@ class RouterNames {
   static const SplashScreen = '/splash-screen';
   static const GeneratingCategoriesScreen = '/generating';
   static const NewCategoryScreen = '/new-cat';
-  static const CategoriesSelectionScreen = '/cat-selection';
   static const RecipeListScreen = '/recipe-list';
   static const RecipeDetailsScreen = '/recipe-details';
   static const NewRecipeScreen = '/new-recipe';

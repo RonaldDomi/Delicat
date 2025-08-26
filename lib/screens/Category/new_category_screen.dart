@@ -683,53 +683,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                     ],
                   ),
                 ),
-                if (_isNew)
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(29),
-                      color: const Color(0xffF9F9F9),
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    margin: const EdgeInsets.all(20),
-                    child: Column(
-                      children: <Widget>[
-                        const Text(
-                          "Or choose from our suggestions",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Color(0xffBB9982),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 15),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pushNamed(
-                                RouterNames.CategoriesSelectionScreen);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorHelper.hexToColor("#F6C2A4"),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(19.0),
-                            ),
-                            elevation: 6,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 30,
-                              vertical: 12,
-                            ),
-                          ),
-                          child: const Text(
-                            "Browse Categories",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
                 const SizedBox(height: 50), // Extra bottom padding
               ],
             ),
