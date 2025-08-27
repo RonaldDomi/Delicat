@@ -26,27 +26,28 @@ class RecipeListItem extends StatelessWidget {
       child: Column(
         children: <Widget>[
           if (recipe.photo != null)
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: ImageHelper.getImageProvider(
-                    recipe.photo!,
+            Expanded(
+              flex: 1,
+              child: Container(
+                width: double.infinity,
+                margin: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: ImageHelper.getImageProvider(
+                      recipe.photo!,
+                    ),
                   ),
-                  // image: AssetImage(
-                  //   recipe.photo,
-                  // ),
                 ),
               ),
             ),
-          SizedBox(height: 20),
-          Container(
-            width: 170,
-            child: Column(
-              children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: <Widget>[
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -85,20 +86,26 @@ class RecipeListItem extends StatelessWidget {
                     ),
                   ],
                 ),
+                const SizedBox(height: 10),
                 Text(
                   "${recipe.name}",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
-                if (recipe.description.length > 100)
-                  Text(
-                    "${recipe.description.substring(0, 100)}",
-                  )
-                else
-                  Text(
-                    "${recipe.description}",
-                  )
-              ],
+                const SizedBox(height: 8),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      recipe.description.length > 80
+                          ? "${recipe.description.substring(0, 80)}..."
+                          : recipe.description,
+                      style: const TextStyle(fontSize: 14, color: Colors.white70),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                ],
+              ),
             ),
           ),
         ],

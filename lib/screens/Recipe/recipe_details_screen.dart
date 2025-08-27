@@ -20,6 +20,9 @@ class RecipeDetailsScreen extends StatefulWidget {
 }
 
 class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
+  PanelController _panelController = PanelController();
+  bool _isPanelOpen = false;
+
   @override
   Widget build(BuildContext context) {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
@@ -151,14 +154,45 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               ),
             ),
           SlidingUpPanel(
-            minHeight: 40,
-            maxHeight: MediaQuery.of(context).size.height * 0.5,
+            controller: _panelController,
+            minHeight: 100,
+            maxHeight: MediaQuery.of(context).size.height * 0.65,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(18.0),
               topRight: Radius.circular(18.0),
             ),
+            onPanelOpened: () {
+              setState(() {
+                _isPanelOpen = true;
+              });
+            },
+            onPanelClosed: () {
+              setState(() {
+                _isPanelOpen = false;
+              });
+            },
             panelBuilder: (sc) => _panel(sc, recipe, category.colorCode),
-          )
+          ),
+          Positioned(
+            right: 20,
+            bottom: 120,
+            child: FloatingActionButton(
+              mini: true,
+              backgroundColor: hexToColor(category.colorCode),
+              onPressed: () {
+                if (_isPanelOpen) {
+                  _panelController.close();
+                } else {
+                  _panelController.open();
+                }
+              },
+              child: Icon(
+                _isPanelOpen ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -184,8 +218,8 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               child: Text(
                 recipe.name,
                 style: TextStyle(
-                  color: hexToColor("#9F8A22"),
-                  fontSize: 30,
+                  color: hexToColor("#FFFFFF"),
+                  fontSize: 40,
                 ),
               ),
             ),
@@ -193,7 +227,8 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
               padding: const EdgeInsets.all(30.0),
               child: Text(
                 recipe.description,
-                style: const TextStyle(
+                style: TextStyle(
+                  color: hexToColor("#FFFFFF"),
                   fontSize: 20,
                 ),
               ),

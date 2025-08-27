@@ -20,10 +20,12 @@ class AppState with ChangeNotifier {
 
   void setCurrentUnsplashPhoto(String newCategoryPhoto) {
     _currentUnsplashPhoto = newCategoryPhoto;
+    notifyListeners();
   }
 
   void setCurrentNewRecipePhoto(String newRecipePhoto) {
     _currentNewRecipePhoto = newRecipePhoto;
+    notifyListeners();
   }
 
   void setIsOngoingCategoryNew(bool isNew) {
@@ -44,10 +46,12 @@ class AppState with ChangeNotifier {
 
   void zeroCurrentCategoryPhoto() {
     _currentUnsplashPhoto = "";
+    notifyListeners();
   }
 
   void zeroCurrentRecipePhoto() {
     _currentNewRecipePhoto = "";
+    notifyListeners();
   }
 
   void zeroOngoingCategory() {

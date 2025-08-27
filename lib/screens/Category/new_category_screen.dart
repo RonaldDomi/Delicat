@@ -13,6 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 import 'dart:io';
 
 class NewCategoryScreen extends StatefulWidget {
@@ -80,18 +83,19 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   void didChangeDependencies() {
+    // Always check for updated Unsplash photo, not just on first initialization
+    String currentUnsplashPhoto = Provider.of<AppState>(context).currentNewCategoryPhoto;
+    
     if (!_isInitialized) {
-      postedImage = Provider.of<AppState>(context).currentNewCategoryPhoto;
+      postedImage = currentUnsplashPhoto;
       category = Provider.of<AppState>(context).ongoingCategory;
       _isNew = Provider.of<AppState>(context).isOngoingCategoryNew;
       
       if (_isNew) {
         _imageFilePath = "";
-        postedImage = "";
         _nameController.text = "";
         // Keep the default color from initState - don't override it
-        Provider.of<AppState>(context, listen: false).zeroCurrentCategoryPhoto();
-        Provider.of<AppState>(context, listen: false).zeroOngoingCategory();
+        // Note: We don't zero the state here during build to avoid circular dependencies
       } else {
         // Only load existing category data if not new
         if (postedImage.isEmpty && category?.photo != null) {
@@ -109,6 +113,15 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         }
       }
       _isInitialized = true;
+    } else {
+      // If we're already initialized but have a new Unsplash photo, update it
+      if (currentUnsplashPhoto.isNotEmpty && currentUnsplashPhoto != postedImage) {
+        print('Updating postedImage from: $postedImage to: $currentUnsplashPhoto');
+        setState(() {
+          postedImage = currentUnsplashPhoto;
+          _imageFilePath = ""; // Clear local image if we have Unsplash image
+        });
+      }
     }
     super.didChangeDependencies();
   }
@@ -186,10 +199,38 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     }
   }
 
-  /// Placeholder for image download functionality  
-  /// Currently disabled as Unsplash integration is not active
+  /// Download image from URL and save to local storage
   Future<File> saveImageFromWeb(String imageUrl) async {
-    throw UnimplementedError('Image download functionality not implemented yet');
+    try {
+      // Download the image
+      final http.Response response = await http.get(Uri.parse(imageUrl));
+      
+      if (response.statusCode != 200) {
+        throw Exception('Failed to download image: HTTP ${response.statusCode}');
+      }
+      
+      // Get app documents directory
+      final Directory appDocDir = await getApplicationDocumentsDirectory();
+      final String appDocPath = appDocDir.path;
+      
+      // Create images directory if it doesn't exist
+      const String imageFolder = 'recipe_images';
+      final String imagesPath = '$appDocPath/$imageFolder';
+      await Directory(imagesPath).create(recursive: true);
+      
+      // Generate unique filename
+      final String uniqueFileName = '${const Uuid().v4()}.jpg';
+      final String localPath = '$imagesPath/$uniqueFileName';
+      
+      // Write image data to file
+      final File localImage = File(localPath);
+      await localImage.writeAsBytes(response.bodyBytes);
+      
+      return localImage;
+    } catch (e) {
+      print('Error downloading image: $e');
+      throw Exception('Failed to download image: $e');
+    }
   }
 
   Future<bool> _saveForm() async {
@@ -305,9 +346,11 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
 
   void _resetForm() {
-    _imageFilePath = "";
-    postedImage = "";
-    _nameController.text = "";
+    setState(() {
+      _imageFilePath = "";
+      postedImage = "";
+      _nameController.text = "";
+    });
     Provider.of<AppState>(context, listen: false).zeroCurrentCategoryPhoto();
     Provider.of<AppState>(context, listen: false).zeroOngoingCategory();
   }

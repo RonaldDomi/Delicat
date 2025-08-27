@@ -199,8 +199,9 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     return Container(
         height: MediaQuery.of(context).size.height,
         color: hexToColor(widget.categoryColorCode),
-        child: SingleChildScrollView(
-          child: Form(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Form(
             key: _form,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -216,18 +217,6 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                           fontSize: 23,
                         ),
                       ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: const Color(0xffD6D6D6),
-                          backgroundColor: Colors.white,
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                        ),
-                        onPressed: null,
-                        child: const Text("add a new recipe"),
-                      )
                     ],
                   ),
                 ),
@@ -460,11 +449,12 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         ),
                         child: setUpButtonChild(),
                       ),
-                      const SizedBox(height: 21),
+                      const SizedBox(height: 80),
                     ],
                   ),
                 ),
               ],
+            ),
             ),
           ),
         ),

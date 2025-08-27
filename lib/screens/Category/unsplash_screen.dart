@@ -1,7 +1,10 @@
 import 'package:delicat/helpers/imagesHelperFunctions.dart';
 import 'package:delicat/helpers/message_helper.dart';
+import 'package:delicat/providers/app_state.dart';
+import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:provider/provider.dart';
 
 class UnsplashScreen extends StatefulWidget {
   @override
@@ -99,17 +102,31 @@ class _UnsplashnState extends State<UnsplashScreen> {
                       ),
                     ),
                   ),
-                  // RaisedButton(
-                  //   child: Text('Next'),
-                  //   onPressed: () {
-                  //     String newPhoto = items[currentIndex].toString();
-                  //     Provider.of<AppState>(context)
-                  //         .setCurrentUnsplashPhoto(newPhoto);
-                  //     Navigator.of(context).pushNamed(
-                  //       RouterNames.NewCategoryScreen,
-                  //     );
-                  //   },
-                  // ),
+                  ElevatedButton(
+                    onPressed: () {
+                      String newPhoto = items[currentIndex].toString();
+                      print('Selected Unsplash image: $newPhoto');
+                      Provider.of<AppState>(context, listen: false)
+                          .setCurrentUnsplashPhoto(newPhoto);
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xffF6C2A4),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(19.0),
+                      ),
+                      elevation: 6,
+                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    ),
+                    child: const Text(
+                      'Select Image',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
                 ],
               )
           ],

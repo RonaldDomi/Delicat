@@ -47,8 +47,9 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         Provider.of<Recipes>(context).getRecipesByCategoryId(widget.categoryId);
     return Container(
         color: hexToColor(category!.colorLightCode),
-        child: Column(
-          children: <Widget>[
+        child: SafeArea(
+          child: Column(
+            children: <Widget>[
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.2,
               child: Column(
@@ -57,9 +58,11 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   Text(
                     "${category.name} Catalogue",
                     style: const TextStyle(
-                      fontSize: 23,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -126,6 +129,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       elevation: 6,
+                      // padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                       ),
@@ -134,6 +138,8 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       "add a new dish",
                       style: TextStyle(
                         color: Color(0xffF6C2A4),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -141,10 +147,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               ),
             ),
             (recipes.isEmpty)
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
+                ? Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
                         RawMaterialButton(
                           onPressed: () {
                             Provider.of<AppState>(context, listen: false)
@@ -161,34 +169,44 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                           elevation: 2.0,
                           shape: const CircleBorder(),
                           child: Icon(
-                            Icons.note_add,
-                            size: MediaQuery.of(context).size.width * 0.4,
-                            color: Colors.black54,
+                            Icons.restaurant_menu,
+                            size: MediaQuery.of(context).size.width * 0.3,
+                            color: Colors.orange.shade300,
                           ),
                         ),
-                        const SizedBox(height: 20),
-                        const Text("No Recipes Created",
+                        const SizedBox(height: 30),
+                        const Text("Your Recipe Collection Awaits!",
                             style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 26,
+                              color: Colors.black87,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
                             )),
-                        const SizedBox(height: 10),
-                        const Text(
-                            "Jot down a recipe or a dish, add images, describe the instruction and more.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontSize: 20,
-                            ))
-                      ],
+                        const SizedBox(height: 15),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Text(
+                              "Start building your culinary library! Tap above to add your first delicious recipe with photos and step-by-step instructions.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: 16,
+                                height: 1.4,
+                              )),
+                        )
+                        ],
+                      ),
                     ),
                   )
                 : Expanded(
                     child: Column(
                       children: <Widget>[
-                        _swiperBuilder(context, category, recipes),
-                        const SizedBox(height: 50),
-                        ElevatedButton(
+                        Expanded(
+                          child: _swiperBuilder(context, category, recipes),
+                        ),
+                        const SizedBox(height: 5),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: ElevatedButton(
                           onPressed: () {
                             if (recipes.isNotEmpty) {
                               Navigator.of(context).pushNamed(
@@ -215,18 +233,20 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                               ),
                             ),
                           ),
+                        ),
                         )
                       ],
                     ),
                   ),
           ],
         ),
+        ),
     );
   }
 
   Widget _swiperBuilder(BuildContext context, category, recipes) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.5,
+      height: double.infinity,
       child: Swiper(
         onIndexChanged: (index) {
           setState(() {
