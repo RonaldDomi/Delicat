@@ -5,9 +5,11 @@ import 'package:delicat/providers/app_state.dart';
 import 'package:delicat/providers/recipes.dart';
 import 'package:delicat/helpers/image_helper.dart';
 import 'package:delicat/helpers/message_helper.dart';
+import 'package:delicat/helpers/image_storage_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 class NewRecipeScreen extends StatefulWidget {
   final String categoryName;
@@ -35,12 +37,22 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
   String imageFilePath = '';
   Recipe? recipe;
   bool isNew = true;
+  bool _isSelectingImage = false;
+  bool _isInitialized = false;
+  final ImagePicker _picker = ImagePicker();
 
   @override
-  void didChangeDependencies() async {
-    imageFilePath = Provider.of<AppState>(context).currentNewRecipePhoto;
-    isNew = await Provider.of<AppState>(context).isOngoingRecipeNew;
-    recipe = Provider.of<AppState>(context).ongoingRecipe;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _initializeData();
+    }
+  }
+
+  void _initializeData() async {
+    imageFilePath = Provider.of<AppState>(context, listen: false).currentNewRecipePhoto;
+    isNew = await Provider.of<AppState>(context, listen: false).isOngoingRecipeNew;
+    recipe = Provider.of<AppState>(context, listen: false).ongoingRecipe;
 
     if (isNew) {
       Provider.of<AppState>(context, listen: false).zeroCurrentRecipePhoto();
@@ -60,44 +72,39 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
         imageFilePath = recipe!.photo!;
       }
     }
-    super.didChangeDependencies();
+    _isInitialized = true;
   }
 
-  void navigateToPhoto() {
+  void _onImageButtonPressed(ImageSource source) async {
+    // Prevent overlapping image selection operations
+    if (_isSelectingImage) return;
+    
     try {
-      // Validate form before navigation
-      if (_nameController.text.trim().isEmpty) {
-        MessageHelper.showError(context, 'Please enter a recipe name');
-        return;
+      _isSelectingImage = true;
+      MessageHelper.showLoading(context, 'Selecting image...');
+      
+      final XFile? pickedFile = await _picker.pickImage(source: source);
+      
+      // Hide loading immediately after image selection
+      MessageHelper.hideLoading(context);
+      
+      if (pickedFile != null) {
+        String localImagePath = await ImageStorageHelper.saveImageLocally(pickedFile);
+        setState(() {
+          imageFilePath = localImagePath;
+        });
+        Provider.of<AppState>(context, listen: false).setCurrentNewRecipePhoto(localImagePath);
+        MessageHelper.showSuccess(context, 'Image selected successfully!');
       }
-      if (_descriptionController.text.trim().isEmpty) {
-        MessageHelper.showError(context, 'Please enter a recipe description');
-        return;
-      }
-
-      Recipe ongoingRecipe = Recipe(
-        id: isNew ? '' : (recipe?.id ?? ''),
-        name: _nameController.text.trim(),
-        description: _descriptionController.text.trim(),
-        isFavorite: false,
-        categoryId: widget.categoryId,
-      );
-
-      Provider.of<AppState>(context, listen: false).setOngoingRecipe(ongoingRecipe);
-
-      Navigator.of(context).pushNamed(
-        RouterNames.RecipePhotoSelectionScreen,
-        arguments: [
-          widget.categoryColorCode,
-          widget.categoryName,
-          widget.categoryId
-        ],
-      );
     } catch (e) {
-      MessageHelper.showError(context, 'Failed to proceed. Please try again.');
-      print('Error navigating to photo selection: $e');
+      MessageHelper.hideLoading(context);
+      MessageHelper.showError(context, 'Failed to select image. Please try again.');
+      print('Error picking image: $e');
+    } finally {
+      _isSelectingImage = false;
     }
   }
+
 
   Widget setUpButtonChild() {
     if (_buttonState == 0) {
@@ -126,6 +133,13 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
   void _saveForm() async {
     try {
+      // Prevent submission while image selection is in progress
+      if (_isSelectingImage) {
+        setState(() { _buttonState = 0; });
+        MessageHelper.showError(context, 'Please wait for image selection to complete');
+        return;
+      }
+      
       final isValid = _form.currentState?.validate() ?? false;
       if (!isValid) {
         setState(() { _buttonState = 0; });
@@ -308,8 +322,9 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                         const Center(
                           child: Text("Please select one of the photos"),
                         ),
+                      // Photo selection section
                       if (imageFilePath.isNotEmpty)
-                        Row(
+                        Column(
                           children: <Widget>[
                             Container(
                               width: 130,
@@ -318,15 +333,22 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: ImageHelper.getImageProvider(imageFilePath)
+                                  image: ImageHelper.getImageProvider(imageFilePath),
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 10),
                             ElevatedButton(
                               onPressed: () {
+                                // Ensure any stuck loading is cleared
+                                if (_isSelectingImage) {
+                                  MessageHelper.hideLoading(context);
+                                  _isSelectingImage = false;
+                                }
                                 setState(() {
                                   imageFilePath = "";
                                 });
+                                Provider.of<AppState>(context, listen: false).zeroCurrentRecipePhoto();
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: hexToColor("#F6C2A4"),
@@ -334,36 +356,91 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                                   borderRadius: BorderRadius.circular(19.0),
                                 ),
                                 elevation: 6,
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                               ),
                               child: const Text(
                                 "Remove photo",
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 20,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      ElevatedButton(
-                        onPressed: () {
-                          navigateToPhoto();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: hexToColor("#F6C2A4"),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(19.0),
+                      
+                      // Only show photo selection buttons when no image is selected
+                      if (imageFilePath.isEmpty) ...[
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: const Color(0xffF1EBE8),
                           ),
-                          elevation: 6,
-                        ),
-                        child: const Text(
-                          "Choose Photo",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Choose Photo Source",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(0xff927C6C),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        _onImageButtonPressed(ImageSource.camera);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: hexToColor("#F6C2A4"),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(19.0),
+                                        ),
+                                        elevation: 6,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                      child: const Text(
+                                        "Camera",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        _onImageButtonPressed(ImageSource.gallery);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: hexToColor("#F6C2A4"),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(19.0),
+                                        ),
+                                        elevation: 6,
+                                        padding: const EdgeInsets.symmetric(vertical: 12),
+                                      ),
+                                      child: const Text(
+                                        "Gallery",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      ),
+                      ],
                       const SizedBox(height: 21),
                       const Divider(thickness: 3),
                       const Divider(thickness: 3),

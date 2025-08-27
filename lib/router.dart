@@ -2,7 +2,6 @@ import 'package:delicat/screens/Category/generating_categories_screen.dart';
 import 'package:delicat/screens/Category/new_category_screen.dart';
 import 'package:delicat/screens/Category/unsplash_screen.dart';
 import 'package:delicat/screens/Favorites/favorites_screen.dart';
-import 'package:delicat/screens/Recipe/recipe_photo_selection_screen.dart';
 import 'package:delicat/screens/Recipe/new_recipe_screen.dart';
 import 'package:delicat/screens/Recipe/recipe_details_screen.dart';
 import 'package:delicat/screens/Recipe/recipe_list_screen.dart';
@@ -29,13 +28,6 @@ class Router {
 
       case RouterNames.UnsplashScreen:
         return MaterialPageRoute(builder: (_) => UnsplashScreen());
-      case RouterNames.RecipePhotoSelectionScreen:
-        List<String> arguments = settings.arguments as List<String>? ?? <String>[];
-        String colorCode = arguments[0];
-        String name = arguments[1];
-        String catId = arguments[2];
-        return MaterialPageRoute(
-            builder: (_) => RecipePhotoSelectionScreen(colorCode, name, catId));
       case RouterNames.FavoritesScreen:
         return MaterialPageRoute(
           builder: (_) => FavoritesScreen(),

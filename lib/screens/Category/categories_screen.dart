@@ -90,10 +90,96 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                ),
              ),
              (allCategories.isEmpty)
-                 ? SizedBox(
-                     width: MediaQuery.of(context).size.width,
-                     child: const Center(
-                       child: Text("you have no cats on your profile."),
+                 ? Expanded(
+                     child: Container(
+                       width: MediaQuery.of(context).size.width,
+                       padding: const EdgeInsets.all(40),
+                       child: Column(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           Container(
+                             width: 120,
+                             height: 120,
+                             decoration: BoxDecoration(
+                               color: Colors.white.withOpacity(0.8),
+                               shape: BoxShape.circle,
+                               boxShadow: [
+                                 BoxShadow(
+                                   color: Colors.black.withOpacity(0.1),
+                                   blurRadius: 20,
+                                   offset: const Offset(0, 10),
+                                 ),
+                               ],
+                             ),
+                             child: const Icon(
+                               Icons.restaurant_menu,
+                               size: 60,
+                               color: Color(0xffF6C2A4),
+                             ),
+                           ),
+                           const SizedBox(height: 30),
+                           const Text(
+                             "No Categories Yet",
+                             style: TextStyle(
+                               fontSize: 28,
+                               fontWeight: FontWeight.bold,
+                               color: Color(0xff927C6C),
+                             ),
+                           ),
+                           const SizedBox(height: 15),
+                           const Text(
+                             "Start building your recipe collection\nby creating your first category",
+                             textAlign: TextAlign.center,
+                             style: TextStyle(
+                               fontSize: 16,
+                               color: Color(0xff927C6C),
+                               height: 1.5,
+                             ),
+                           ),
+                           const SizedBox(height: 40),
+                           ElevatedButton(
+                             onPressed: () {
+                               Provider.of<AppState>(context, listen: false)
+                                   .setIsOngoingCategoryNew(true);
+                               Navigator.of(context)
+                                   .pushNamed(RouterNames.NewCategoryScreen);
+                             },
+                             style: ElevatedButton.styleFrom(
+                               backgroundColor: const Color(0xffF6C2A4),
+                               elevation: 8,
+                               shadowColor: Colors.black.withOpacity(0.3),
+                               shape: RoundedRectangleBorder(
+                                 borderRadius: BorderRadius.circular(25.0),
+                               ),
+                               padding: const EdgeInsets.symmetric(
+                                 horizontal: 40,
+                                 vertical: 15,
+                               ),
+                             ),
+                             child: const Row(
+                               mainAxisSize: MainAxisSize.min,
+                               children: [
+                                 Icon(
+                                   Icons.add,
+                                   color: Colors.white,
+                                   size: 22,
+                                 ),
+                                 SizedBox(width: 8),
+                                 Flexible(
+                                   child: Text(
+                                     "Create Your First Catalog",
+                                     style: TextStyle(
+                                       color: Colors.white,
+                                       fontSize: 15,
+                                       fontWeight: FontWeight.w600,
+                                     ),
+                                   ),
+                                 ),
+                               ],
+                             ),
+                           ),
+                         ],
+                       ),
                      ),
                    )
                  : Expanded(

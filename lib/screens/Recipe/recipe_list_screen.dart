@@ -183,39 +183,41 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                       ],
                     ),
                   )
-                : Column(
-                    children: <Widget>[
-                      _swiperBuilder(context, category, recipes),
-                      const SizedBox(height: 50),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (recipes.isNotEmpty) {
-                            Navigator.of(context).pushNamed(
-                              RouterNames.RecipeDetailsScreen,
-                              arguments: recipes[_currentRecipeIndex].id,
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
+                : Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        _swiperBuilder(context, category, recipes),
+                        const SizedBox(height: 50),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (recipes.isNotEmpty) {
+                              Navigator.of(context).pushNamed(
+                                RouterNames.RecipeDetailsScreen,
+                                arguments: recipes[_currentRecipeIndex].id,
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                            backgroundColor: hexToColor(category.colorCode),
                           ),
-                          backgroundColor: hexToColor(category.colorCode),
-                        ),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.6,
-                          child: const Text(
-                            "Read More",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            child: const Text(
+                              "Read More",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
           ],
         ),
