@@ -7,6 +7,8 @@ class Recipe {
   String description;
   bool isFavorite;
   String categoryId;
+  List<String> ingredients;
+  String photoSource; // 'camera', 'gallery', 'unsplash', or 'unknown'
 
   Recipe({
     required this.id,
@@ -15,6 +17,8 @@ class Recipe {
     this.description = '',
     this.isFavorite = false,
     required this.categoryId,
+    this.ingredients = const [],
+    this.photoSource = 'unknown',
   });
 
   Recipe.empty()
@@ -23,7 +27,9 @@ class Recipe {
       photo = '',
       description = '',
       isFavorite = false,
-      categoryId = '';
+      categoryId = '',
+      ingredients = [],
+      photoSource = 'unknown';
 
   Map<String, dynamic> toMap() {
     return {
@@ -33,6 +39,8 @@ class Recipe {
       'isFavorite': isFavorite,
       'description': description,
       'categoryId': categoryId,
+      'ingredients': ingredients,
+      'photoSource': photoSource,
     };
   }
 
@@ -44,6 +52,8 @@ class Recipe {
       photo: map['photo'] as String?,
       description: map['text'] as String? ?? '',
       isFavorite: map['isFavorite'] as bool? ?? false,
+      ingredients: List<String>.from(map['ingredients'] as List<dynamic>? ?? []),
+      photoSource: map['photoSource'] as String? ?? 'unknown',
     );
   }
 
@@ -53,6 +63,6 @@ class Recipe {
 
   @override
   String toString() {
-    return "{id: $id, name: $name, photo: $photo, description: $description, isFavorite: $isFavorite, categoryId: $categoryId}";
+    return "{id: $id, name: $name, photo: $photo, description: $description, isFavorite: $isFavorite, categoryId: $categoryId, ingredients: $ingredients, photoSource: $photoSource}";
   }
 }

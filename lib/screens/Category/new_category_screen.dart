@@ -116,7 +116,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     } else {
       // If we're already initialized but have a new Unsplash photo, update it
       if (currentUnsplashPhoto.isNotEmpty && currentUnsplashPhoto != postedImage) {
-        print('Updating postedImage from: $postedImage to: $currentUnsplashPhoto');
         setState(() {
           postedImage = currentUnsplashPhoto;
           _imageFilePath = ""; // Clear local image if we have Unsplash image
@@ -235,6 +234,9 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   Future<bool> _saveForm() async {
     try {
+      // Dismiss keyboard first
+      FocusScope.of(context).unfocus();
+      
       // Prevent submission while image selection is in progress
       if (_isSelectingImage) {
         MessageHelper.showError(context, 'Please wait for image selection to complete');
@@ -265,9 +267,12 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
     if (_isNew == false && category != null) {
       // refactor into function from here -----
       var img;
+      String photoSource = category!.photoSource; // Keep existing source by default
+      
       if (_imageFilePath.isNotEmpty) {
         // if we put a new file from phone, send the multipart
         img = _imageFilePath;
+        photoSource = 'camera'; // Local source (camera or gallery)
       } else if (postedImage.isNotEmpty) {
         // postedImage when we are editing, is the delicat url_photo
         if (postedImage != category!.photo) {
@@ -275,17 +280,21 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
           try {
             File downloadedFile = await saveImageFromWeb(postedImage);
             img = downloadedFile.path;
+            photoSource = 'unsplash'; // Downloaded from Unsplash
           } catch (e) {
             print('Error downloading image: $e');
             img = postedImage; // Fallback to URL
+            photoSource = 'unsplash';
           }
         } else {
           // else, just send forward the delicat photo_url
           img = postedImage;
+          // Keep existing photoSource
         }
       } else {
         // if we don't remove photos, just send the delicat photo_url forward
         img = category!.photo;
+        // Keep existing photoSource
       }
 
       Category editedCategory = Category(
@@ -296,6 +305,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         colorCode: _colorCodeController.text,
         colorLightCode: colorHelper.colorToHex(newCodeLight),
         photo: img,
+        photoSource: photoSource,
       );
 
       await Provider.of<Categories>(context, listen: false)
@@ -307,14 +317,21 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
       return true;
     } else if (_isNew == true) {
       String finalImagePath = _imageFilePath;
-      if (_imageFilePath.isEmpty && postedImage.isNotEmpty) {
+      String photoSource = 'unknown';
+      
+      if (_imageFilePath.isNotEmpty) {
+        finalImagePath = _imageFilePath;
+        photoSource = 'camera'; // Local source (camera or gallery)
+      } else if (postedImage.isNotEmpty) {
         try {
           // download and all that thing
           File downloadedFile = await saveImageFromWeb(postedImage);
           finalImagePath = downloadedFile.path;
+          photoSource = 'unsplash'; // Downloaded from Unsplash
         } catch (e) {
           print('Error downloading image: $e');
           finalImagePath = postedImage; // Fallback to URL
+          photoSource = 'unsplash';
         }
       }
 
@@ -326,6 +343,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
         colorCode: _colorCodeController.text,
         photo: finalImagePath,
         colorLightCode: colorHelper.colorToHex(newCodeLight),
+        photoSource: photoSource,
       );
       await Provider.of<Categories>(context, listen: false)
           .createCategory(newCategory);

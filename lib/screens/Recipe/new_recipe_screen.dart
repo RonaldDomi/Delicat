@@ -34,6 +34,11 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
   final _descriptionController = TextEditingController();
   final _descriptionNode = FocusNode();
 
+  // Ingredients management
+  List<TextEditingController> _ingredientControllers = [];
+  List<FocusNode> _ingredientNodes = [];
+  List<String> _ingredients = [];
+
   String imageFilePath = '';
   Recipe? recipe;
   bool isNew = true;
@@ -68,11 +73,125 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
       }
       _nameController.text = recipe!.name;
       _descriptionController.text = recipe!.description;
+      _ingredients = List<String>.from(recipe!.ingredients);
       if (recipe!.photo != null) {
         imageFilePath = recipe!.photo!;
       }
     }
+    
+    // Initialize ingredients after setting up the recipe data
+    _initializeIngredients();
     _isInitialized = true;
+  }
+
+  void _initializeIngredients() {
+    if (_ingredients.isEmpty) {
+      _addIngredientField();
+    } else {
+      // Initialize controllers for existing ingredients
+      for (int i = 0; i < _ingredients.length; i++) {
+        final controller = TextEditingController(text: _ingredients[i]);
+        final node = FocusNode();
+        _ingredientControllers.add(controller);
+        _ingredientNodes.add(node);
+      }
+      // Add one empty field at the end
+      _addIngredientField();
+    }
+  }
+
+  void _addIngredientField() {
+    setState(() {
+      final controller = TextEditingController();
+      final node = FocusNode();
+      _ingredientControllers.add(controller);
+      _ingredientNodes.add(node);
+    });
+  }
+
+  void _removeIngredientField(int index) {
+    if (_ingredientControllers.length > 1) {
+      setState(() {
+        _ingredientControllers[index].dispose();
+        _ingredientNodes[index].dispose();
+        _ingredientControllers.removeAt(index);
+        _ingredientNodes.removeAt(index);
+      });
+    }
+  }
+
+  List<String> _getIngredientsList() {
+    return _ingredientControllers
+        .map((controller) => controller.text.trim())
+        .where((text) => text.isNotEmpty)
+        .toList();
+  }
+
+  List<Widget> _buildIngredientsInputs() {
+    List<Widget> ingredientWidgets = [];
+    
+    for (int i = 0; i < _ingredientControllers.length; i++) {
+      ingredientWidgets.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextFormField(
+                  controller: _ingredientControllers[i],
+                  focusNode: _ingredientNodes[i],
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: hexToColor("#F1EBE8"),
+                    hintText: "Enter ingredient ${i + 1}",
+                    hintStyle: const TextStyle(
+                      color: Color(0xff927C6C),
+                      fontSize: 14,
+                    ),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: const BorderSide(color: Colors.white),
+                      borderRadius: BorderRadius.circular(25.7),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16, 
+                      vertical: 12
+                    ),
+                  ),
+                  onChanged: (value) {
+                    // Auto-add new field when user starts typing in the last field
+                    if (value.trim().isNotEmpty && i == _ingredientControllers.length - 1) {
+                      _addIngredientField();
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Add button for first field, remove button for others
+              if (i == 0)
+                IconButton(
+                  onPressed: _addIngredientField,
+                  icon: const Icon(
+                    Icons.add_circle,
+                    color: Color(0xffF6C2A4),
+                    size: 28,
+                  ),
+                )
+              else
+                IconButton(
+                  onPressed: () => _removeIngredientField(i),
+                  icon: const Icon(
+                    Icons.remove_circle,
+                    color: Color(0xffF6C2A4),
+                    size: 28,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
+    
+    return ingredientWidgets;
   }
 
   void _onImageButtonPressed(ImageSource source) async {
@@ -133,6 +252,9 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
 
   void _saveForm() async {
     try {
+      // Dismiss keyboard first
+      FocusScope.of(context).unfocus();
+      
       // Prevent submission while image selection is in progress
       if (_isSelectingImage) {
         setState(() { _buttonState = 0; });
@@ -157,6 +279,15 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
         recipeFavorite = true;
       }
 
+      // Determine photo source based on how it was obtained
+      String photoSource = 'unknown';
+      final currentUnsplashPhoto = Provider.of<AppState>(context, listen: false).currentNewRecipePhoto;
+      if (currentUnsplashPhoto.isNotEmpty && imageFilePath == currentUnsplashPhoto) {
+        photoSource = 'unsplash';
+      } else if (imageFilePath.isNotEmpty) {
+        photoSource = 'camera'; // Could be camera or gallery, but both are user-selected local sources
+      }
+
       Recipe newRecipe = Recipe(
         id: isNew ? '' : (recipe?.id ?? ''),
         name: _nameController.text.trim(),
@@ -164,6 +295,8 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
         isFavorite: recipeFavorite,
         photo: imageFilePath,
         categoryId: widget.categoryId,
+        ingredients: _getIngredientsList(),
+        photoSource: photoSource,
       );
 
       if (isNew == false) {
@@ -179,6 +312,17 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
     imageFilePath = '';
     _nameController.text = "";
     _descriptionController.text = "";
+    
+    // Clear ingredients
+    for (var controller in _ingredientControllers) {
+      controller.dispose();
+    }
+    for (var node in _ingredientNodes) {
+      node.dispose();
+    }
+    _ingredientControllers.clear();
+    _ingredientNodes.clear();
+    _ingredients.clear();
 
       setState(() { _buttonState = 2; });
       
@@ -304,6 +448,19 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
                           return null;
                         },
                       ),
+                      const SizedBox(height: 21),
+                      const Divider(thickness: 3),
+                      
+                      // Ingredients Section
+                      const Text(
+                        "Ingredients",
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Color(0xffBB9982),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      ..._buildIngredientsInputs(),
                       const SizedBox(height: 21),
                       const Divider(thickness: 3),
                       const SizedBox(height: 21),
@@ -459,5 +616,30 @@ class _NewRecipeScreenState extends State<NewRecipeScreen> {
           ),
         ),
     );
+  }
+
+  @override
+  void dispose() {
+    // Dispose main controllers and nodes
+    _nameController.dispose();
+    _descriptionController.dispose();
+    _descriptionNode.dispose();
+    
+    // Safely dispose ingredient controllers and nodes
+    try {
+      for (var controller in _ingredientControllers) {
+        controller.dispose();
+      }
+      for (var node in _ingredientNodes) {
+        if (node.hasFocus) {
+          node.unfocus();
+        }
+        node.dispose();
+      }
+    } catch (e) {
+      // Ignore disposal errors - widget is already being disposed
+    }
+    
+    super.dispose();
   }
 }

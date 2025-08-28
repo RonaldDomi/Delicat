@@ -11,6 +11,7 @@ class Category {
   String photo;
   final String colorCode;
   final String colorLightCode;
+  final String photoSource; // 'camera', 'gallery', 'unsplash', or 'unknown'
 
   Category({
     required this.id,
@@ -20,6 +21,7 @@ class Category {
     required this.photo,
     required this.colorCode,
     required this.colorLightCode,
+    this.photoSource = 'unknown',
   });
 
   // Named constructor for empty category
@@ -30,7 +32,8 @@ class Category {
         recipes = <Recipe>[],
         photo = '',
         colorCode = '#000000',
-        colorLightCode = '#CCCCCC';
+        colorLightCode = '#CCCCCC',
+        photoSource = 'unknown';
 
   Map<String, dynamic> toMap() {
     return {
@@ -41,6 +44,7 @@ class Category {
       'photo': photo,
       'colorCode': colorCode,
       'colorLightCode': colorLightCode,
+      'photoSource': photoSource,
     };
   }
 
@@ -55,6 +59,7 @@ class Category {
       colorLightCode: colorToHex(TinyColor.fromColor(
         hexToColor("${map["colorCode"] ?? '#000000'}"),
       ).lighten(20).color),
+      photoSource: map['photoSource'] as String? ?? 'unknown',
     );
   }
 

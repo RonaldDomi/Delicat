@@ -1,4 +1,5 @@
 import 'package:delicat/models/recipe.dart';
+import 'package:delicat/helpers/image_storage_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -29,11 +30,18 @@ class Recipes with ChangeNotifier {
     String path = join(await getDatabasesPath(), 'delicat_recipes.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE recipes(id TEXT PRIMARY KEY, name TEXT, photo TEXT, description TEXT, isFavorite INTEGER, categoryId TEXT, createdAt INTEGER)',
+          'CREATE TABLE recipes(id TEXT PRIMARY KEY, name TEXT, photo TEXT, description TEXT, isFavorite INTEGER, categoryId TEXT, ingredients TEXT, photoSource TEXT, createdAt INTEGER)',
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) {
+        if (oldVersion < 2) {
+          // Add new columns for existing installations
+          db.execute('ALTER TABLE recipes ADD COLUMN ingredients TEXT DEFAULT ""');
+          db.execute('ALTER TABLE recipes ADD COLUMN photoSource TEXT DEFAULT "unknown"');
+        }
       },
     );
   }
@@ -91,6 +99,8 @@ class Recipes with ChangeNotifier {
       description: map['description'],
       isFavorite: map['isFavorite'] == 1,
       categoryId: map['categoryId'],
+      ingredients: (map['ingredients'] as String? ?? '').split('|').where((s) => s.isNotEmpty).toList(),
+      photoSource: map['photoSource'] as String? ?? 'unknown',
     )).toList();
 
     // Add to existing recipes (don't replace all)
@@ -116,6 +126,8 @@ class Recipes with ChangeNotifier {
         description: recipe.description,
         isFavorite: recipe.isFavorite,
         categoryId: categoryId,
+        ingredients: recipe.ingredients,
+        photoSource: recipe.photoSource,
       );
 
       await db.insert('recipes', {
@@ -125,6 +137,8 @@ class Recipes with ChangeNotifier {
         'description': recipeWithId.description,
         'isFavorite': recipeWithId.isFavorite ? 1 : 0,
         'categoryId': categoryId,
+        'ingredients': recipeWithId.ingredients.join('|'), // Store as pipe-separated string
+        'photoSource': recipeWithId.photoSource,
         'createdAt': DateTime.now().millisecondsSinceEpoch,
       });
 
@@ -137,10 +151,25 @@ class Recipes with ChangeNotifier {
 
   Future<void> removeRecipe(String id) async {
     try {
+      // Find the recipe to get its image info before deletion
+      final Recipe? recipeToDelete = _recipes.cast<Recipe?>().firstWhere(
+        (recipe) => recipe?.id == id,
+        orElse: () => null,
+      );
+      
       final db = await database;
       await db.delete('recipes', where: 'id = ?', whereArgs: [id]);
       _recipes.removeWhere((item) => item.id == id);
       _favoriteRecipes.removeWhere((item) => item.id == id);
+      
+      // Clean up Unsplash images after successful deletion
+      if (recipeToDelete != null) {
+        await ImageStorageHelper.safeDeleteUnsplashImage(
+          recipeToDelete.photo, 
+          recipeToDelete.photoSource
+        );
+      }
+      
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to remove recipe: $e');
@@ -157,6 +186,8 @@ class Recipes with ChangeNotifier {
         'photo': editedRecipe.photo,
         'description': editedRecipe.description,
         'isFavorite': editedRecipe.isFavorite ? 1 : 0,
+        'ingredients': editedRecipe.ingredients.join('|'), // Store as pipe-separated string
+        'photoSource': editedRecipe.photoSource,
       },
       where: 'id = ?',
       whereArgs: [editedRecipe.id],
@@ -185,6 +216,8 @@ class Recipes with ChangeNotifier {
       description: map['description'],
       isFavorite: true,
       categoryId: map['categoryId'],
+      ingredients: (map['ingredients'] as String? ?? '').split('|').where((s) => s.isNotEmpty).toList(),
+      photoSource: map['photoSource'] as String? ?? 'unknown',
     )).toList();
 
     notifyListeners();
@@ -206,4 +239,5 @@ class Recipes with ChangeNotifier {
       throw Exception('Error finding recipe: $e');
     }
   }
+
 }

@@ -1,4 +1,5 @@
 import 'package:delicat/models/category.dart';
+import 'package:delicat/helpers/image_storage_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
@@ -78,9 +79,24 @@ class Categories with ChangeNotifier {
 
   Future<void> removeCategory(String id) async {
     try {
+      // Find the category to get its image info before deletion
+      final Category? categoryToDelete = _categories.cast<Category?>().firstWhere(
+        (category) => category?.id == id,
+        orElse: () => null,
+      );
+      
       final db = await database;
       await db.delete('categories', where: 'id = ?', whereArgs: [id]);
       _categories.removeWhere((item) => item.id == id);
+      
+      // Clean up Unsplash images after successful deletion
+      if (categoryToDelete != null) {
+        await ImageStorageHelper.safeDeleteUnsplashImage(
+          categoryToDelete.photo, 
+          categoryToDelete.photoSource
+        );
+      }
+      
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to remove category: $e');
@@ -125,6 +141,7 @@ class Categories with ChangeNotifier {
         photo: category.photo,
         colorCode: category.colorCode,
         colorLightCode: category.colorLightCode,
+        photoSource: category.photoSource,
       );
 
       await db.insert('categories', {

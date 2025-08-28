@@ -86,4 +86,50 @@ class ImageStorageHelper {
       return false;
     }
   }
+
+  /// Safely delete an image if it came from Unsplash (not camera/gallery)
+  static Future<void> safeDeleteUnsplashImage(String? imagePath, String photoSource) async {
+    try {
+      // Only delete if it's an Unsplash image and the file exists locally
+      if (imagePath == null || imagePath.isEmpty || photoSource != 'unsplash') {
+        return;
+      }
+
+      // Check if it's a local file path (contains our app directory structure)
+      if (imagePath.contains('/recipe_images/')) {
+        final File imageFile = File(imagePath);
+        if (await imageFile.exists()) {
+          await imageFile.delete();
+          print('Deleted Unsplash image: $imagePath');
+        }
+      }
+    } catch (e) {
+      print('Error deleting Unsplash image: $e');
+      // Don't throw - deletion failures shouldn't break the app
+    }
+  }
+
+  /// Clean up orphaned Unsplash images (for future use)
+  static Future<void> cleanupOrphanedImages(List<String> usedImagePaths) async {
+    try {
+      final Directory appDocDir = await getApplicationDocumentsDirectory();
+      final String imagesPath = '${appDocDir.path}/$_imageFolder';
+      final Directory imagesDir = Directory(imagesPath);
+      
+      if (!await imagesDir.exists()) return;
+
+      await for (FileSystemEntity entity in imagesDir.list()) {
+        if (entity is File && !usedImagePaths.contains(entity.path)) {
+          try {
+            await entity.delete();
+            print('Cleaned up orphaned image: ${entity.path}');
+          } catch (e) {
+            print('Error deleting orphaned image: $e');
+          }
+        }
+      }
+    } catch (e) {
+      print('Error during cleanup: $e');
+    }
+  }
 }

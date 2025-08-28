@@ -1,7 +1,6 @@
 import 'package:delicat/helpers/imagesHelperFunctions.dart';
 import 'package:delicat/helpers/message_helper.dart';
 import 'package:delicat/providers/app_state.dart';
-import 'package:delicat/routeNames.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:provider/provider.dart';
@@ -105,7 +104,6 @@ class _UnsplashnState extends State<UnsplashScreen> {
                   ElevatedButton(
                     onPressed: () {
                       String newPhoto = items[currentIndex].toString();
-                      print('Selected Unsplash image: $newPhoto');
                       Provider.of<AppState>(context, listen: false)
                           .setCurrentUnsplashPhoto(newPhoto);
                       Navigator.of(context).pop();
