@@ -240,4 +240,13 @@ class Recipes with ChangeNotifier {
     }
   }
 
+  List<Recipe> searchRecipesByIngredient(String ingredient) {
+    if (ingredient.isEmpty) return [];
+    
+    return _recipes.where((recipe) {
+      return recipe.ingredients.any((recipeIngredient) =>
+        recipeIngredient.toLowerCase().contains(ingredient.toLowerCase()));
+    }).toList();
+  }
+
 }

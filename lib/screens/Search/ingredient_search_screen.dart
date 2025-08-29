@@ -8,12 +8,12 @@ import 'package:delicat/helpers/image_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SearchScreen extends StatefulWidget {
+class IngredientSearchScreen extends StatefulWidget {
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  _IngredientSearchScreenState createState() => _IngredientSearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
   TextEditingController _searchController = TextEditingController();
   List<Recipe> _searchResults = [];
   bool _isSearching = false;
@@ -24,8 +24,8 @@ class _SearchScreenState extends State<SearchScreen> {
     super.dispose();
   }
 
-  void _searchRecipes(String query) {
-    if (query.trim().isEmpty) {
+  void _searchRecipes(String ingredient) {
+    if (ingredient.trim().isEmpty) {
       setState(() {
         _searchResults.clear();
         _isSearching = false;
@@ -37,10 +37,8 @@ class _SearchScreenState extends State<SearchScreen> {
       _isSearching = true;
     });
 
-    final recipes = Provider.of<Recipes>(context, listen: false).recipes;
-    final results = recipes.where((recipe) => 
-      recipe.name.toLowerCase().contains(query.toLowerCase().trim())
-    ).toList();
+    final recipes = Provider.of<Recipes>(context, listen: false);
+    final results = recipes.searchRecipesByIngredient(ingredient.trim());
 
     setState(() {
       _searchResults = results;
@@ -199,7 +197,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             const SizedBox(height: 24),
             const Text(
-              'Search for recipes',
+              'Find recipes by ingredient',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -208,7 +206,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             const SizedBox(height: 12),
             const Text(
-              'Type a recipe name to find\nyour favorite dishes',
+              'Type an ingredient name to discover\nrecipes that contain it',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,
@@ -251,7 +249,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             const SizedBox(height: 12),
             Text(
-              'No recipes match "${_searchController.text}"\nTry a different search term',
+              'Try searching for "${_searchController.text}"\nwith a different ingredient',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 16,
@@ -287,7 +285,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   children: [
                     const SizedBox(height: 20),
                     const Text(
-                      'Recipe Search',
+                      'Ingredient Search',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -312,7 +310,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         controller: _searchController,
                         onChanged: _searchRecipes,
                         decoration: const InputDecoration(
-                          hintText: 'Enter recipe name...',
+                          hintText: 'Enter ingredient name...',
                           hintStyle: TextStyle(color: Colors.grey),
                           prefixIcon: Icon(
                             Icons.search,

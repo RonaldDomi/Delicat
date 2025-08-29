@@ -1,6 +1,7 @@
 import 'package:delicat/screens/Category/categories_screen.dart';
 import 'package:delicat/screens/Favorites/favorites_screen.dart';
 import 'package:delicat/screens/Search/search_screen.dart';
+import 'package:delicat/screens/Search/ingredient_search_screen.dart';
 import 'package:delicat/helpers/tab_navigation_helper.dart';
 import 'package:delicat/router.dart' as app_router;
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _TabNavigationScaffoldState extends State<TabNavigationScaffold> {
             _buildTabNavigator(0, CategoriesScreen()),
             _buildTabNavigator(1, FavoritesScreen()),
             _buildTabNavigator(2, SearchScreen()),
-            _buildTabNavigator(3, CategoriesScreen()), // Placeholder - same as Categories for now
+            _buildTabNavigator(3, IngredientSearchScreen()),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -122,13 +123,14 @@ class _TabNavigationScaffoldState extends State<TabNavigationScaffold> {
               label: 'Search',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.apps, color: Color(0xffF6C2A4)),
-              label: 'More',
+              icon: Icon(Icons.restaurant_menu, color: Color(0xffF6C2A4)),
+              label: 'Ingredients',
             ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           onPressed: () {
             // Go to Categories tab and pop to root
             if (_currentIndex != 0) {
