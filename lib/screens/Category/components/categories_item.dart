@@ -8,7 +8,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 class CategoryItem extends StatelessWidget {
   final Category category;
 
-  CategoryItem(this.category);
+  const CategoryItem(this.category, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +44,7 @@ class CategoryItem extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: TinyColor.fromColor(hexToColor(category.colorCode)).darken(14).color,
-              // color: Colors.red,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(24),
                 bottomRight: Radius.circular(24),
               ),
@@ -57,7 +56,7 @@ class CategoryItem extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 20.0),
                 child: AutoSizeText(
                   category.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 25,
                   ),
@@ -84,6 +83,7 @@ class TitleClipper extends CustomClipper<Path> {
     return path;
   }
 
+  @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
     return true;
   }

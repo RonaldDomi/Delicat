@@ -1,12 +1,117 @@
 import 'package:delicat/providers/recipes.dart';
+import 'package:delicat/providers/categories.dart';
 import 'package:delicat/routeNames.dart';
-import 'package:delicat/screens/Favorites/components/favorites_item.dart';
+import 'package:delicat/models/recipe.dart';
+import 'package:delicat/helpers/colorHelperFunctions.dart';
+import 'package:delicat/helpers/image_helper.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FavoritesScreen extends StatelessWidget {
   
+  Widget _buildRecipeCard(BuildContext context, Recipe recipe) {
+    final categories = Provider.of<Categories>(context, listen: false);
+    final category = categories.getCategoryById(recipe.categoryId);
+
+    return InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(
+          RouterNames.RecipeDetailsScreen,
+          arguments: recipe.id,
+        );
+      },
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: recipe.photo != null && recipe.photo!.isNotEmpty
+                        ? DecorationImage(
+                            image: ImageHelper.getImageProvider(recipe.photo!),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                    color: recipe.photo == null || recipe.photo!.isEmpty
+                        ? hexToColor(category.colorCode)
+                        : null,
+                  ),
+                  child: recipe.photo == null || recipe.photo!.isEmpty
+                      ? const Center(
+                          child: Icon(
+                            Icons.restaurant_menu,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                        )
+                      : null,
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        recipe.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xff8B7355),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: hexToColor(category.colorLightCode),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          category.name,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xff8B7355),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildEmptyState() {
     return Expanded(
       child: Center(
@@ -118,16 +223,7 @@ class FavoritesScreen extends StatelessWidget {
                         itemCount: recipes.favoriteRecipes.length,
                         itemBuilder: (context, index) {
                           final recipe = recipes.favoriteRecipes[index];
-                          return InkWell(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                RouterNames.RecipeDetailsScreen,
-                                arguments: recipe.id,
-                              );
-                            },
-                            borderRadius: BorderRadius.circular(16),
-                            child: FavoriteItem(recipe),
-                          );
+                          return _buildRecipeCard(context, recipe);
                         },
                       ),
                     ),

@@ -248,5 +248,18 @@ class Recipes with ChangeNotifier {
         recipeIngredient.toLowerCase().contains(ingredient.toLowerCase()));
     }).toList();
   }
+  
+  Recipe? getRandomRecipe() {
+      if (_recipes.isEmpty) return null;
+      final random = DateTime.now().millisecondsSinceEpoch % _recipes.length;
+      return _recipes[random];
+  }
+
+  Recipe? getRandomRecipeByCategory(String categoryId) {
+      final categoryRecipes = getRecipesByCategoryId(categoryId);
+      if (categoryRecipes.isEmpty) return null;
+      final random = DateTime.now().millisecondsSinceEpoch % categoryRecipes.length;
+      return categoryRecipes[random];
+  } 
 
 }

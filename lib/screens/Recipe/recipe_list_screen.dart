@@ -25,6 +25,47 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     setState(() {});
   }
 
+  void _showRemoveDialog(BuildContext context, Category category) {
+    showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Category'),
+        content: Text('Are you sure you want to remove "${category.name}"? This will delete all recipes in this category.'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop(true);
+              
+              // First, get all recipes in this category and remove them (including from favorites)
+              final recipes = Provider.of<Recipes>(context, listen: false);
+              final categoryRecipes = recipes.getRecipesByCategoryId(category.id);
+              
+              // Remove each recipe (this will also remove them from favorites)
+              for (final recipe in categoryRecipes) {
+                await recipes.removeRecipe(recipe.id);
+              }
+              
+              // Then remove the category itself
+              await Provider.of<Categories>(context, listen: false)
+                  .removeCategory(category.id);
+              
+              // Navigate back to dashboard after deletion
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            child: const Text("Remove"),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Category? category;
@@ -55,93 +96,184 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    "${category.name} Catalogue",
-                    style: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
+                  // Title with More Menu
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () async {
-                          await Provider.of<Categories>(context, listen: false)
-                              .removeCategory(category!.id);
-                          // Navigate back to dashboard after deletion
-                          Navigator.of(context).popUntil((route) => route.isFirst);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                        ),
-                        child: const Text(
-                          "Remove Category",
-                          style: TextStyle(
-                            color: Color(0xffF6C2A4),
+                      Expanded(
+                        child: Text(
+                          category.name,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () {
-                          Provider.of<AppState>(context, listen: false)
-                              .setIsOngoingCategoryNew(false);
-                          Provider.of<AppState>(context, listen: false)
-                              .setOngoingCategory(category!);
-                          Navigator.of(context).pushNamed(
-                            RouterNames.NewCategoryScreen,
-                          );
+                      PopupMenuButton<String>(
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: Colors.black54,
+                          size: 28,
+                        ),
+                        onSelected: (String result) {
+                          if (result == 'edit') {
+                            Provider.of<AppState>(context, listen: false)
+                                .setIsOngoingCategoryNew(false);
+                            Provider.of<AppState>(context, listen: false)
+                                .setOngoingCategory(category!);
+                            Navigator.of(context).pushNamed(
+                              RouterNames.NewCategoryScreen,
+                            );
+                          } else if (result == 'remove') {
+                            _showRemoveDialog(context, category!);
+                          }
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
+                        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                          PopupMenuItem<String>(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.edit,
+                                  color: hexToColor(category!.colorCode),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                const Text('Edit Category'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuDivider(),
+                          const PopupMenuItem<String>(
+                            value: 'remove',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Remove Category',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // Action buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      // Random Recipe Button
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [hexToColor(category.colorCode), hexToColor(category.colorLightCode)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              spreadRadius: 1,
+                              blurRadius: 8,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            final randomRecipe = Provider.of<Recipes>(context, listen: false)
+                                .getRandomRecipeByCategory(widget.categoryId);
+                            if (randomRecipe != null) {
+                              Navigator.of(context).pushNamed(
+                                RouterNames.RecipeDetailsScreen,
+                                arguments: randomRecipe.id,
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+                          icon: const Icon(
+                            Icons.shuffle,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                          label: const Text(
+                            "Random Recipe",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
                           ),
                         ),
-                        child: const Text(
-                          "Edit Category",
-                          style: TextStyle(
-                            color: Color(0xffF6C2A4),
+                      ),
+                      // Add New Recipe Button
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: hexToColor(category.colorCode).withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Provider.of<AppState>(context, listen: false)
+                                .setIsOngoingRecipeNew(true);
+                            Navigator.of(context).pushNamed(
+                              RouterNames.NewRecipeScreen,
+                              arguments: [
+                                category!.name,
+                                category!.colorLightCode,
+                                category!.id,
+                              ],
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                          ),
+                          icon: Icon(
+                            Icons.add_circle_outline,
+                            color: hexToColor(category.colorCode),
+                            size: 20,
+                          ),
+                          label: Text(
+                            "Add New Dish",
+                            style: TextStyle(
+                              color: hexToColor(category.colorCode),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
                           ),
                         ),
                       ),
                     ],
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Provider.of<AppState>(context, listen: false)
-                          .setIsOngoingRecipeNew(true);
-                      Navigator.of(context).pushNamed(
-                        RouterNames.NewRecipeScreen,
-                        arguments: [
-                          category!.name,
-                          category!.colorLightCode,
-                          category!.id,
-                        ],
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      elevation: 6,
-                      // padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                      ),
-                    ),
-                    child: const Text(
-                      "add a new dish",
-                      style: TextStyle(
-                        color: Color(0xffF6C2A4),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
                   ),
                 ],
               ),
