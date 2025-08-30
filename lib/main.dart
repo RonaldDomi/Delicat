@@ -6,6 +6,7 @@ import './providers/recipes.dart';
 import './providers/categories.dart';
 import 'providers/app_state.dart';
 import './providers/user.dart';
+import './providers/ingredient_checklist.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(
           value: AppState(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => IngredientChecklist()..initializePreferences(),
         ),
       ],
       child: MaterialApp(

@@ -7,6 +7,7 @@ import 'package:delicat/helpers/image_helper.dart';
 
 import '../../providers/recipes.dart';
 import '../../providers/categories.dart';
+import '../../providers/ingredient_checklist.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../models/recipe.dart';
@@ -226,65 +227,113 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
             
             // Ingredients Section
             if (recipe.ingredients.isNotEmpty)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 30.0),
-                padding: const EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(0, 2),
+              Consumer<IngredientChecklist>(
+                builder: (context, checklist, child) {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 30.0),
+                    padding: const EdgeInsets.all(20.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Ingredients",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xff8B7355),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    ...recipe.ingredients.asMap().entries.map((entry) {
-                      String ingredient = entry.value;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Header with title and reset button
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 6, right: 12),
-                              width: 6,
-                              height: 6,
-                              decoration: const BoxDecoration(
-                                color: Color(0xffF6C2A4),
-                                shape: BoxShape.circle,
+                            const Text(
+                              "Ingredients",
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xff8B7355),
                               ),
                             ),
-                            Expanded(
-                              child: Text(
-                                ingredient,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xff5D4E37),
-                                  height: 1.4,
+                            TextButton.icon(
+                              onPressed: () async {
+                                await checklist.resetRecipeIngredients(recipe.id);
+                              },
+                              icon: const Icon(
+                                Icons.refresh,
+                                size: 18,
+                                color: Color(0xffF6C2A4),
+                              ),
+                              label: const Text(
+                                "Reset",
+                                style: TextStyle(
+                                  color: Color(0xffF6C2A4),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      );
-                    }).toList(),
-                  ],
-                ),
+                        const SizedBox(height: 10),
+                        // Ingredients list with checkboxes
+                        ...recipe.ingredients.asMap().entries.map((entry) {
+                          String ingredient = entry.value;
+                          bool isChecked = checklist.isIngredientChecked(recipe.id, ingredient);
+                          
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 2.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                // Checkbox
+                                Transform.scale(
+                                  scale: 0.8,
+                                  child: Checkbox(
+                                    value: isChecked,
+                                    onChanged: (value) async {
+                                      await checklist.toggleIngredient(recipe.id, ingredient);
+                                    },
+                                    activeColor: const Color(0xffF6C2A4),
+                                    checkColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                    visualDensity: VisualDensity.compact,
+                                  ),
+                                ),
+                                // Ingredient text
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 4.0),
+                                    child: Text(
+                                      ingredient,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: isChecked 
+                                          ? const Color(0xff5D4E37).withOpacity(0.6)
+                                          : const Color(0xff5D4E37),
+                                        height: 1.4,
+                                        decoration: isChecked 
+                                          ? TextDecoration.lineThrough
+                                          : TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
+                      ],
+                    ),
+                  );
+                },
               ),
             
             const SizedBox(height: 20),
