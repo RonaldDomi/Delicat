@@ -105,7 +105,7 @@ class CookingTodayScreen extends StatelessWidget {
                           category.name,
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Color(0xff8B7355),
+                            color: Color(0xffFFFFFF),
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -231,7 +231,8 @@ class CookingTodayScreen extends StatelessWidget {
                 ],
               ),
             ),
-              Consumer2<CookingToday, Recipes>(
+            Expanded(
+              child: Consumer2<CookingToday, Recipes>(
                 builder: (context, cookingToday, recipes, child) {
                   if (cookingToday.isEmpty) {
                     return _buildEmptyState();
@@ -270,52 +271,111 @@ class CookingTodayScreen extends StatelessWidget {
                     });
                   }
                   
-                  return Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.75,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
+                  return Column(
+                    children: [
+                      // Action buttons
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  Navigator.of(context).pushNamed(RouterNames.ShoppingListScreen);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: const Color(0xffF6C2A4),
+                                  elevation: 4,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                icon: const Icon(Icons.shopping_cart),
+                                label: const Text(
+                                  'Shopping List',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            ElevatedButton.icon(
+                              onPressed: () async {
+                                // Show confirmation dialog
+                                final shouldReset = await showDialog<bool>(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Reset Cooking Today'),
+                                    content: const Text('Are you sure you want to remove all recipes from your cooking today list?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(false),
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(true),
+                                        child: const Text('Reset'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                                
+                                if (shouldReset == true) {
+                                  await cookingToday.clearAll();
+                                  await Provider.of<IngredientChecklist>(context, listen: false).clearAllData();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: const Color(0xffF6C2A4),
+                                elevation: 4,
+                                padding: const EdgeInsets.all(12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              icon: const Icon(Icons.clear_all),
+                              label: const Text(
+                                'Reset',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        itemCount: plannedRecipes.length,
-                        itemBuilder: (context, index) {
-                          final recipe = plannedRecipes[index];
-                          return _buildRecipeCard(context, recipe);
-                        },
                       ),
-                    ),
+                      // Recipe grid
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          child: GridView.builder(
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.75,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                            ),
+                            itemCount: plannedRecipes.length,
+                            itemBuilder: (context, index) {
+                              final recipe = plannedRecipes[index];
+                              return _buildRecipeCard(context, recipe);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
+            ),
             ],
           ),
-      ),
-      floatingActionButton: Consumer<CookingToday>(
-        builder: (context, cookingToday, child) {
-          if (cookingToday.isEmpty) {
-            return const SizedBox.shrink();
-          }
-          
-          return FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.of(context).pushNamed(RouterNames.ShoppingListScreen);
-            },
-            backgroundColor: Colors.white,
-            foregroundColor: const Color(0xffF6C2A4),
-            elevation: 8,
-            icon: const Icon(Icons.shopping_cart),
-            label: const Text(
-              'Shopping List',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          );
-        },
       ),
     );
   }

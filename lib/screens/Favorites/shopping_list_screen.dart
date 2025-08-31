@@ -183,12 +183,12 @@ class ShoppingListScreen extends StatelessWidget {
                       ..sort((a, b) => a.key.compareTo(b.key));
 
                     return Container(
-                      margin: const EdgeInsets.all(16),
+                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                       child: Column(
                         children: [
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(12),
@@ -235,7 +235,7 @@ class ShoppingListScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           Expanded(
                             child: Container(
                               decoration: BoxDecoration(

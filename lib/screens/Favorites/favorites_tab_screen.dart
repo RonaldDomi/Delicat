@@ -115,7 +115,7 @@ class FavoritesTabScreen extends StatelessWidget {
                               category.name,
                               style: const TextStyle(
                                 fontSize: 12,
-                                color: Color(0xff8B7355),
+                                color: Color(0xffFFFFFF),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -268,20 +268,25 @@ class FavoritesTabScreen extends StatelessWidget {
               }
               
               return Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                  child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.75,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.75,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                      itemCount: recipes.favoriteRecipes.length,
+                      itemBuilder: (context, index) {
+                        final recipe = recipes.favoriteRecipes[index];
+                        return _buildRecipeCard(context, recipe);
+                      },
                     ),
-                    itemCount: recipes.favoriteRecipes.length,
-                    itemBuilder: (context, index) {
-                      final recipe = recipes.favoriteRecipes[index];
-                      return _buildRecipeCard(context, recipe);
-                    },
                   ),
                 ),
               );

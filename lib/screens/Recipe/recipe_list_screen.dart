@@ -380,6 +380,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
     return SizedBox(
       height: double.infinity,
       child: Swiper(
+        loop: false,
         onIndexChanged: (index) {
           setState(() {
             _currentRecipeIndex = index;
