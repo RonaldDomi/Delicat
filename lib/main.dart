@@ -7,6 +7,8 @@ import './providers/categories.dart';
 import 'providers/app_state.dart';
 import './providers/user.dart';
 import './providers/ingredient_checklist.dart';
+import './providers/cooking_today.dart';
+import './widgets/cleanup_initializer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,14 +39,19 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => IngredientChecklist()..initializePreferences(),
         ),
-      ],
-      child: MaterialApp(
-        title: 'Delicat',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
+        ChangeNotifierProvider(
+          create: (_) => CookingToday()..initializePreferences(),
         ),
-        initialRoute: "/",
-        onGenerateRoute: MyRouter.Router.generateRoute,
+      ],
+      child: CleanupInitializer(
+        child: MaterialApp(
+          title: 'Delicat',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          initialRoute: "/",
+          onGenerateRoute: MyRouter.Router.generateRoute,
+        ),
       ),
     );
   }

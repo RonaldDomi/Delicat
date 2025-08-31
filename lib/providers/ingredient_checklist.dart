@@ -69,4 +69,25 @@ class IngredientChecklist with ChangeNotifier {
     _checkedIngredients.clear();
     notifyListeners();
   }
+
+  Future<void> cleanupOrphanedRecipes(Set<String> validRecipeIds) async {
+    final keysToRemove = <String>[];
+    
+    for (String key in _checkedIngredients.keys) {
+      if (!validRecipeIds.contains(key)) {
+        keysToRemove.add(key);
+      }
+    }
+    
+    for (String key in keysToRemove) {
+      _checkedIngredients.remove(key);
+      if (_prefs != null) {
+        await _prefs!.remove('ingredient_checked_$key');
+      }
+    }
+    
+    if (keysToRemove.isNotEmpty) {
+      notifyListeners();
+    }
+  }
 }

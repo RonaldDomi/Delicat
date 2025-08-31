@@ -8,6 +8,7 @@ import 'package:delicat/helpers/image_helper.dart';
 import '../../providers/recipes.dart';
 import '../../providers/categories.dart';
 import '../../providers/ingredient_checklist.dart';
+import '../../providers/cooking_today.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../models/recipe.dart';
@@ -27,7 +28,32 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final recipe = Provider.of<Recipes>(context).getRecipeById(widget.recipeId);
-    final category = Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
+    final cookingToday = Provider.of<CookingToday>(context);
+    
+    // Safe category lookup - return error screen if category doesn't exist
+    late final category;
+    try {
+      category = Provider.of<Categories>(context).getCategoryById(recipe.categoryId);
+    } catch (e) {
+      // Category was deleted, show error message
+      return Scaffold(
+        appBar: AppBar(title: const Text('Recipe Not Available')),
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline, size: 64, color: Colors.grey),
+              SizedBox(height: 16),
+              Text(
+                'This recipe\'s category has been deleted.',
+                style: TextStyle(fontSize: 18, color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
     void onEdit() {
       Provider.of<AppState>(context, listen: false).setOngoingRecipe(recipe);
@@ -88,50 +114,22 @@ class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
                   ),
                 ),
                 PopupMenuItem(
-                  value: 3,
+                  value: 6,
                   child: RawMaterialButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await cookingToday.toggleRecipe(widget.recipeId);
+                      setState(() {});
                       Navigator.pop(context);
                     },
                     elevation: 2.0,
-                    fillColor: hexToColor(category.colorCode),
+                    fillColor: const Color(0xffF6C2A4),
                     shape: const CircleBorder(),
-                    child: const Icon(
-                      Icons.receipt,
+                    child: Icon(
+                      cookingToday.isRecipeInCookingToday(widget.recipeId)
+                          ? Icons.today
+                          : Icons.today_outlined,
                       size: 35.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 4,
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    },
-                    elevation: 2.0,
-                    fillColor: hexToColor(category.colorCode),
-                    shape: const CircleBorder(),
-                    child: const Icon(
-                      Icons.home,
-                      size: 35.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 5,
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    elevation: 2.0,
-                    fillColor: hexToColor(category.colorCode),
-                    shape: const CircleBorder(),
-                    child: const Icon(
-                      Icons.share,
-                      size: 35.0,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   ),
                 ),

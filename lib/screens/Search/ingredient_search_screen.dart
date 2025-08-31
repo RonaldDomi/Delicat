@@ -76,7 +76,15 @@ class _IngredientSearchScreenState extends State<IngredientSearchScreen> {
 
   Widget _buildRecipeCard(Recipe recipe) {
     final categories = Provider.of<Categories>(context, listen: false);
-    final category = categories.getCategoryById(recipe.categoryId);
+    
+    // Safe category lookup - return null if category doesn't exist
+    late final category;
+    try {
+      category = categories.getCategoryById(recipe.categoryId);
+    } catch (e) {
+      // Category was deleted, skip this recipe
+      return const SizedBox.shrink();
+    }
 
     return InkWell(
       onTap: () {

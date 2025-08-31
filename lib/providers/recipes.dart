@@ -262,4 +262,17 @@ class Recipes with ChangeNotifier {
       return categoryRecipes[random];
   } 
 
+  Future<void> cleanupOrphanedFavorites() async {
+    final validRecipeIds = _recipes.map((recipe) => recipe.id).toSet();
+    final favoritesToRemove = _favoriteRecipes.where((recipe) => !validRecipeIds.contains(recipe.id)).toList();
+    
+    for (Recipe recipe in favoritesToRemove) {
+      _favoriteRecipes.remove(recipe);
+    }
+    
+    if (favoritesToRemove.isNotEmpty) {
+      notifyListeners();
+    }
+  }
+
 }

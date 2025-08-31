@@ -1,6 +1,7 @@
 import 'package:delicat/helpers/colorHelperFunctions.dart';
 import 'package:delicat/models/recipe.dart';
 import 'package:delicat/providers/recipes.dart';
+import 'package:delicat/providers/cooking_today.dart';
 import 'package:delicat/helpers/image_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -49,7 +50,6 @@ class RecipeListItem extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                 Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Expanded(
                       flex: 1,
@@ -67,7 +67,35 @@ class RecipeListItem extends StatelessWidget {
                         shape: CircleBorder(),
                       ),
                     ),
-                    Expanded(flex: 2, child: SizedBox()),
+                    Expanded(
+                      flex: 1,
+                      child: Consumer<CookingToday>(
+                        builder: (context, cookingToday, child) {
+                          final isInCookingToday = cookingToday.isRecipeInCookingToday(recipe.id);
+                          return RawMaterialButton(
+                            onPressed: () async {
+                              await cookingToday.toggleRecipe(recipe.id);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    isInCookingToday 
+                                      ? 'Removed from cooking today' 
+                                      : 'Added to cooking today',
+                                  ),
+                                  duration: const Duration(seconds: 1),
+                                ),
+                              );
+                            },
+                            fillColor: isInCookingToday ? Colors.green : Color(0xffF6C2A4),
+                            child: Icon(
+                              isInCookingToday ? Icons.today : Icons.today_outlined,
+                              color: Colors.white,
+                            ),
+                            shape: CircleBorder(),
+                          );
+                        },
+                      ),
+                    ),
                     Expanded(
                       flex: 1,
                       child: RawMaterialButton(
